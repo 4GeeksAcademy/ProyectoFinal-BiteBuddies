@@ -20,6 +20,19 @@ def handle_users():
     all_users = list(map(lambda x: x.serialize(), users_query))
     return jsonify(all_users), 200
 
+# [POST] ruta para agregar usuario nuevo en la base de datos
+@api.route('/users', methods=['POST'])
+def add_user():
+    user_data = request.get_json()
+    new_user = User(
+        user_name=user_data['user_name'],
+        email=user_data['email'],
+        password=user_data['password']
+    )
+    db.session.add(new_user)
+    db.session.commit()
+    return jsonify({"msg": "User created successfully"}), 201
+
 @api.route("/current-user", methods=["GET"])
 @jwt_required()
 def get_current_user():
