@@ -10,7 +10,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 			registerUser: async (user_name, email, password) => {
 				const store = getStore();
 				try {
-					const response = await fetch('https://zany-chainsaw-wgrxxjjr7qr35967-3001.app.github.dev//api/users', {
+					const response = await fetch('https://animated-zebra-7pvww44vv5vfrg65-3001.app.github.dev/api/users', {
 						method: 'POST',
 						headers: {
 							'Content-Type': 'application/json',
