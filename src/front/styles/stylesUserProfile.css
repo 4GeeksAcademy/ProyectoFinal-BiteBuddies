@@ -1,0 +1,128 @@
+.profile-container {
+    padding: 30px;
+    background-color: #f3e5d8; 
+    border-radius: 10px;
+}
+
+.navbar-profile {
+    background-color: #e7d2c4; 
+    color: #6b4423; 
+    padding: 15px 30px;
+    border-radius: 10px;
+    margin-bottom: 30px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.navbar-profile h2 {
+    margin: 0;
+    font-size: 1.8rem; 
+    font-weight: bold;
+    color: #6b4423; 
+}
+
+.navbar-profile button {
+    color: #ffffff;
+    background-color: #6b4423; 
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    font-size: 1rem;
+    transition: background-color 0.3s ease;
+}
+
+.navbar-profile button:hover {
+    background-color: #8b5e3c; 
+}
+
+.navbar-profile .dropdown-menu {
+    background-color: #6b4423; 
+    border: none;
+    border-radius: 5px;
+}
+
+.navbar-profile .dropdown-item {
+    color: #ffffff;
+    font-size: 1rem;
+}
+
+.navbar-profile .dropdown-item:hover {
+    background-color: #8b5e3c; 
+}
+
+.profile-sidebar {
+    background-color: #ffffff;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.profile-photo img {
+    width: 120px;
+    height: 120px;
+    object-fit: cover;
+    border-radius: 50%;
+    margin-bottom: 15px;
+    border: 3px solid #8b5e3c; 
+}
+
+.profile-info p {
+    margin: 10px 0;
+    font-size: 1rem;
+    color: #6b4423; 
+}
+
+.profile-info button {
+    margin-top: 15px;
+    padding: 10px 20px;
+    font-size: 1rem;
+    color: #ffffff;
+    background-color: #d97e48;
+    border: none;
+    border-radius: 5px;
+    transition: background-color 0.3s ease;
+}
+
+.profile-info button:hover {
+    background-color: #b06136; 
+}
+
+.recipes-section h3 {
+    font-size: 1.75rem;
+    font-weight: 600;
+    margin-bottom: 20px;
+    color: #8b5e3c; 
+}
+
+.recipe-card {
+    background-color: #ffffff;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.recipe-card img {
+    width: 100px;
+    height: 100px;
+    object-fit: cover;
+    border-radius: 10px;
+    margin-bottom: 15px;
+    border: 2px solid #8b5e3c; 
+}
+
+.recipe-card .recipe-name {
+    font-size: 1.2rem;
+    font-weight: 500;
+    color: #6b4423; 
+}
+
+.recipe-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+}
