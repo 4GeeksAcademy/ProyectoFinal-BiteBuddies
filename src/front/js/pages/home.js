@@ -19,7 +19,7 @@ export const Home = () => {
         <div className="text-center">
             <div className="m-3">
                 <h1>Recetas</h1>
-                <h2>Aprende a concinar en compañia</h2>
+                <h2>Aprende a concinar con nosotros</h2>
             </div>
 			<div>
 			<div>
