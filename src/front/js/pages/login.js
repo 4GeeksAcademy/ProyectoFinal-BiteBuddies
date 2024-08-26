@@ -24,7 +24,7 @@ export const Login = () => {
     <main className="container w-25 border border-primary">
       <h1 className="text-center">LOGIN</h1>
       <form onSubmit={onSubmitHandler}>
-      <div class="mb-3">
+      <div className="mb-3">
             <label htmlFor="inputEmail" className="col-sm-2 col-form-label">
               Email
             </label>
@@ -37,7 +37,7 @@ export const Login = () => {
                 placeholder="example@gmail.com"
               />
         </div>
-        <div class="mb-3">
+        <div className="mb-3">
             <label htmlFor="inputPassword" className="col-sm-2 col-form-label">
               Password
             </label>
