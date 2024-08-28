@@ -8,6 +8,7 @@ import { Login } from "./pages/login";
 import { Sign_in } from "./pages/sign_in";
 import { Single } from "./pages/single";
 import { UserProfile } from "./pages/UserProfile";
+import { FavoritesView } from "./pages/favoritesView";
 import injectContext from "./store/appContext";
 
 import { Navbar } from "./component/navbar";
@@ -33,6 +34,7 @@ const Layout = () => {
                         {/* <Route element={<UserProfile />} path="/user-profile" /> */}
                         {/* route to user profile with id */}
                         <Route element={<UserProfile />} path="/user-profile/:id" />
+                        <Route element={<FavoritesView />} path="/favorites" /> 
                         <Route element={<h1>Not found!</h1>} />
                     </Routes>
                     <Footer />
