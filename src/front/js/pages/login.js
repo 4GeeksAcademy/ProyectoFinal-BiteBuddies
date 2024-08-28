@@ -13,12 +13,12 @@ export const Login = () => {
     // 4.- Sobreescribir el comportamiento "nativo" del formulario (refrescar la página)
     e.preventDefault();
     // 5.- Realizar accion de submit
-    // const logged = await actions.login(email, password);
-    // if (logged) {
-    //   navigate("/protected");
-    // }
-    // setEmail("");
-    // setPassword("");
+    const logged = await actions.login(email, password);
+    if (logged) {
+      navigate(`/user-profile/${store.currentUser.id}`);
+    }
+    setEmail("");
+    setPassword("");
   };
   return (
     <main className="container w-25 border border-primary">

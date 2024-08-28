@@ -30,8 +30,9 @@ const Layout = () => {
                         <Route element={<Home />} path="/" />
                         <Route element={<Login />} path="/login" />
                         <Route element={<Sign_in />} path="/sign_in" />
-                        <Route element={<Single />} path="/single/:theid" />
-                        <Route element={<UserProfile />} path="/user-profile" />
+                        {/* <Route element={<UserProfile />} path="/user-profile" /> */}
+                        {/* route to user profile with id */}
+                        <Route element={<UserProfile />} path="/user-profile/:id" />
                         <Route element={<h1>Not found!</h1>} />
                     </Routes>
                     <Footer />

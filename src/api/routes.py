@@ -116,6 +116,25 @@ def handle_specific_category(categoria_id):
         return jsonify({"msg": "categoria not found"}), 404
     return jsonify(categoria_query.serialize()), 200
 
+#============================================================================
+# # [LOGIN] ruta para obtener el usuario actual
+# #============================================================================
+@api.route("/login", methods=["POST"])
+def login():
+    email = request.json.get("email", None)
+    password = request.json.get("password", None)
+
+    if email is None or password is None:
+        return jsonify({"msg": "Bad username or password"}), 401
+
+    user_query = User.query.filter_by(email=email).first()
+
+    if not user_query or user_query.password != password:
+        return jsonify({"msg": "Bad username or password"}), 401
+
+    access_token = create_access_token(identity=user_query.id)
+    return jsonify(access_token=access_token), 200
+
 if __name__ == '__main__':
     PORT = int(os.environ.get('PORT', 3000))
     api.run(host='0.0.0.0', port=PORT, debug=False)
@@ -162,24 +181,7 @@ if __name__ == '__main__':
 #     db.session.commit()
 
 #     return jsonify(new_ingredient.serialize()), 201
-# #============================================================================
-# # [LOGIN] ruta para obtener el usuario actual
-# #============================================================================
-# @api.route("/login", methods=["POST"])
-# def login():
-#     email = request.json.get("email", None)
-#     password = request.json.get("password", None)
-
-#     if email is None or password is None:
-#         return jsonify({"msg": "Bad username or password"}), 401
-
-#     user_query = User.query.filter_by(email=email).first()
-
-#     if not user_query or user_query.password != password:
-#         return jsonify({"msg": "Bad username or password"}), 401
-
-#     access_token = create_access_token(identity=user_query.id)
-#     return jsonify(access_token=access_token), 200
+# 
 
 # # @api.route('/user', methods=['POST'])
 # # def crear_usuario():

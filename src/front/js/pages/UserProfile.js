@@ -1,29 +1,33 @@
-import React from "react";
+import React, { useContext, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import "../../styles/stylesUserProfile.css";
+import { Context } from "../store/appContext";
+
 
 export const UserProfile = () => {
+    const { store, actions } = useContext(Context);
+    const withSession = !!store?.isLoggedIn;
+    const navigate = useNavigate();
+
+    useEffect(() => {
+        if (!withSession) {
+        navigate("/login");
+        }
+    }, [withSession]);
+
+    if (!store.currentUser) {
+        return <div>Cargando...</div>; // Puedes mostrar un mensaje de carga o un componente de carga mientras se obtienen los datos
+    }
     return (
         <div className="container profile-container">
             <div className="row">
                 {}
                 <div className="col-12">
-                    <div className="navbar-profile d-flex justify-content-between align-items-center p-3 bg-light">
-                        <button className="btn btn-outline-primary">Home</button>
-                        <h2>Bienvenido a tu perfil</h2>
-                        <div className="dropdown">
-                            <button className="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
-                                UserName
-                            </button>
-                            <ul className="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                                <li><a className="dropdown-item" href="#">Action</a></li>
-                                <li><a className="dropdown-item" href="#">Another action</a></li>
-                                <li><a className="dropdown-item" href="#">Logout</a></li>
-                            </ul>
-                        </div>
+                    <div className="navbar-profile d-flex justify-content-center align-items-center p-3 bg-light">
+                        <h2>Bienvenido a tu perfil, {store.currentUser.user_name || "error"}</h2>
                     </div>
                 </div>
             </div>
-
             <div className="row mt-4">
                 {}
                 <div className="col-md-4">
@@ -33,8 +37,8 @@ export const UserProfile = () => {
                         </div>
                         <div className="profile-info">
                             <p>Nombre (opcional)</p>
-                            <p>Nombre de usuario</p>
-                            <p>email@example.com</p>
+                            <p>{store.currentUser.user_name || "error"}</p>
+                            <p>{store.currentUser.email || "error"}</p>
                             <p>5 Recetas subidas</p>
                             <button className="btn btn-outline-primary">Mis favoritos</button>
                         </div>
