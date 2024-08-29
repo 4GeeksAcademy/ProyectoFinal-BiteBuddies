@@ -1,0 +1,18 @@
+.page-container {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh; /* Asegura que el contenedor ocupa toda la altura de la vista */
+}
+
+.content {
+    flex: 1;
+    overflow: auto;
+    padding-bottom: 80px; /* Ajusta este valor según la altura de tu footer */   flex: 1;
+    overflow: auto;
+    padding-bottom: 80px; /* Ajusta este valor según la altura de tu footer */
+}
+/* /* Asegúrate de que el footer tenga una posición fija o relativa para evitar solapamientos */
+footer {
+    position: relative; /* Cambia a fixed si quieres que siempre esté en la parte inferior de la ventana */
+    width: 100%; /* Asegura que el footer ocupe todo el ancho */
+}
