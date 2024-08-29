@@ -1,9 +1,13 @@
+import axios from 'axios';
+
 const getState = ({ getStore, getActions, setStore }) => {
     return {
         store: {
             is_active: false,
             user: null,
             error: null,
+            currentUser: null,
+            isLoggedIn: false,
             listaDeRecetas: [],
             listaDeCategorias: [],
             listaDeIngredientes: [],
@@ -100,6 +104,81 @@ const getState = ({ getStore, getActions, setStore }) => {
                     console.error('Error:', error);
                 }
             },
+
+            traerIngredients: async () => {
+                try {
+                    const response = await fetch(`${process.env.BACKEND_URL}/api/ingredients`, {
+                        method: 'GET',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                    });
+
+                    if (!response.ok) {
+                        throw new Error('Error fetching ingredients');
+                    }
+
+                    const data = await response.json();
+                    setStore({ listaDeIngredientes: data });
+                } catch (error) {
+                    console.error('Error:', error);
+                }
+            },
+
+            login: async (email, password) => {
+                const bodyData = {
+                  email,
+                  password,
+                };
+                try {
+                  const res = await axios.post(
+                    `${process.env.BACKEND_URL}/api/login`,
+                    bodyData
+                  );
+                  const { data } = res;
+                  const accessToken = data.access_token;
+                  const withToken = !!accessToken;
+                  if (withToken) {
+                    localStorage.setItem("accessToken", accessToken);
+                    await getActions().getCurrentUser();
+                    return true;
+                  }
+                  return false;
+                } catch (error) {
+                  console.log("Error loading message from backend", error);
+                  return false;
+                }
+              },
+        
+              logout: () => {
+                localStorage.removeItem("accessToken");
+                setStore({
+                  currentUser: null,
+                  isLoggedIn: false,
+                });
+                console.log('Usuario: ' + getStore().currentUser);
+              },
+        
+              getCurrentUser: async () => {
+                try {
+                  const accessToken = localStorage.getItem("accessToken");
+                  const res = await axios.get(
+                    `${process.env.BACKEND_URL}/api/current-user`,
+                    { headers: { Authorization: `Bearer ${accessToken}` } }
+                  );
+                  const { data } = res;
+                  const { current_user: currentUser } = data;
+                  setStore({ currentUser, isLoggedIn: true });
+                  console.log(currentUser);
+                } catch (error) {
+                  console.log("Error loading message from backend", error);
+                  localStorage.removeItem("accessToken");
+                  setStore({
+                    currentUser: null,
+                    isLoggedIn: false,
+                  });
+                }
+              },
         },
     };
 };
