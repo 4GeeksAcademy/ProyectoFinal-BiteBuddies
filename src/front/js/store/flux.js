@@ -11,6 +11,7 @@ const getState = ({ getStore, getActions, setStore }) => {
             listaDeRecetas: [],
             listaDeCategorias: [],
             listaDeIngredientes: [],
+
         },
         actions: {
             registerUser: async (user_name, email, password) => {
@@ -40,6 +41,27 @@ const getState = ({ getStore, getActions, setStore }) => {
                 } catch (error) {
                     setStore({ error: 'Error al conectar con el servidor' });
                     return false;
+                }
+            },
+            traerIngredientes: async () => {
+                try {
+                    const response = await fetch(`${process.env.BACKEND_URL}/api/ingredients`, {
+                        method: 'GET',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                    });                
+                    if (!response.ok) {
+                        console.log("Respuesta no ok:", response.status);
+                        throw new Error('Error fetching ingredients');
+                    }
+                    const data = await response.json();
+                    console.log("Ingredientes:", data);
+                    setStore({ listaDeIngredientes: data });
+                    console.log("Nuevo estado de listaDeIngredientes:", getStore().listaDeIngredientes);                    
+                
+                } catch (error) {
+                    console.error('Error:', error);
                 }
             },
 
@@ -76,6 +98,7 @@ const getState = ({ getStore, getActions, setStore }) => {
                     }
 
                     const data = await response.json();
+                    console.log("categorias:",data)
                     setStore({ listaDeCategorias: data });
                 } catch (error) {
                     console.error('Error:', error);
