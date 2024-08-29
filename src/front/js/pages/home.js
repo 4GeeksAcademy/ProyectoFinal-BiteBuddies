@@ -46,13 +46,8 @@ export const Home = () => {
 						<p>No hay recetas disponibles.</p>
 					)}
 				</div>
-                
             </div>
-		
-
 			</div>
-
-           
         </div>
     );
 };
