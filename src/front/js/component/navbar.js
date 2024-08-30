@@ -143,12 +143,8 @@ export const Navbar = () => {
                     </div>
                     </div>
                 </>
-            )}
-        
-            <div className="container">
-                
-                
-            </div>
+            )}       
+            
 </nav>
 	);
 };
