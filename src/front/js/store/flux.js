@@ -107,7 +107,7 @@ const getState = ({ getStore, getActions, setStore }) => {
                     console.error('Error:', error);
                 }
             },
-            
+
             login: async (email, password) => {
                 const bodyData = {
                   email,
@@ -118,12 +118,18 @@ const getState = ({ getStore, getActions, setStore }) => {
                     `${process.env.BACKEND_URL}/api/login`,
                     bodyData
                   );
-                  const { data } = res;
+                  console.log(res.data)
+                  const {data} = res;                  
                   const accessToken = data.access_token;
                   const withToken = !!accessToken;
+                  
                   if (withToken) {
                     localStorage.setItem("accessToken", accessToken);
                     await getActions().getCurrentUser();
+                    setStore({ currentUser: data })
+                    console.log('Usuario: ' + getStore().currentUser)
+                    console.log(accessToken);
+                    
                     return true;
                   }
                   return false;
@@ -132,6 +138,8 @@ const getState = ({ getStore, getActions, setStore }) => {
                   return false;
                 }
               },
+            
+           
         
               logout: () => {
                 localStorage.removeItem("accessToken");
