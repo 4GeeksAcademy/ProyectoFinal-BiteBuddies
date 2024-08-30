@@ -2,6 +2,11 @@ from flask_sqlalchemy import SQLAlchemy
 
 db = SQLAlchemy()
 
+favorite_recepies = db.Table(
+    'favorite_recepies',
+    db.Column('user_id', db.Integer, db.ForeignKey('user.id'), primary_key=True),
+    db.Column('recepy_id', db.Integer, db.ForeignKey('recepies.id'), primary_key=True)
+)
 
 recepies_ingredients = db.Table(
     'recepies_ingredients',
@@ -20,6 +25,7 @@ class User(db.Model):
     email = db.Column(db.String(250), unique=True, nullable=False)
     password = db.Column(db.String(250), nullable=False)
     is_active = db.Column(db.Boolean, nullable=False, default=True)
+    favorite_recepies = db.relationship('Recepies', secondary=favorite_recepies, backref=db.backref('favorited_by_users', lazy='dynamic'))
 
     def __repr__(self):
         return '<User %r>' % self.email
@@ -29,6 +35,7 @@ class User(db.Model):
             "user_name": self.user_name,
             "email": self.email,
             "is_active": self.is_active,
+            "favorite_recepies": list(map(lambda x: x.serialize(), self.favorite_recepies)),
         }
 class Category (db.Model):
     id = db.Column(db.Integer, primary_key=True)
