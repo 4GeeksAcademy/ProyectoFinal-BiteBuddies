@@ -11,6 +11,7 @@ const getState = ({ getStore, getActions, setStore }) => {
             listaDeRecetas: [],
             listaDeCategorias: [],
             listaDeIngredientes: [],
+            searchResult: [],
 
         },
         actions: {
@@ -45,6 +46,8 @@ const getState = ({ getStore, getActions, setStore }) => {
             },
             traerIngredientes: async () => {
                 try {
+                    console.log("haciendo fetch");
+                    
                     const response = await fetch(`${process.env.BACKEND_URL}/api/ingredients`, {
                         method: 'GET',
                         headers: {
@@ -104,27 +107,7 @@ const getState = ({ getStore, getActions, setStore }) => {
                     console.error('Error:', error);
                 }
             },
-
-            traerIngredients: async () => {
-                try {
-                    const response = await fetch(`${process.env.BACKEND_URL}/api/ingredients`, {
-                        method: 'GET',
-                        headers: {
-                            'Content-Type': 'application/json',
-                        },
-                    });
-
-                    if (!response.ok) {
-                        throw new Error('Error fetching ingredients');
-                    }
-
-                    const data = await response.json();
-                    setStore({ listaDeIngredientes: data });
-                } catch (error) {
-                    console.error('Error:', error);
-                }
-            },
-
+            
             login: async (email, password) => {
                 const bodyData = {
                   email,
@@ -179,6 +162,16 @@ const getState = ({ getStore, getActions, setStore }) => {
                   });
                 }
               },
+              searchIngredients: (query) => {
+                const store = getStore();
+                const lowerCaseQuery = query.toLowerCase();
+            
+                const filteredResults = store.listaDeIngredientes.filter(ingredient =>
+                    ingredient.name.toLowerCase().startsWith(lowerCaseQuery)
+                );
+            
+                setStore({ searchResult: filteredResults, error: null });
+            },
         },
     };
 };
