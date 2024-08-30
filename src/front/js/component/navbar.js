@@ -50,7 +50,9 @@ export const Navbar = () => {
         <span className="navbar-brand mb-0 h1">HOME</span>
     </Link>
 
-    {currentPath === "/login" || currentPath === "/sign_in" || currentPath.startsWith("/user-profile") ? (
+    {currentPath === "/login" || currentPath === "/sign_in" ? (
+        <h1 style={{ marginLeft: "90px" }}>Cocinar como en casa</h1>
+    ) : currentPath.startsWith("/user-profile") ? (
         <h1>Cocinar como en casa</h1>
     ) : (
         <div className="m-1 w-50" style={{ position: "relative" }}>

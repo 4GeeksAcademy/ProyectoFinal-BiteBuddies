@@ -16,7 +16,7 @@ export const Login = () => {
     // 5.- Realizar accion de submit
     const logged = await actions.login(email, password);
     if (logged) {
-      navigate(`/user-profile/${store.currentUser.id}`);
+      navigate(`/`);
     }
     setEmail("");
     setPassword("");

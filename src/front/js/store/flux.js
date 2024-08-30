@@ -118,18 +118,13 @@ const getState = ({ getStore, getActions, setStore }) => {
                     `${process.env.BACKEND_URL}/api/login`,
                     bodyData
                   );
-                  console.log(res.data)
-                  const {data} = res;                  
+                  const { data } = res;
                   const accessToken = data.access_token;
                   const withToken = !!accessToken;
-                  
                   if (withToken) {
                     localStorage.setItem("accessToken", accessToken);
                     await getActions().getCurrentUser();
-                    setStore({ currentUser: data })
-                    console.log('Usuario: ' + getStore().currentUser)
                     console.log(accessToken);
-                    
                     return true;
                   }
                   return false;
