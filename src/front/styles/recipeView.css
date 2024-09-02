@@ -1,0 +1,137 @@
+.recipe-container {
+    padding: 30px;
+    background-color: #f3e5d8; 
+    border-radius: 10px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+}
+
+.recipe-photo {
+    flex: 1;
+    padding: 10px;
+}
+
+.recipe-photo img {
+    width: 100%;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    border: 3px solid #8b5e3c;
+}
+
+.recipe-details {
+    flex: 2;
+    padding: 20px;
+    background-color: #ffffff;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.recipe-details h1 {
+    font-size: 2rem;
+    color: #6b4423;
+    margin-bottom: 20px;
+}
+
+.recipe-instructions h2 {
+    font-size: 1.5rem;
+    color: #8b5e3c;
+    margin-bottom: 10px;
+}
+
+.recipe-instructions p {
+    font-size: 1rem;
+    color: #6b4423;
+    line-height: 1.5;
+    margin-bottom: 10px;
+}
+
+.recipe-sidebar {
+    flex: 1;
+    padding: 20px;
+    background-color: #ffffff;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.ingredients h2 {
+    font-size: 1.5rem;
+    color: #8b5e3c;
+    margin-bottom: 10px;
+}
+
+.ingredients ul {
+    padding-left: 20px;
+    color: #6b4423;
+}
+
+.ingredients li {
+    margin-bottom: 8px;
+    font-size: 1rem;
+}
+
+.favorite-button {
+    display: block;
+    width: 100%;
+    padding: 10px 0;
+    margin-top: 20px;
+    font-size: 1rem;
+    color: #ffffff;
+    background-color: #d97e48;
+    border: none;
+    border-radius: 5px;
+    transition: background-color 0.3s ease;
+}
+
+.favorite-button:hover {
+    background-color: #b06136;
+}
+
+.comments-section {
+    flex: 1 100%;
+    padding: 20px;
+    background-color: #ffffff;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    margin-top: 20px;
+}
+
+.comments-section h2 {
+    font-size: 1.5rem;
+    color: #8b5e3c;
+    margin-bottom: 10px;
+}
+
+.comment {
+    border-top: 1px solid #ccc;
+    padding-top: 10px;
+    margin-top: 10px;
+    font-size: 1rem;
+    color: #6b4423;
+}
+
+.add-comment {
+    margin-top: 20px;
+}
+
+.add-comment input {
+    width: calc(100% - 110px);
+    margin-right: 10px;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+.add-comment button {
+    padding: 8px 20px;
+    font-size: 1rem;
+    color: #ffffff;
+    background-color: #d97e48;
+    border: none;
+    border-radius: 5px;
+    transition: background-color 0.3s ease;
+}
+
+.add-comment button:hover {
+    background-color: #b06136;
+}
