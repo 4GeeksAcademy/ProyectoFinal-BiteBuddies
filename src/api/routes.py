@@ -62,7 +62,7 @@ def crear_usuario():
 def get_current_user():
     current_user_id = get_jwt_identity()
     user_query = User.query.get(current_user_id)
-
+    
     if not user_query:
         return jsonify({"msg": "User not found"}), 404
 
@@ -116,34 +116,93 @@ def handle_specific_category(categoria_id):
         return jsonify({"msg": "categoria not found"}), 404
     return jsonify(categoria_query.serialize()), 200
 
+#============================================================================
+# # [LOGIN] ruta para obtener el usuario actual
+# #============================================================================
+@api.route("/login", methods=["POST"])
+def login():
+    email = request.json.get("email", None)
+    password = request.json.get("password", None)
+
+    if email is None or password is None:
+        return jsonify({"msg": "Bad username or password"}), 401
+
+    user_query = User.query.filter_by(email=email).first()
+
+    if not user_query or user_query.password != password:
+        return jsonify({"msg": "Bad username or password"}), 401
+
+    access_token = create_access_token(identity=user_query.id)
+    return jsonify(access_token=access_token), 200
+
 if __name__ == '__main__':
     PORT = int(os.environ.get('PORT', 3000))
     api.run(host='0.0.0.0', port=PORT, debug=False)
 
-# #============================================================================
-# # [GET] ruta para obtener FAVORITOS DE USUARIO
-# #============================================================================
-# @api.route('/users/favorites/', methods=['GET'])
-# @jwt_required()
-# def handle_user_favorites():
-#     current_user_id = get_jwt_identity()
-#     user_query = User.query.get(current_user_id)
-#     if not user_query:
-#         return jsonify({"msg": "User not found"}), 404
-#     return jsonify(user_query.serialize()), 200
+#============================================================================
+# [GET] ruta para obtener FAVORITOS DE USUARIO
+#============================================================================
+@api.route('/user/favorites', methods=['GET'])
+@jwt_required()
+def handle_user_favorites():
+    current_user_id = get_jwt_identity()
+    user_query = User.query.get(current_user_id)
+    if not user_query:
+        return jsonify({"msg": "User not found"}), 404
+    favorites = list(map(lambda x: x.serialize(), user_query.favorite_recepies))
+    return jsonify(favorites), 200
+#============================================================================
+# [GET] ruta para ACCEDER a las RECETAS FAVORITAS de un usuario
+#============================================================================
+@api.route('/user/favorites/recepies', methods=['GET'])
+@jwt_required()
+def get_favorite_recepies():
+    current_user_id = get_jwt_identity()
+    user_query = User.query.get(current_user_id)
+    if not user_query:
+        return jsonify({"msg": "User not found"}), 404
+    
+    favorite_recepies = user_query.favorite_recepies
+    serialized_recepies = [recepy.serialize() for recepy in favorite_recepies]
+    
+    return jsonify(serialized_recepies), 200
 
-# #============================================================================
-# # [POST] ruta para AGREGAR RECETA FAVORITA
-# #============================================================================
-# @api.route('/favorite/recepies/<int:recepy_id>', methods=['POST'])
-# @jwt_required()
-# def handle_favorite_recepies(recepy_id):
-#     current_user_id = get_jwt_identity()
-#     recepy_query = Recepies.query.get(recepy_id)
-#     user_query = User.query.get(current_user_id)
-#     user_query.favorite_recepies.append(recepy_query)
+#============================================================================
+# [POST] ruta para AGREGAR RECETA FAVORITA
+#============================================================================
+@api.route('/favorites/recepies/<int:recepy_id>', methods=['POST'])
+@jwt_required()
+def handle_favorite_recepies(recepy_id):
+    current_user_id = get_jwt_identity()
+    recepy_query = Recepies.query.get(recepy_id)
+    user_query = User.query.get(current_user_id)
+    user_query.favorite_recepies.append(recepy_query)
 
-#     return jsonify(user_query.serialize()), 200
+    if not recepy_query:
+        return jsonify({"msg": "Recepie not found"}), 404
+    if not user_query:
+        return jsonify({"msg": "User not found"}), 404
+    if recepy_query in user_query.favorite_recepies:
+        return jsonify({"msg": "Recepy already in favorites"})
+    
+    user_query.favorite_recepies.append(recepy_query)
+    db.session.commit()
+
+    return jsonify(user_query.serialize), 200
+    
+#============================================================================
+# [DELETE] ruta para ELIMINAR RECETA FAVORITA
+#============================================================================
+
+@api.route('/favorites/recepies/<int:recepy_id>', methods=['DELETE'])
+@jwt_required()
+def delete_favorite_recepies(recepy_id):
+    current_user_id = get_jwt_identity()
+    recepy_query = Recepies.query.get(recepy_id)
+    user_query = User.query.get(current_user_id)
+    user_query.favorite_recepies.remove(recepy_query)
+
+    return jsonify(user_query.serialize()), 200
 # #============================================================================
 # # [POST] ruta para AGREGAR INGRIDIENTES
 # #============================================================================
@@ -162,24 +221,7 @@ if __name__ == '__main__':
 #     db.session.commit()
 
 #     return jsonify(new_ingredient.serialize()), 201
-# #============================================================================
-# # [LOGIN] ruta para obtener el usuario actual
-# #============================================================================
-# @api.route("/login", methods=["POST"])
-# def login():
-#     email = request.json.get("email", None)
-#     password = request.json.get("password", None)
-
-#     if email is None or password is None:
-#         return jsonify({"msg": "Bad username or password"}), 401
-
-#     user_query = User.query.filter_by(email=email).first()
-
-#     if not user_query or user_query.password != password:
-#         return jsonify({"msg": "Bad username or password"}), 401
-
-#     access_token = create_access_token(identity=user_query.id)
-#     return jsonify(access_token=access_token), 200
+# 
 
 # # @api.route('/user', methods=['POST'])
 # # def crear_usuario():
