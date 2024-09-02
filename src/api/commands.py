@@ -1,6 +1,6 @@
 
 import click
-from api.models import db, User
+from api.models import db, User, Ingredients, Recepies, Category
 
 """
 In this file, you can add as many commands as you want using the @app.cli.command decorator
@@ -14,21 +14,55 @@ def setup_commands(app):
     by typing: $ flask insert-test-users 5
     Note: 5 is the number of users to add
     """
-    @app.cli.command("insert-test-users") # name of our command
-    @click.argument("count") # argument of out command
-    def insert_test_users(count):
-        print("Creating test users")
-        for x in range(1, int(count) + 1):
-            user = User()
-            user.email = "test_user" + str(x) + "@test.com"
-            user.password = "123456"
-            user.is_active = True
-            db.session.add(user)
-            db.session.commit()
-            print("User: ", user.email, " created.")
+    # @app.cli.command("insert-test-users") # name of our command
+    # @click.argument("count") # argument of out command
+    # def insert_test_users(count):
+    #     print("Creating test users")
+    #     for x in range(1, int(count) + 1):
+    #         user = User(user_name = "UsuarioTest" + str(x))
+    #         user.email = "test_user" + str(x) + "@test.com"
+    #         user.password = "123456"
+    #         user.is_active = True
+    #         db.session.add(user)
+    #         db.session.commit()
+    #         print("User: ", user.email, " created.")
 
-        print("All test users created")
+    #     print("All test users created")
 
-    @app.cli.command("insert-test-data")
-    def insert_test_data():
-        pass
+    # @app.cli.command("insert-test-data")
+    # def insert_test_data():
+    #     # Crear categorías
+    #     category1 = Category(name="Desayuno")
+    #     category2 = Category(name="Comida")
+    #     category3 = Category(name="Cena")
+        
+    #     db.session.add(category1)
+    #     db.session.add(category2)
+    #     db.session.add(category3)
+    #     db.session.commit()
+        
+    #     print("Categorías de prueba creadas")
+
+    #     # Crear ingredientes
+    #     ingredient1 = Ingredients(name="azucar")
+    #     ingredient2 = Ingredients(name="pan")
+    #     ingredient3 = Ingredients(name="patatas")
+        
+    #     db.session.add(ingredient1)
+    #     db.session.add(ingredient2)
+    #     db.session.add(ingredient3)
+    #     db.session.commit()
+        
+    #     print("Ingredientes de prueba creados")
+
+    #     # Crear una receta
+    #     recepy = Recepies(name="Tostadas con azúcar")
+    #     recepy.ingredients.extend([ingredient1, ingredient2])
+    #     recepy.category.extend([category1])
+
+    #     db.session.add(recepy)
+    #     db.session.commit()
+
+    #     print("Receta de prueba creada")
+
+    #     print("Todos los datos de prueba han sido creados")

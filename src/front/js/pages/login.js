@@ -1,4 +1,4 @@
-import React, { useState, useContext } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
 import { Context } from "../store/appContext";
@@ -9,13 +9,14 @@ export const Login = () => {
   const { store, actions } = useContext(Context);
   const navigate = useNavigate();
 
+
   const onSubmitHandler = async (e) => {
     // 4.- Sobreescribir el comportamiento "nativo" del formulario (refrescar la página)
     e.preventDefault();
     // 5.- Realizar accion de submit
     const logged = await actions.login(email, password);
     if (logged) {
-      navigate(`/user-profile/${store.currentUser.id}`);
+      navigate(`/`);
     }
     setEmail("");
     setPassword("");

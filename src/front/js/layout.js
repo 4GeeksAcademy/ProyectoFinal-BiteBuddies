@@ -9,34 +9,35 @@ import { Sign_in } from "./pages/sign_in";
 import { Single } from "./pages/single";
 import { UserProfile } from "./pages/UserProfile";
 import { FavoritesView } from "./pages/favoritesView";
+import { RecipeView } from "./pages/recipeView";
 import injectContext from "./store/appContext";
 
 import { Navbar } from "./component/navbar";
 import { Footer } from "./component/footer";
+import "../styles/layout.css";
 
 //create your first component
 const Layout = () => {
-    //the basename is used when your project is published in a subdirectory and not in the root of the domain
-    // you can set the basename on the .env file located at the root of this project, E.g: BASENAME=/react-hello-webapp/
     const basename = process.env.BASENAME || "";
 
     if(!process.env.BACKEND_URL || process.env.BACKEND_URL == "") return <BackendURL/ >;
 
     return (
-        <div>
+        <div className="page-container">
             <BrowserRouter basename={basename}>
                 <ScrollToTop>
                     <Navbar />
+                    <div className="content">
                     <Routes>
                         <Route element={<Home />} path="/" />
                         <Route element={<Login />} path="/login" />
                         <Route element={<Sign_in />} path="/sign_in" />
-                        {/* <Route element={<UserProfile />} path="/user-profile" /> */}
-                        {/* route to user profile with id */}
                         <Route element={<UserProfile />} path="/user-profile/:id" />
                         <Route element={<FavoritesView />} path="/favorites" /> 
+                        <Route element={<RecipeView />} path="/recipe" />
                         <Route element={<h1>Not found!</h1>} />
                     </Routes>
+                    </div>
                     <Footer />
                 </ScrollToTop>
             </BrowserRouter>

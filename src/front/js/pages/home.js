@@ -14,11 +14,11 @@ export const Home = () => {
         actions.traerRecetas();
         actions.traerCategories();
     }, []);
-
+ 
     return (
-        <div className="text-center">
+        <div className="text-center h-100">
             <div className="m-3">
-                <h1>Recetas</h1>
+                <h1>Cocinar como en casa</h1>
                 <h2>Aprende a concinar con nosotros</h2>
             </div>
 			<div>
@@ -46,13 +46,8 @@ export const Home = () => {
 						<p>No hay recetas disponibles.</p>
 					)}
 				</div>
-                
             </div>
-		
-
 			</div>
-
-           
         </div>
     );
 };

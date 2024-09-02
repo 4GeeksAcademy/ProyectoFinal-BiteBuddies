@@ -11,6 +11,8 @@ const getState = ({ getStore, getActions, setStore }) => {
             listaDeRecetas: [],
             listaDeCategorias: [],
             listaDeIngredientes: [],
+            searchResult: [],
+
         },
         actions: {
             registerUser: async (user_name, email, password) => {
@@ -40,6 +42,29 @@ const getState = ({ getStore, getActions, setStore }) => {
                 } catch (error) {
                     setStore({ error: 'Error al conectar con el servidor' });
                     return false;
+                }
+            },
+            traerIngredientes: async () => {
+                try {
+                    console.log("haciendo fetch");
+                    
+                    const response = await fetch(`${process.env.BACKEND_URL}/api/ingredients`, {
+                        method: 'GET',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                    });                
+                    if (!response.ok) {
+                        console.log("Respuesta no ok:", response.status);
+                        throw new Error('Error fetching ingredients');
+                    }
+                    const data = await response.json();
+                    console.log("Ingredientes:", data);
+                    setStore({ listaDeIngredientes: data });
+                    console.log("Nuevo estado de listaDeIngredientes:", getStore().listaDeIngredientes);                    
+                
+                } catch (error) {
+                    console.error('Error:', error);
                 }
             },
 
@@ -76,27 +101,8 @@ const getState = ({ getStore, getActions, setStore }) => {
                     }
 
                     const data = await response.json();
+                    console.log("categorias:",data)
                     setStore({ listaDeCategorias: data });
-                } catch (error) {
-                    console.error('Error:', error);
-                }
-            },
-
-            traerIngredients: async () => {
-                try {
-                    const response = await fetch(`${process.env.BACKEND_URL}/api/ingredients`, {
-                        method: 'GET',
-                        headers: {
-                            'Content-Type': 'application/json',
-                        },
-                    });
-
-                    if (!response.ok) {
-                        throw new Error('Error fetching ingredients');
-                    }
-
-                    const data = await response.json();
-                    setStore({ listaDeIngredientes: data });
                 } catch (error) {
                     console.error('Error:', error);
                 }
@@ -118,6 +124,7 @@ const getState = ({ getStore, getActions, setStore }) => {
                   if (withToken) {
                     localStorage.setItem("accessToken", accessToken);
                     await getActions().getCurrentUser();
+                    console.log(accessToken);
                     return true;
                   }
                   return false;
@@ -126,6 +133,8 @@ const getState = ({ getStore, getActions, setStore }) => {
                   return false;
                 }
               },
+            
+           
         
               logout: () => {
                 localStorage.removeItem("accessToken");
@@ -156,6 +165,16 @@ const getState = ({ getStore, getActions, setStore }) => {
                   });
                 }
               },
+              searchIngredients: (query) => {
+                const store = getStore();
+                const lowerCaseQuery = query.toLowerCase();
+            
+                const filteredResults = store.listaDeIngredientes.filter(ingredient =>
+                    ingredient.name.toLowerCase().startsWith(lowerCaseQuery)
+                );
+            
+                setStore({ searchResult: filteredResults, error: null });
+            },
         },
     };
 };
