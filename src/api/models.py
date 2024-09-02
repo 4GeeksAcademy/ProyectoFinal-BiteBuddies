@@ -25,6 +25,7 @@ class User(db.Model):
     email = db.Column(db.String(250), unique=True, nullable=False)
     password = db.Column(db.String(250), nullable=False)
     is_active = db.Column(db.Boolean, nullable=False, default=True)
+    is_admin = db.Column(db.Boolean, nullable=False, default=False)
     favorite_recepies = db.relationship('Recepies', secondary=favorite_recepies, backref=db.backref('favorited_by_users', lazy='dynamic'))
 
     def __repr__(self):
@@ -37,6 +38,7 @@ class User(db.Model):
             "is_active": self.is_active,
             "favorite_recepies": list(map(lambda x: x.serialize(), self.favorite_recepies)),
         }
+    
 class Category (db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(250), nullable=False)
