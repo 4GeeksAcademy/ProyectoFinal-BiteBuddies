@@ -203,6 +203,35 @@ def delete_favorite_recepies(recepy_id):
     user_query.favorite_recepies.remove(recepy_query)
 
     return jsonify(user_query.serialize()), 200
+
+# Ruta usuario para agregar post
+@api.route('/user/posts', methods=['POST'])
+@jwt_required()
+def create_post():
+    current_user_id = get_jwt_identity()
+    user_query = User.query.get(current_user_id)
+    if not user_query:
+        return jsonify({"msg": "User not found"}), 404
+
+    data = request.json
+    title = data.get('title', None)
+    content = data.get('content', None)
+
+    if not title or not content:
+        return jsonify({"msg": "Title and content are required"}), 400
+
+    new_post = Posts(title=title, content=content, user_id=current_user_id)
+    db.session.add(new_post)
+    db.session.commit()
+
+    return jsonify(new_post.serialize()), 201
+
+
+
+
+
+
+
 # #============================================================================
 # # [POST] ruta para AGREGAR INGRIDIENTES
 # #============================================================================
