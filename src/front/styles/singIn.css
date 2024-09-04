@@ -1,0 +1,108 @@
+body {
+    background-color: #fefae0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    margin: 0;
+    padding: 0;
+    color: #6b4423;
+}
+
+
+.main-container {
+    padding: 30px;
+    background-color: #faedcd; 
+    border-radius: 10px;
+    width: 100%;
+    max-width: 400px;
+    margin: 40px auto; 
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+
+h1 {
+    color: #6b4423; 
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+
+.input-container {
+    position: relative;
+    margin-bottom: 15px;
+}
+
+
+.input {
+    width: 100%;
+    padding: 10px;
+    font-size: 1rem;
+    border: 2px solid #d4a373; 
+    border-radius: 5px;
+    background-color: #fefae0; 
+    color: #6b4423;
+    transition: border-color 0.3s ease, background-color 0.3s ease;
+    outline: none; 
+    box-shadow: none !important; 
+}
+
+.floating-label {
+    position: absolute;
+    top: 10px;
+    left: 15px;
+    pointer-events: none;
+    transition: all 0.2s ease;
+    color: #8b5e3c; 
+    user-select: none; 
+}
+
+.input:-webkit-autofill,
+.input:-webkit-autofill:hover,
+.input:-webkit-autofill:focus,
+.input:-webkit-autofill:active {
+    -webkit-box-shadow: 0 0 0 1000px #fefae0 inset !important;
+    box-shadow: 0 0 0 1000px #fefae0 inset !important;
+    -webkit-text-fill-color: #6b4423 !important;
+    transition: background-color 5000s ease-in-out 0s !important;
+    border-color: #d4a373 !important;
+}
+
+
+*,
+*:before,
+*:after {
+    -webkit-tap-highlight-color: transparent; 
+    -webkit-user-select: none; 
+    -moz-user-select: none; 
+    -ms-user-select: none; 
+    user-select: none; 
+}
+
+.input:focus,
+.input:not(:placeholder-shown) {
+    border-color: #6b4423; 
+}
+
+.input:focus ~ .floating-label,
+.input:not(:placeholder-shown) ~ .floating-label {
+    top: -10px;
+    left: 10px;
+    font-size: 0.9rem;
+    background-color: #faedcd; 
+    padding: 0 5px;
+    color: #6b4423; 
+}
+
+
+.btn-primary {
+    background-color: #6b4423; 
+    color: #ffffff;
+    border: none;
+    border-radius: 5px;
+    padding: 10px 20px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.btn-primary:hover {
+    background-color: #8b5e3c; 
+}
