@@ -15,7 +15,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 
         },
         actions: {
-            registerUser: async (user_name, email, password) => {
+            registerUser: async (user_name, name, email, password) => {
                 const store = getStore();
                 try {
                     const response = await fetch(`${process.env.BACKEND_URL}/api/users`, {
@@ -23,16 +23,16 @@ const getState = ({ getStore, getActions, setStore }) => {
                         headers: {
                             'Content-Type': 'application/json',
                         },
-                        body: JSON.stringify({ user_name, email, password }),
+                        body: JSON.stringify({ user_name, name, email, password }),
                     });
 
                     if (response.ok) {
                         const result = await response.json();
                         setStore({
                             is_active: true,
-                            user: { user_name, email },
+                            user: { user_name, name, email },
                             error: null,
-                        });
+                        });                        
                         return true;
                     } else {
                         const errorResult = await response.json();
@@ -133,9 +133,6 @@ const getState = ({ getStore, getActions, setStore }) => {
                   return false;
                 }
               },
-            
-           
-        
               logout: () => {
                 localStorage.removeItem("accessToken");
                 setStore({
@@ -155,7 +152,7 @@ const getState = ({ getStore, getActions, setStore }) => {
                   const { data } = res;
                   const { current_user: currentUser } = data;
                   setStore({ currentUser, isLoggedIn: true });
-                  console.log(currentUser);
+                  console.log("currentuser",currentUser);
                 } catch (error) {
                   console.log("Error loading message from backend", error);
                   localStorage.removeItem("accessToken");

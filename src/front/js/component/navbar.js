@@ -51,9 +51,9 @@ export const Navbar = () => {
     </Link>
 
     {currentPath === "/login" || currentPath === "/sign_in" ? (
-        <h1 style={{ marginLeft: "90px" }}>Cocinar como en casa</h1>
+        <h1 style={{ marginLeft: "90px" }}>Bite Buddies</h1>
     ) : currentPath.startsWith("/user-profile") ? (
-        <h1>Cocinar como en casa</h1>
+        <h1>Bite Buddies</h1>
     ) : (
         <div className="m-1 w-50" style={{ position: "relative" }}>
             <form onSubmit={handleSearchSubmit}>
