@@ -2,7 +2,7 @@
 This module takes care of starting the API Server, Loading the DB and Adding the endpoints
 """
 from flask import Flask, request, jsonify, url_for, Blueprint
-from api.models import db, User, Ingredients, Recepies, Category
+from api.models import db, User, Ingredients, Recepies, Category,RecetaPublicada
 from api.utils import generate_sitemap, APIException
 from flask_cors import CORS
 from flask_jwt_extended import create_access_token, get_jwt_identity, jwt_required
@@ -30,8 +30,8 @@ def crear_usuario():
     user_data = request.get_json()
     if 'user_name' not in user_data or 'email' not in user_data or 'password' not in user_data:
         return jsonify({'msg': 'Faltan datos requeridos'}), 400
-
     user_name = user_data['user_name']
+    name = user_data['name']
     email = user_data['email']
     password = user_data['password']
 
@@ -42,6 +42,7 @@ def crear_usuario():
 
     nuevo_usuario = User(
         user_name=user_name,
+        name=name,
         email=email,
         password=password
     )
@@ -204,8 +205,66 @@ def delete_favorite_recepies(recepy_id):
 
     return jsonify(user_query.serialize()), 200
 
+#============================================================================
+# [GET] ruta para ACCEDER a los USUARIOS FAVORITOS de un usuario
+#============================================================================
+@api.route('/user/favorites/chefs', methods=['GET'])
+@jwt_required()
+def get_favorite_users():
+    current_user_id = get_jwt_identity()
+    user_query = User.query.get(current_user_id)
+    if not user_query:
+        return jsonify({"msg": "User not found"}), 404
+    
+    favorite_users = user_query.favorite_users
+    serialized_favUsers = [recepy.serialize() for recepy in favorite_users]
+    
+    return jsonify(serialized_favUsers), 200
+
+#============================================================================
+# [POST] ruta para AGREGAR USUARIO FAVORITO
+#============================================================================
+@api.route('/favorites/users/<int:user_id>', methods=['POST'])
+@jwt_required()
+def handle_favorite_users(user_id):
+    current_user_id = get_jwt_identity()    
+    user_to_favorite = User.query.get(user_id)    
+    current_user = User.query.get(current_user_id)
+
+    if not user_to_favorite:
+        return jsonify({"msg": "Usuario a agregar como favorito no encontrado"}), 404
+    if not current_user:
+        return jsonify({"msg": "Usuario actual no encontrado"}), 404    
+    if user_to_favorite in current_user.favorite_users:
+        return jsonify({"msg": "Usuario ya está en favoritos"})
+    
+    current_user.favorite_users.append(user_to_favorite)
+    db.session.commit()
+    return jsonify(current_user.serialize()), 200
+#============================================================================
+# [DELETE] ruta para ELIMINAR USUARIO FAVORITO
+#============================================================================
+
+@api.route('/favorites/users/<int:user_id>', methods=['DELETE'])
+@jwt_required()
+def delete_favorite_user(user_id):
+    current_user_id = get_jwt_identity()
+    user_query = User.query.get(current_user_id)
+
+    if not user_query:
+        return jsonify({"msg": "User not found"}), 404
+    user_to_remove = User.query.get(user_id)
+    if not user_to_remove:
+        return jsonify({"msg": "User to remove not found"}), 404
+    if user_to_remove not in user_query.favorite_users:
+        return jsonify({"msg": "User not in favorites"}), 404
+    
+    user_query.favorite_users.remove(user_to_remove)
+    db.session.commit()
+    return jsonify(user_query.serialize()), 200
+
 # Ruta usuario para agregar post
-@api.route('/user/posts', methods=['POST'])
+@api.route('/user/publicar_receta', methods=['POST'])
 @jwt_required()
 def create_post():
     current_user_id = get_jwt_identity()
@@ -220,11 +279,12 @@ def create_post():
     if not title or not content:
         return jsonify({"msg": "Title and content are required"}), 400
 
-    new_post = Posts(title=title, content=content, user_id=current_user_id)
+    new_post = RecetaPublicada(title=title, content=content, user_id=current_user_id)
     db.session.add(new_post)
     db.session.commit()
 
     return jsonify(new_post.serialize()), 201
+
 
 
 

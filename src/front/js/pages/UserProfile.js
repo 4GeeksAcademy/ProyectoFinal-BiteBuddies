@@ -36,7 +36,7 @@ export const UserProfile = () => {
                             <img src="https://via.placeholder.com/150" alt="Foto de perfil" className="img-fluid rounded-circle" />
                         </div>
                         <div className="profile-info">
-                            <p>Nombre (opcional)</p>
+                            <p>{store.currentUser.name || "error"}</p>
                             <p>{store.currentUser.user_name || "error"}</p>
                             <p>{store.currentUser.email || "error"}</p>
                             <p>5 Recetas subidas</p>

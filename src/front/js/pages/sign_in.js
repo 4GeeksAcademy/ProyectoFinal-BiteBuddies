@@ -4,6 +4,7 @@ import { Context } from "../store/appContext";
 
 export const Sign_in = () => {
   const [user_name, setUserName] = useState("");
+  const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const { store, actions } = useContext(Context);
@@ -12,7 +13,7 @@ export const Sign_in = () => {
   const onSubmitHandler = async (e) => {
     e.preventDefault();
 
-    const registered = await actions.registerUser(user_name, email, password);
+    const registered = await actions.registerUser(user_name, name, email, password);
     if (registered) {
       alert("¡Usuario creado exitosamente!");
       navigate("/login"); // Redirigir después del registro exitoso
@@ -37,6 +38,19 @@ export const Sign_in = () => {
               className="form-control"
               id="inputUserName"
               placeholder="Nombre de usuario"
+            />
+          </div>
+          <div className="mb-3">
+            <label htmlFor="inputName" className="col-sm-2 col-form-label">
+              Nombre y apellidos
+            </label>
+            <input
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              type="text"
+              className="form-control"
+              id="inputName"
+              placeholder="Nombre y apellidos"
             />
           </div>
           <div className="mb-3">

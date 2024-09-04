@@ -18,8 +18,8 @@ export const Home = () => {
     return (
         <div className="text-center h-100">
             <div className="m-3">
-                <h1>Cocinar como en casa</h1>
-                <h2>Aprende a concinar con nosotros</h2>
+                <h1>Bite Buddies</h1>
+                <h4>Cocina compartiendo</h4>
             </div>
 			<div>
 			<div>
