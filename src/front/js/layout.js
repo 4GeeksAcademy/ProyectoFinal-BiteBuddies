@@ -8,6 +8,7 @@ import { Sign_in } from "./pages/sign_in";
 import { UserProfile } from "./pages/UserProfile";
 import { FavoritesView } from "./pages/favoritesView";
 import { RecipeView } from "./pages/recipeView";
+import { SpecificCategoryView } from "./pages/specificCategoryView";
 import injectContext from "./store/appContext";
 import { Navbar } from "./component/navbar";
 import { Footer } from "./component/footer";
@@ -31,6 +32,7 @@ const Layout = () => {
                         <Route element={<UserProfile />} path="/user-profile/:id" />
                         <Route element={<FavoritesView />} path="/user/favorites" /> 
                         <Route element={<RecipeView />} path="/recipe" />
+                        <Route element={<SpecificCategoryView />} path="/categories/:category" />
                         <Route element={<h1>Not found!</h1>} />
                     </Routes>
                     </div>

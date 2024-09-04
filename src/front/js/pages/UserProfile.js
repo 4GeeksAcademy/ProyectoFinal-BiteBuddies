@@ -16,7 +16,7 @@ export const UserProfile = () => {
     }, [withSession]);
 
     if (!store.currentUser) {
-        return <div>Cargando...</div>; // Puedes mostrar un mensaje de carga o un componente de carga mientras se obtienen los datos
+        return <div>Cargando...</div>; 
     }
     return (
         <div className="container profile-container">
