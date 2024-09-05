@@ -1,11 +1,19 @@
+body {
+    background-color: #fefae0; 
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    margin: 0;
+    padding: 0;
+    color: #6b4423; 
+}
+
 .favorites-container {
     padding: 30px;
-    background-color: #f3e5d8; 
+    background-color: #faedcd; 
     border-radius: 10px;
 }
 
 h1, h2 {
-    color: #6b4423;
+    color: #6b4423; 
     font-size: 2rem;
     margin-bottom: 20px;
 }
@@ -20,7 +28,7 @@ h1, h2 {
     display: flex;
     align-items: center;
     justify-content: start;
-    background-color: #f3e5d8;
+    background-color: #faedcd; 
     scroll-behavior: smooth;
 }
 
@@ -72,13 +80,13 @@ h1, h2 {
 }
 
 .flip-card-front {
-    background-color: #ffffff;
-    color: #6b4423;
+    background-color: #ffffff; 
+    color: #6b4423; 
 }
 
 .flip-card-back {
-    background-color: #8b5e3c;
-    color: white;
+    background-color: #8b5e3c; 
+    color: #ffffff; 
     transform: rotateY(180deg);
 }
 
@@ -88,6 +96,8 @@ h1, h2 {
     object-fit: cover;
     border-radius: 10px;
     margin-bottom: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    border: 2px solid #d4a373; 
 }
 
 .item-name {
@@ -95,5 +105,5 @@ h1, h2 {
     font-size: 1rem;
     color: #6b4423; 
     position: relative;
-    bottom: -10px; 
+    bottom: -10px;
 }

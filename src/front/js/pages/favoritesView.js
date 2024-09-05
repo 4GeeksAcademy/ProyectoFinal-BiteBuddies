@@ -1,13 +1,21 @@
 import React from "react";
+import { useNavigate } from "react-router-dom"; 
 import "../../styles/favoritesView.css";
 
 export const FavoritesView = () => {
+    const navigate = useNavigate(); 
+
+
+    const handleRecipeClick = (recipeId) => {
+        navigate(`/recipe/${recipeId}`); 
+    };
+
     return (
         <div className="favorites-container">
             <h1>Recetas Favoritas</h1>
             <div className="carousel-container">
                 <div className="carousel">
-                    <div className="carousel-item">
+                    <div className="carousel-item" onClick={() => handleRecipeClick(1)}> {}
                         <div className="flip-card">
                             <div className="flip-card-inner">
                                 <div className="flip-card-front">
@@ -20,7 +28,7 @@ export const FavoritesView = () => {
                             </div>
                         </div>
                     </div>
-                    <div className="carousel-item">
+                    <div className="carousel-item" onClick={() => handleRecipeClick(2)}> {}
                         <div className="flip-card">
                             <div className="flip-card-inner">
                                 <div className="flip-card-front">
