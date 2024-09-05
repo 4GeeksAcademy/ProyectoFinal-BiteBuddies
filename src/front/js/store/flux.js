@@ -12,6 +12,7 @@ const getState = ({ getStore, getActions, setStore }) => {
             listaDeCategorias: [],
             listaDeIngredientes: [],
             searchResult: [],
+            recipes: [],
 
         },
         actions: {
@@ -171,6 +172,26 @@ const getState = ({ getStore, getActions, setStore }) => {
                 );
             
                 setStore({ searchResult: filteredResults, error: null });
+            },
+            fetchRecipesByCategory: async (category) => {
+                try {
+                    const response = await fetch(`${process.env.BACKEND_URL}/api/recipes?category=${category}`, {
+                        method: 'GET',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                    });
+            
+                    if (!response.ok) {
+                        throw new Error('Error fetching recipes');
+                    }
+            
+                    const data = await response.json();
+                    console.log("recetas:", data);
+                    setStore({ recipes: data });
+                } catch (error) {
+                    console.error('Error:', error);
+                }
             },
         },
     };

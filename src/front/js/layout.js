@@ -12,6 +12,8 @@ import { Sign_in } from "./pages/sign_in";
 import { UserProfile } from "./pages/UserProfile";
 import { FavoritesView } from "./pages/favoritesView";
 import { RecipeView } from "./pages/recipeView";
+import { ViewOfAllCategories } from "./pages/viewOfAllCategories";
+import { SpecificCategoryView } from "./pages/specificCategoryView"
 import injectContext from "./store/appContext";
 
 import "../styles/layout.css";
