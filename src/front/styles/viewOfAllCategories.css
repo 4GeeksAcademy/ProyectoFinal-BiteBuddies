@@ -1,0 +1,102 @@
+body {
+    background-color: #fefae0; 
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    margin: 0;
+    padding: 0;
+    color: #6b4423; 
+}
+
+.all-categories-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+    background-color: #faedcd; 
+    border-radius: 12px;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+}
+
+.header {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.page-title {
+    font-size: 2.5rem;
+    color: #6b4423; 
+}
+
+.page-subtitle {
+    font-size: 1.2rem;
+    color: #8b5e3c;
+}
+
+.section-title {
+    font-size: 2rem;
+    color: #6b4423; 
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.categories-section, .food-categories-section {
+    margin-bottom: 40px;
+}
+
+.categories-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    justify-content: center;
+}
+
+.category-card {
+    width: 200px;
+    background-color: #ffffff; 
+    padding: 15px;
+    border-radius: 10px;
+    border: 2px solid #d4a373; 
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    cursor: pointer;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.category-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+}
+
+.category-title {
+    font-size: 1.5rem;
+    color: #6b4423; 
+    margin-bottom: 10px;
+}
+
+.category-image img {
+    width: 100%;
+    border-radius: 8px;
+    border: 2px solid #d4a373; 
+}
+
+.btn-custom {
+    color: #ffffff; 
+    background-color: #6b4423; 
+    border: none;
+    padding: 10px 20px;
+    border-radius: 20px;
+    font-size: 1rem;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    cursor: pointer;
+    margin-top: 20px;
+}
+
+.btn-custom:hover {
+    background-color: #8b5e3c; 
+    transform: translateY(-2px);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+}
+
+.back-button {
+    display: block;
+    margin: 30px auto;
+}
