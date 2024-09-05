@@ -1,6 +1,7 @@
 import React, { useState, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import { Context } from "../store/appContext";
+import "../../styles/singIn.css";
 
 export const Sign_in = () => {
   const [user_name, setUserName] = useState("");
@@ -23,61 +24,53 @@ export const Sign_in = () => {
   };
 
   return (
-    <main className="container w-25 border border-primary">
+    <main className="main-container"> 
       <h1 className="text-center">REGISTRARSE</h1>
       <form onSubmit={onSubmitHandler}>
         <div className="container">
-          <div className="mb-3">
-            <label htmlFor="inputUserName" className="col-sm-2 col-form-label">
-              Nombre de usuario
-            </label>
+          <div className="mb-3 input-container">
             <input
               value={user_name}
               onChange={(e) => setUserName(e.target.value)}
               type="text"
-              className="form-control"
+              className="form-control input"
               id="inputUserName"
-              placeholder="Nombre de usuario"
+              placeholder=" "
             />
+            <label htmlFor="inputUserName" className="floating-label">Nombre de usuario</label>
           </div>
-          <div className="mb-3">
-            <label htmlFor="inputName" className="col-sm-2 col-form-label">
-              Nombre y apellidos
-            </label>
+          <div className="mb-3 input-container">
             <input
               value={name}
               onChange={(e) => setName(e.target.value)}
               type="text"
-              className="form-control"
+              className="form-control input"
               id="inputName"
-              placeholder="Nombre y apellidos"
+              placeholder=" "
             />
+            <label htmlFor="inputName" className="floating-label">Nombre y apellidos</label>
           </div>
-          <div className="mb-3">
-            <label htmlFor="inputEmail" className="col-sm-2 col-form-label">
-              Email
-            </label>
+          <div className="mb-3 input-container">
             <input
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               type="email"
-              className="form-control"
+              className="form-control input"
               id="inputEmail"
-              placeholder="example@gmail.com"
+              placeholder=" "
             />
+            <label htmlFor="inputEmail" className="floating-label">Email</label>
           </div>
-          <div className="mb-3">
-            <label htmlFor="inputPassword" className="col-sm-2 col-form-label">
-              Password
-            </label>
+          <div className="mb-3 input-container">
             <input
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               type="password"
-              className="form-control"
+              className="form-control input"
               id="inputPassword"
-              placeholder="********"
+              placeholder=" "
             />
+            <label htmlFor="inputPassword" className="floating-label">Password</label>
           </div>
           <div className="text-center m-1">
             <button type="submit" className="btn btn-primary">
