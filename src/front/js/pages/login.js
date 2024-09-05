@@ -1,6 +1,6 @@
 import React, { useState, useContext, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-
+import "../../styles/login.css"
 import { Context } from "../store/appContext";
 
 export const Login = () => {
@@ -22,41 +22,35 @@ export const Login = () => {
     setPassword("");
   };
   return (
-    <main className="container w-25 border border-primary">
-      <h1 className="text-center">LOGIN</h1>
-      <form onSubmit={onSubmitHandler}>
-      <div className="mb-3">
-            <label htmlFor="inputEmail" className="col-sm-2 col-form-label">
-              Email
-            </label>
-            <input
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                type="text"
-                className="form-control"
-                id="inputEmail"
-                placeholder="example@gmail.com"
-              />
-        </div>
-        <div className="mb-3">
-            <label htmlFor="inputPassword" className="col-sm-2 col-form-label">
-              Password
-            </label>
-            <input
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                type="password"
-                className="form-control"
-                id="inputPassword"
-                placeholder="********"
-              />
-        </div >
-        <div className="text-center m-1">
-          <button type="submit" className="btn btn-primary">
-            Entrar
-          </button>
-        </div>
-      </form>
-    </main>
+    <main className="main-container">
+  <h1 className="text-center">LOGIN</h1>
+  <form onSubmit={onSubmitHandler}>
+    <div className="input-container">
+      <input
+        value={email}
+        onChange={(e) => setEmail(e.target.value)}
+        type="text"
+        className="input"
+        id="inputEmail"
+        placeholder=" "
+      />
+      <label htmlFor="inputEmail" className="floating-label">Email</label>
+    </div>
+    <div className="input-container">
+      <input
+        value={password}
+        onChange={(e) => setPassword(e.target.value)}
+        type="password"
+        className="input"
+        id="inputPassword"
+        placeholder=" "
+      />
+      <label htmlFor="inputPassword" className="floating-label">Password</label>
+    </div>
+    <div className="text-center">
+      <button type="submit" className="btn-primary">Entrar</button>
+    </div>
+  </form>
+</main>
   );
 };
