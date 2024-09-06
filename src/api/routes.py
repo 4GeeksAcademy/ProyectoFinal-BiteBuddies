@@ -1,8 +1,9 @@
 """
 This module takes care of starting the API Server, Loading the DB and Adding the endpoints
 """
+import os
 from flask import Flask, request, jsonify, url_for, Blueprint
-from api.models import db, User, Ingredients, Recepies, Category,RecetaPublicada
+from api.models import db, User, Ingredients, Recipe, Category
 from api.utils import generate_sitemap, APIException
 from flask_cors import CORS
 from flask_jwt_extended import create_access_token, get_jwt_identity, jwt_required
@@ -74,7 +75,7 @@ def get_current_user():
 #============================================================================
 @api.route('/recepies', methods=['GET'])
 def handle_recepies():
-    recepies_query = Recepies.query.all()
+    recepies_query = Recipe.query.all()
     all_recepies = list(map(lambda x: x.serialize(), recepies_query))
     return jsonify(all_recepies), 200
 
@@ -83,7 +84,7 @@ def handle_recepies():
 #============================================================================
 @api.route('/recepies/<int:recepy_id>', methods=['GET'])
 def handle_specific_recepies(recepy_id):
-    recepy_query = Recepies.query.get(recepy_id)
+    recepy_query = Recipe.query.get(recepy_id)
     if not recepy_query:
         return jsonify({"msg": "Recepy not found"}), 404
     return jsonify(recepy_query.serialize()), 200
@@ -136,9 +137,49 @@ def login():
     access_token = create_access_token(identity=user_query.id)
     return jsonify(access_token=access_token), 200
 
-if __name__ == '__main__':
-    PORT = int(os.environ.get('PORT', 3000))
-    api.run(host='0.0.0.0', port=PORT, debug=False)
+
+@api.route("/uploaded_recipies", methods=["POST"])
+@jwt_required()
+def upload_recipie():
+    current_user_id = get_jwt_identity()
+    user = User.query.get(current_user_id)
+    
+    if not user:
+        return jsonify({"msg": "Usuario no encontrado"}), 404
+
+    receta_data = request.get_json()
+
+    if 'name' not in receta_data or 'description' not in receta_data or 'steps' not in receta_data or 'ingredients' not in receta_data or 'category' not in receta_data:
+        return jsonify({"msg": "Faltan datos requeridos"}), 400
+
+    try:
+        name = receta_data['name']
+        description = receta_data['description']
+        steps = receta_data['steps']
+        ingredients_ids = receta_data['ingredients']
+        category_ids = receta_data['category']
+        is_official = receta_data.get('is_official', False)
+
+        ingredients = Ingredients.query.filter(Ingredients.id.in_(ingredients_ids)).all()
+        categories = Category.query.filter(Category.id.in_(category_ids)).all()
+
+        nueva_receta = Recipe(
+            name=name,
+            description=description,
+            steps=steps,
+            ingredients=ingredients,
+            category=categories,
+            user=user,
+            is_official=is_official
+        )
+
+        db.session.add(nueva_receta)
+        db.session.commit()
+
+        return jsonify({'msg': 'Receta creada con éxito', 'receta': nueva_receta.serialize()}), 201
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({'msg': 'Error al crear la receta', 'error': str(e)}), 500
 
 #============================================================================
 # [GET] ruta para obtener FAVORITOS DE USUARIO
@@ -175,7 +216,7 @@ def get_favorite_recepies():
 @jwt_required()
 def handle_favorite_recepies(recepy_id):
     current_user_id = get_jwt_identity()
-    recepy_query = Recepies.query.get(recepy_id)
+    recepy_query = Recipe.query.get(recepy_id)
     user_query = User.query.get(current_user_id)
     user_query.favorite_recepies.append(recepy_query)
 
@@ -199,7 +240,7 @@ def handle_favorite_recepies(recepy_id):
 @jwt_required()
 def delete_favorite_recepies(recepy_id):
     current_user_id = get_jwt_identity()
-    recepy_query = Recepies.query.get(recepy_id)
+    recepy_query = Recipe.query.get(recepy_id)
     user_query = User.query.get(current_user_id)
     user_query.favorite_recepies.remove(recepy_query)
 
@@ -263,34 +304,6 @@ def delete_favorite_user(user_id):
     db.session.commit()
     return jsonify(user_query.serialize()), 200
 
-# Ruta usuario para agregar post
-@api.route('/user/publicar_receta', methods=['POST'])
-@jwt_required()
-def create_post():
-    current_user_id = get_jwt_identity()
-    user_query = User.query.get(current_user_id)
-    if not user_query:
-        return jsonify({"msg": "User not found"}), 404
-
-    data = request.json
-    title = data.get('title', None)
-    content = data.get('content', None)
-
-    if not title or not content:
-        return jsonify({"msg": "Title and content are required"}), 400
-
-    new_post = RecetaPublicada(title=title, content=content, user_id=current_user_id)
-    db.session.add(new_post)
-    db.session.commit()
-
-    return jsonify(new_post.serialize()), 201
-
-
-
-
-
-
-
 
 # #============================================================================
 # # [POST] ruta para AGREGAR INGRIDIENTES
@@ -350,7 +363,7 @@ def create_post():
 # @jwt_required()
 # def delete_favorite_recepies(recepy_id):
 #     current_user_id = get_jwt_identity()
-#     recepy_query = Recepies.query.get(recepy_id)
+#     recepy_query = Recipe.query.get(recepy_id)
 #     user_query = User.query.get(current_user_id)
 #     user_query.favorite_recepies.remove(recepy_query)
 

@@ -1,5 +1,5 @@
 import click
-from api.models import db, User, Ingredients, Recepies, Category
+from api.models import db, User, Ingredients, Recipe, Category
 
 """
 In this file, you can add as many commands as you want using the @app.cli.command decorator
@@ -11,16 +11,17 @@ def setup_commands(app):
 
     @app.cli.command("add-user")
     @click.argument("user_name")
+    @click.argument("name")
     @click.argument("email")
     @click.argument("password")
     @click.option("--favorite-recipes", multiple=True, help="List of favorite recipes")
-    def add_user(user_name, email, password, favorite_recipes):
+    def add_user(user_name, name, email, password, favorite_recipes):
         """Add a new user with optional favorite recipes"""
-        user = User(user_name=user_name, email=email, password=password)
+        user = User(user_name=user_name, name=name, email=email, password=password)
         
         # Buscar y agregar recetas favoritas
         for recipe_name in favorite_recipes:
-            recepy = Recepies.query.filter_by(name=recipe_name).first()
+            recepy = Recipe.query.filter_by(name=recipe_name).first()
             if recepy:
                 user.favorite_recepies.append(recepy)
         
@@ -48,11 +49,13 @@ def setup_commands(app):
 
     @app.cli.command("add-recepy")
     @click.argument("recepy_name")
+    @click.argument("description")
+    @click.argument("steps")
     @click.option("--ingredients", multiple=True, help="List of ingredient names")
     @click.option("--categories", multiple=True, help="List of category names")
-    def add_recepy(recepy_name, ingredients, categories):
+    def add_recepy(recepy_name, description, steps, ingredients, categories):
         """Add a new recipe with optional ingredients and categories"""
-        recepy = Recepies(name=recepy_name)
+        recepy = Recipe(name=recepy_name, description=description, steps=steps)
         
         # Buscar y agregar ingredientes a la receta
         for ingredient_name in ingredients:
@@ -121,7 +124,7 @@ def setup_commands(app):
     #     print("Ingredientes de prueba creados")
 
     #     # Crear una receta
-    #     recepy = Recepies(name="Tostadas con azúcar")
+    #     recepy = Recipe(name="Tostadas con azúcar")
     #     recepy.ingredients.extend([ingredient1, ingredient2])
     #     recepy.category.extend([category1])
 
