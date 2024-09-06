@@ -1,6 +1,7 @@
 """
 This module takes care of starting the API Server, Loading the DB and Adding the endpoints
 """
+import os
 from flask import Flask, request, jsonify, url_for, Blueprint
 from api.models import db, User, Ingredients, Recepies, Category,RecetaPublicada
 from api.utils import generate_sitemap, APIException
@@ -136,6 +137,50 @@ def login():
     access_token = create_access_token(identity=user_query.id)
     return jsonify(access_token=access_token), 200
 
+
+@api.route("/uploaded_recipies", methods=["POST"])
+@jwt_required()
+def upload_recipie():
+    current_user_id = get_jwt_identity()
+    user = User.query.get(current_user_id)
+    
+    if not user:
+        return jsonify({"msg": "Usuario no encontrado"}), 404
+
+    receta_data = request.get_json()
+
+    if 'name' not in receta_data or 'description' not in receta_data or 'steps' not in receta_data or 'ingredients' not in receta_data or 'category' not in receta_data:
+        return jsonify({"msg": "Faltan datos requeridos"}), 400
+
+    try:
+        name = receta_data['name']
+        description = receta_data['description']
+        steps = receta_data['steps']
+        ingredients_ids = receta_data['ingredients']
+        category_ids = receta_data['category']
+        is_official = receta_data.get('is_official', False)
+
+        ingredients = Ingredients.query.filter(Ingredients.id.in_(ingredients_ids)).all()
+        categories = Category.query.filter(Category.id.in_(category_ids)).all()
+
+        nueva_receta = RecetaPublicada(
+            name=name,
+            description=description,
+            steps=steps,
+            ingredients=ingredients,
+            category=categories,
+            user=user,
+            is_official=is_official
+        )
+
+        db.session.add(nueva_receta)
+        db.session.commit()
+
+        return jsonify({'msg': 'Receta creada con éxito', 'receta': nueva_receta.serialize()}), 201
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({'msg': 'Error al crear la receta', 'error': str(e)}), 500
+
 if __name__ == '__main__':
     PORT = int(os.environ.get('PORT', 3000))
     api.run(host='0.0.0.0', port=PORT, debug=False)
@@ -262,34 +307,6 @@ def delete_favorite_user(user_id):
     user_query.favorite_users.remove(user_to_remove)
     db.session.commit()
     return jsonify(user_query.serialize()), 200
-
-# Ruta usuario para agregar post
-@api.route('/user/publicar_receta', methods=['POST'])
-@jwt_required()
-def create_post():
-    current_user_id = get_jwt_identity()
-    user_query = User.query.get(current_user_id)
-    if not user_query:
-        return jsonify({"msg": "User not found"}), 404
-
-    data = request.json
-    title = data.get('title', None)
-    content = data.get('content', None)
-
-    if not title or not content:
-        return jsonify({"msg": "Title and content are required"}), 400
-
-    new_post = RecetaPublicada(title=title, content=content, user_id=current_user_id)
-    db.session.add(new_post)
-    db.session.commit()
-
-    return jsonify(new_post.serialize()), 201
-
-
-
-
-
-
 
 
 # #============================================================================
