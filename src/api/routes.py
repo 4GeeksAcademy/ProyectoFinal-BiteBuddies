@@ -3,7 +3,7 @@ This module takes care of starting the API Server, Loading the DB and Adding the
 """
 import os
 from flask import Flask, request, jsonify, url_for, Blueprint
-from api.models import db, User, Ingredients, Recepies, Category,RecetaPublicada
+from api.models import db, User, Ingredients, Recipe, Category
 from api.utils import generate_sitemap, APIException
 from flask_cors import CORS
 from flask_jwt_extended import create_access_token, get_jwt_identity, jwt_required
@@ -75,7 +75,7 @@ def get_current_user():
 #============================================================================
 @api.route('/recepies', methods=['GET'])
 def handle_recepies():
-    recepies_query = Recepies.query.all()
+    recepies_query = Recipe.query.all()
     all_recepies = list(map(lambda x: x.serialize(), recepies_query))
     return jsonify(all_recepies), 200
 
@@ -84,7 +84,7 @@ def handle_recepies():
 #============================================================================
 @api.route('/recepies/<int:recepy_id>', methods=['GET'])
 def handle_specific_recepies(recepy_id):
-    recepy_query = Recepies.query.get(recepy_id)
+    recepy_query = Recipe.query.get(recepy_id)
     if not recepy_query:
         return jsonify({"msg": "Recepy not found"}), 404
     return jsonify(recepy_query.serialize()), 200
@@ -163,7 +163,7 @@ def upload_recipie():
         ingredients = Ingredients.query.filter(Ingredients.id.in_(ingredients_ids)).all()
         categories = Category.query.filter(Category.id.in_(category_ids)).all()
 
-        nueva_receta = RecetaPublicada(
+        nueva_receta = Recipe(
             name=name,
             description=description,
             steps=steps,
@@ -180,10 +180,6 @@ def upload_recipie():
     except Exception as e:
         db.session.rollback()
         return jsonify({'msg': 'Error al crear la receta', 'error': str(e)}), 500
-
-if __name__ == '__main__':
-    PORT = int(os.environ.get('PORT', 3000))
-    api.run(host='0.0.0.0', port=PORT, debug=False)
 
 #============================================================================
 # [GET] ruta para obtener FAVORITOS DE USUARIO
@@ -220,7 +216,7 @@ def get_favorite_recepies():
 @jwt_required()
 def handle_favorite_recepies(recepy_id):
     current_user_id = get_jwt_identity()
-    recepy_query = Recepies.query.get(recepy_id)
+    recepy_query = Recipe.query.get(recepy_id)
     user_query = User.query.get(current_user_id)
     user_query.favorite_recepies.append(recepy_query)
 
@@ -244,7 +240,7 @@ def handle_favorite_recepies(recepy_id):
 @jwt_required()
 def delete_favorite_recepies(recepy_id):
     current_user_id = get_jwt_identity()
-    recepy_query = Recepies.query.get(recepy_id)
+    recepy_query = Recipe.query.get(recepy_id)
     user_query = User.query.get(current_user_id)
     user_query.favorite_recepies.remove(recepy_query)
 
@@ -367,7 +363,7 @@ def delete_favorite_user(user_id):
 # @jwt_required()
 # def delete_favorite_recepies(recepy_id):
 #     current_user_id = get_jwt_identity()
-#     recepy_query = Recepies.query.get(recepy_id)
+#     recepy_query = Recipe.query.get(recepy_id)
 #     user_query = User.query.get(current_user_id)
 #     user_query.favorite_recepies.remove(recepy_query)
 

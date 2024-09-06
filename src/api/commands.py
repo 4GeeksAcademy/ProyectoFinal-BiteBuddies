@@ -1,5 +1,5 @@
 import click
-from api.models import db, User, Ingredients, Recepies, Category
+from api.models import db, User, Ingredients, Recipe, Category
 
 """
 In this file, you can add as many commands as you want using the @app.cli.command decorator
@@ -21,7 +21,7 @@ def setup_commands(app):
         
         # Buscar y agregar recetas favoritas
         for recipe_name in favorite_recipes:
-            recepy = Recepies.query.filter_by(name=recipe_name).first()
+            recepy = Recipe.query.filter_by(name=recipe_name).first()
             if recepy:
                 user.favorite_recepies.append(recepy)
         
@@ -55,7 +55,7 @@ def setup_commands(app):
     @click.option("--categories", multiple=True, help="List of category names")
     def add_recepy(recepy_name, description, steps, ingredients, categories):
         """Add a new recipe with optional ingredients and categories"""
-        recepy = Recepies(name=recepy_name, description=description, steps=steps)
+        recepy = Recipe(name=recepy_name, description=description, steps=steps)
         
         # Buscar y agregar ingredientes a la receta
         for ingredient_name in ingredients:
@@ -124,7 +124,7 @@ def setup_commands(app):
     #     print("Ingredientes de prueba creados")
 
     #     # Crear una receta
-    #     recepy = Recepies(name="Tostadas con azúcar")
+    #     recepy = Recipe(name="Tostadas con azúcar")
     #     recepy.ingredients.extend([ingredient1, ingredient2])
     #     recepy.category.extend([category1])
 
