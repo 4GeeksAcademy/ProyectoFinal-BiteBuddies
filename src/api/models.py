@@ -19,6 +19,7 @@ categories_recipes = db.Table(
     db.Column('recipe_id', db.Integer, db.ForeignKey('recipe.id'), primary_key=True),
     db.Column('category_id', db.Integer, db.ForeignKey('categories.id'), primary_key=True)
 )
+
 favorite_users = db.Table(
     'favorite_users',
     db.Column('follower_id', db.Integer, db.ForeignKey('user.id'), primary_key=True),
@@ -52,6 +53,7 @@ class User(db.Model):
             "favorite_recipes": list(map(lambda x: x.serialize(), self.favorite_recipes)),
             "favorite_users": list(map(lambda x: x.serialize(), self.favorite_users.all()))
         }
+
 
 class Categories(db.Model):
     __tablename__ = 'categories'
@@ -91,6 +93,7 @@ class Recipe(db.Model):
             "is_official": self.is_official,
             "ingredients": list(map(lambda x: x.serialize(), self.ingredients)),
             "categories": list(map(lambda x: x.serialize(), self.categories)),
+
             "user": self.user.serialize() if self.user else None
         }
 

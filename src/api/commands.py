@@ -1,6 +1,7 @@
 import click
 from api.models import db, User, Ingredients, Recipe, Categories
 
+
 """
 In this file, you can add as many commands as you want using the @app.cli.command decorator
 Flask commands are usefull to run cronjobs or tasks outside of the app but sill in integration 
@@ -11,12 +12,13 @@ def setup_commands(app):
 
     @app.cli.command("add-user")
     @click.argument("user_name")
+    @click.argument("name")
     @click.argument("email")
     @click.argument("password")
     @click.option("--favorite-recipes", multiple=True, help="List of favorite recipes")
-    def add_user(user_name, email, password, favorite_recipes):
+    def add_user(user_name, name, email, password, favorite_recipes):
         """Add a new user with optional favorite recipes"""
-        user = User(user_name=user_name, email=email, password=password)
+        user = User(user_name=user_name, name=name, email=email, password=password)
         
         for recipe_name in favorite_recipes:
             recipe = Recipe.query.filter_by(name=recipe_name).first()

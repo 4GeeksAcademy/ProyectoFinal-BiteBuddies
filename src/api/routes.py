@@ -5,6 +5,7 @@ import os
 from flask import jsonify, Blueprint, request
 from api.models import db, User, Ingredients, Recipe, Categories
 from api.utils import APIException
+
 from flask_cors import CORS
 from flask_jwt_extended import create_access_token, get_jwt_identity, jwt_required
 
@@ -109,6 +110,7 @@ def login():
     access_token = create_access_token(identity=user_query.id)
     return jsonify(access_token=access_token), 200
 
+
 @api.route('/user/favorites', methods=['GET'])
 @jwt_required()
 def get_user_favorites():
@@ -124,6 +126,7 @@ def get_user_favorites():
 def add_favorite_recipe(recipe_id):
     current_user_id = get_jwt_identity()
     recipe_query = Recipe.query.get(recipe_id)
+
     user_query = User.query.get(current_user_id)
     if not recipe_query:
         raise APIException("Receta no encontrada", status_code=404)
@@ -134,6 +137,7 @@ def add_favorite_recipe(recipe_id):
     
     user_query.favorite_recipes.append(recipe_query)
     db.session.commit()
+
     return jsonify(user_query.serialize()), 200
 
 @api.route('/favorites/recipes/<int:recipe_id>', methods=['DELETE'])
@@ -163,6 +167,7 @@ def create_recipe():
     required_fields = ['name', 'description', 'steps', 'ingredients', 'category']
     if not all(field in receta_data for field in required_fields):
         raise APIException("Faltan datos requeridos", status_code=400)
+
 
     try:
         name = receta_data['name']

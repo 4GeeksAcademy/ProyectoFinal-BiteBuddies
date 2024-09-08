@@ -4,73 +4,99 @@ import "../../styles/stylesUserProfile.css";
 import { Context } from "../store/appContext";
 
 export const UserProfile = () => {
-    const { store, actions } = useContext(Context);
-    const withSession = !!store?.isLoggedIn;
-    const navigate = useNavigate();
+  const { store } = useContext(Context);
+  const withSession = !!store?.isLoggedIn;
+  const navigate = useNavigate();
 
-    useEffect(() => {
-        if (!withSession) {
-            navigate("/login");
-        }
-    }, [withSession]);
-
-    const handleEditProfile = () => {
-        console.log("Editar perfil");
-    };
-
-    if (!store.currentUser) {
-        return <div>Cargando...</div>;
+  useEffect(() => {
+    if (!withSession) {
+      navigate("/login");
     }
+  }, [withSession]);
 
-    return (
-        <div className="container profile-container" style={{ position: 'relative' }}>
-            <div className="row">
-                <div className="col-12">
-                    <div className="navbar-profile d-flex justify-content-center align-items-center p-3 bg-light">
-                        <h2>Bienvenido a tu perfil, {store.currentUser.user_name || "error"}</h2>
-                    </div>
-                </div>
-            </div>
-            <div className="row mt-4">
-                <div className="col-md-4">
-                    <div className="profile-sidebar bg-light p-3">
-                        <div className="profile-photo mb-3">
-                            <img src="https://via.placeholder.com/150" alt="Foto de perfil" className="img-fluid rounded-circle" />
-                        </div>
-                        <div className="profile-info">
-                            <p>{store.currentUser.name || "error"}</p>
-                            <p>{store.currentUser.user_name || "error"}</p>
-                            <p>{store.currentUser.email || "error"}</p>
-                            <p>5 Recetas subidas</p>
-                            <button className="btn-custom mb-3">Mis favoritos</button>
-                        </div>
-                    </div>
-                </div>
-                <div className="col-md-8">
-                    <div className="recipes-section">
-                        <h3>Mis recetas</h3>
-                        <div className="row">
-                            <div className="col-md-4">
-                                <div className="recipe-card bg-light p-2">
-                                    <img src="https://via.placeholder.com/100" alt="Receta" className="img-fluid" />
-                                    <p className="recipe-name">Nombre Receta</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <button 
-    className="btn-custom"  
-    onClick={handleEditProfile}
-    style={{ 
-        position: 'absolute', 
-        bottom: '20px', 
-        right: '20px'
-    }}
->
-    Editar perfil
-</button>
+  const handleEditProfile = () => {
+    console.log("Editar perfil");
+  };
+
+  if (!store.currentUser) {
+    return <div>Cargando...</div>;
+  }
+
+  return (
+    <div
+      className="container profile-container"
+      style={{ position: "relative" }}
+    >
+      <div className="navbar-profile d-flex justify-content-between align-items-center p-3 bg-light">
+        <div className="profile-photo text-center col-3 p-1">
+          <img
+            src="https://via.placeholder.com/150"
+            alt="Foto de perfil"
+            className="img-fluid rounded-circle"
+          />
+          <p>{store.currentUser.user_name || "error"}</p>
         </div>
-    );
+        <div className="profile-info col-5 p-1">
+          <p>{store.currentUser.name || "error"}</p>
+          <p>{store.currentUser.email || "error"}</p>
+          <p>5 Recetas subidas</p>
+          <p>
+            Lorem Ipsum is simply dummy text of the printing and typesetting
+            industry...
+          </p>
+        </div>
+      </div>
+
+      {/* Botones en una sola línea */}
+      <div className="d-flex justify-content-around">
+        <button
+          className="btn-custom"
+          onClick={handleEditProfile}
+          style={{ width: "20%" }}
+        >
+          Editar Perfil
+        </button>
+        <button className="btn-custom" style={{ width: "20%" }}>
+          Chefs Favoritos
+        </button>
+        <button className="btn-custom" style={{ width: "20%" }}>
+          Recetas Favoritas
+        </button>
+        <button className="btn-custom" style={{ width: "20%" }}>
+          Mis Recetas
+        </button>
+        <button className="btn-custom" style={{ width: "20%" }}>
+          Chats
+        </button>
+      </div>
+
+      <div className="recipes-section mt-4">
+        <h3 style={{ borderBottom: "2px solid #000", paddingBottom: "10px" }}>
+          Mis recetas
+        </h3>
+        <div className="row">
+          <div className="recipe-card col-md-3 bg-light p-2">
+            <img
+              src="https://via.placeholder.com/100"
+              alt="Receta"
+              className="img-fluid"
+            />
+            <p className="recipe-name">Nombre Receta</p>
+          </div>
+        </div>
+      </div>
+
+      <button
+        className="btn-custom"
+        onClick={handleEditProfile}
+        style={{
+          position: "absolute",
+          bottom: "20px",
+          right: "20px",
+        }}
+      >
+        Editar perfil
+      </button>
+    </div>
+  );
 };
