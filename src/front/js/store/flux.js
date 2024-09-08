@@ -70,7 +70,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 
             traerRecetas: async () => {
                 try {
-                    const response = await fetch(`${process.env.BACKEND_URL}/api/recepies`, {
+                    const response = await fetch(`${process.env.BACKEND_URL}/api/all_recipes`, {
                         method: 'GET',
                         headers: {
                             'Content-Type': 'application/json',
@@ -89,7 +89,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 
             traerCategories: async () => {
                 try {
-                    const response = await fetch(`${process.env.BACKEND_URL}/api/category`, {
+                    const response = await fetch(`${process.env.BACKEND_URL}/api/categories`, {
                         method: 'GET',
                         headers: {
                             'Content-Type': 'application/json',
