@@ -2,22 +2,22 @@ from flask_sqlalchemy import SQLAlchemy
 
 db = SQLAlchemy()
 
-favorite_recepies = db.Table(
-    'favorite_recepies',
+favorite_recipes = db.Table(
+    'favorite_recipes',
     db.Column('user_id', db.Integer, db.ForeignKey('user.id'), primary_key=True),
-    db.Column('recepy_id', db.Integer, db.ForeignKey('recipe.id'), primary_key=True)
+    db.Column('recipe_id', db.Integer, db.ForeignKey('recipe.id'), primary_key=True)
 )
 
-recepies_ingredients = db.Table(
-    'recepies_ingredients',
-    db.Column('recepy_id', db.Integer, db.ForeignKey('recipe.id'), primary_key=True),
+recipes_ingredients = db.Table(
+    'recipes_ingredients',
+    db.Column('recipe_id', db.Integer, db.ForeignKey('recipe.id'), primary_key=True),
     db.Column('ingredient_id', db.Integer, db.ForeignKey('ingredients.id'), primary_key=True)
 )
 
-categoria_recepies = db.Table(
-    'categoria_recepies',
-    db.Column('recepy_id', db.Integer, db.ForeignKey('recipe.id'), primary_key=True),
-    db.Column('categoria_id', db.Integer, db.ForeignKey('category.id'), primary_key=True)
+categories_recipes = db.Table(
+    'categories_recipes',
+    db.Column('recipe_id', db.Integer, db.ForeignKey('recipe.id'), primary_key=True),
+    db.Column('category_id', db.Integer, db.ForeignKey('categories.id'), primary_key=True)
 )
 
 favorite_users = db.Table(
@@ -27,33 +27,39 @@ favorite_users = db.Table(
 )
 
 class User(db.Model):
+    __tablename__ = 'user'
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(250), unique=True, nullable=False)
+    first_name = db.Column(db.String(250), unique=False, nullable=False)
+    last_name = db.Column(db.String(250), unique=False, nullable=False)
     user_name = db.Column(db.String(250), unique=True, nullable=False)
     email = db.Column(db.String(250), unique=True, nullable=False)
     password = db.Column(db.String(250), nullable=False)
     is_active = db.Column(db.Boolean, nullable=False, default=True)
-    favorite_recepies = db.relationship('Recipe', secondary=favorite_recepies, backref=db.backref('favorited_by_users', lazy='dynamic'))
-    favorite_users = db.relationship( 'User', secondary=favorite_users, primaryjoin=id==favorite_users.c.follower_id, secondaryjoin=id==favorite_users.c.followed_id, backref='followers', lazy='dynamic' )
-
+    favorite_recipes = db.relationship('Recipe', secondary=favorite_recipes, backref=db.backref('favorited_by_users', lazy='dynamic'))
+    favorite_users = db.relationship('User', secondary=favorite_users, primaryjoin=id==favorite_users.c.follower_id, secondaryjoin=id==favorite_users.c.followed_id, backref='followers', lazy='dynamic')
+    
     def __repr__(self):
         return '<User %r>' % self.email
 
     def serialize(self):
         return {
             "id": self.id,
-            "name": self.name,
+            "full_name": self.first_name + self.last_name,
+            "first_name": self.first_name,
+            "last_name":self.last_name,
             "user_name": self.user_name,
             "email": self.email,
             "is_active": self.is_active,
-            "favorite_recepies": list(map(lambda x: x.serialize(), self.favorite_recepies)),
+            "favorite_recipes": list(map(lambda x: x.serialize(), self.favorite_recipes)),
             "favorite_users": list(map(lambda x: x.serialize(), self.favorite_users.all()))
         }
 
-class Category(db.Model):
+
+class Categories(db.Model):
+    __tablename__ = 'categories'
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(250), nullable=False)
-
+    
     def __repr__(self):
         return '<Category %r>' % self.name
 
@@ -64,15 +70,16 @@ class Category(db.Model):
         }
 
 class Recipe(db.Model):
+    __tablename__ = 'recipe'
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(250), nullable=False)
     description = db.Column(db.String(255), nullable=False)
     steps = db.Column(db.String(255), nullable=False)
     is_official = db.Column(db.Boolean, nullable=False, default=False)
-    ingredients = db.relationship('Ingredients', secondary=recepies_ingredients, backref=db.backref('used_in_recipes', lazy='dynamic'))
-    category = db.relationship('Category', secondary=categoria_recepies, backref=db.backref('recipes', lazy='dynamic'))
+    ingredients = db.relationship('Ingredients', secondary=recipes_ingredients, backref=db.backref('used_in_recipes', lazy='dynamic'))
+    categories = db.relationship('Categories', secondary=categories_recipes, backref=db.backref('recipes', lazy='dynamic'))
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=True)
-    user = db.relationship('User', backref=db.backref('recipes', lazy=True))
+    user = db.relationship('User', backref=db.backref('uploaded_recipes', lazy=True))
 
     def __repr__(self):
         return '<Recipe %r>' % self.name
@@ -85,11 +92,13 @@ class Recipe(db.Model):
             "steps": self.steps,
             "is_official": self.is_official,
             "ingredients": list(map(lambda x: x.serialize(), self.ingredients)),
-            "category": list(map(lambda x: x.serialize(), self.category)),
+            "categories": list(map(lambda x: x.serialize(), self.categories)),
+
             "user": self.user.serialize() if self.user else None
         }
 
 class Ingredients(db.Model):
+    __tablename__ = 'ingredients'
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(250), nullable=False, unique=True)
 

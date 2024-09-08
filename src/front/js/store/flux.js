@@ -87,54 +87,46 @@ const getState = ({ getStore, getActions, setStore }) => {
         }
       },
 
-      traerRecetas: async () => {
-        try {
-          const response = await fetch(
-            `${process.env.BACKEND_URL}/api/recepies`,
-            {
-              method: "GET",
-              headers: {
-                "Content-Type": "application/json",
+            traerRecetas: async () => {
+                try {
+                    const response = await fetch(`${process.env.BACKEND_URL}/api/all_recipes`, {
+                        method: 'GET',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                    });
+                    if (!response.ok) {
+                        throw new Error('Error fetching recepies');
+                    }
+                    const data = await response.json();
+                    setStore({ listaDeRecetas: data });
+                    } catch (error) {
+                        console.error("Error:", error);
+                      }
+                    },
+
+
+            traerCategories: async () => {
+                try {
+                    const response = await fetch(`${process.env.BACKEND_URL}/api/categories`, {
+                        method: 'GET',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                    });
+                if (!response.ok) {
+                  throw new Error("Error fetching categories");
+                }
+
+                const data = await response.json();
+                console.log("categorias:", data);
+                setStore({
+                  listaDeCategorias: data,
+                });
+                } catch (error) {
+                  console.error("Error:", error);
+                }
               },
-            },
-          );
-          if (!response.ok) {
-            throw new Error("Error fetching recepies");
-          }
-          const data = await response.json();
-          setStore({
-            listaDeRecetas: data,
-          });
-        } catch (error) {
-          console.error("Error:", error);
-        }
-      },
-
-      traerCategories: async () => {
-        try {
-          const response = await fetch(
-            `${process.env.BACKEND_URL}/api/category`,
-            {
-              method: "GET",
-              headers: {
-                "Content-Type": "application/json",
-              },
-            },
-          );
-
-          if (!response.ok) {
-            throw new Error("Error fetching categories");
-          }
-
-          const data = await response.json();
-          console.log("categorias:", data);
-          setStore({
-            listaDeCategorias: data,
-          });
-        } catch (error) {
-          console.error("Error:", error);
-        }
-      },
 
       login: async (email, password) => {
         const bodyData = {
