@@ -1,6 +1,10 @@
 import axios from "axios";
 
-const getState = ({ getStore, getActions, setStore }) => {
+const getState = ({
+  getStore,
+  getActions,
+  setStore
+}) => {
   return {
     store: {
       is_active: false,
@@ -61,8 +65,7 @@ const getState = ({ getStore, getActions, setStore }) => {
           console.log("haciendo fetch");
 
           const response = await fetch(
-            `${process.env.BACKEND_URL}/api/ingredients`,
-            {
+            `${process.env.BACKEND_URL}/api/ingredients`, {
               method: "GET",
               headers: {
                 "Content-Type": "application/json",
@@ -87,46 +90,48 @@ const getState = ({ getStore, getActions, setStore }) => {
         }
       },
 
-            traerRecetas: async () => {
-                try {
-                    const response = await fetch(`${process.env.BACKEND_URL}/api/all_recipes`, {
-                        method: 'GET',
-                        headers: {
-                            'Content-Type': 'application/json',
-                        },
-                    });
-                    if (!response.ok) {
-                        throw new Error('Error fetching recepies');
-                    }
-                    const data = await response.json();
-                    setStore({ listaDeRecetas: data });
-                    } catch (error) {
-                        console.error("Error:", error);
-                      }
-                    },
+      traerRecetas: async () => {
+        try {
+          const response = await fetch(`${process.env.BACKEND_URL}/api/all_recipes`, {
+            method: 'GET',
+            headers: {
+              "Content-Type": "application/json",
+            },
+          });
+          if (!response.ok) {
+            throw new Error('Error fetching recepies');
+          }
+          const data = await response.json();
+          setStore({
+            listaDeRecetas: data
+          });
+        } catch (error) {
+          console.error("Error:", error);
+        }
+      },
 
 
-            traerCategories: async () => {
-                try {
-                    const response = await fetch(`${process.env.BACKEND_URL}/api/categories`, {
-                        method: 'GET',
-                        headers: {
-                            'Content-Type': 'application/json',
-                        },
-                    });
-                if (!response.ok) {
-                  throw new Error("Error fetching categories");
-                }
+      traerCategories: async () => {
+        try {
+          const response = await fetch(`${process.env.BACKEND_URL}/api/categories`, {
+            method: 'GET',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+          });
+          if (!response.ok) {
+            throw new Error("Error fetching categories");
+          }
 
-                const data = await response.json();
-                console.log("categorias:", data);
-                setStore({
-                  listaDeCategorias: data,
-                });
-                } catch (error) {
-                  console.error("Error:", error);
-                }
-              },
+          const data = await response.json();
+          console.log("categorias:", data);
+          setStore({
+            listaDeCategorias: data,
+          });
+        } catch (error) {
+          console.error("Error:", error);
+        }
+      },
 
       login: async (email, password) => {
         const bodyData = {
@@ -138,7 +143,9 @@ const getState = ({ getStore, getActions, setStore }) => {
             `${process.env.BACKEND_URL}/api/login`,
             bodyData,
           );
-          const { data } = res;
+          const {
+            data
+          } = res;
           const accessToken = data.access_token;
           const withToken = !!accessToken;
           if (withToken) {
@@ -166,20 +173,23 @@ const getState = ({ getStore, getActions, setStore }) => {
         try {
           const accessToken = localStorage.getItem("accessToken");
           const res = await axios.get(
-            `${process.env.BACKEND_URL}/api/current-user`,
-            {
+            `${process.env.BACKEND_URL}/api/current-user`, {
               headers: {
                 Authorization: `Bearer ${accessToken}`,
               },
             },
           );
-          const { data } = res;
-          const { current_user: currentUser } = data;
+
+          const {
+            usuario_actual: currentUser
+          } = res.data;
+
           setStore({
             currentUser,
             isLoggedIn: true,
           });
-          console.log("currentuser", currentUser);
+
+          console.log("currentUser:", currentUser);
         } catch (error) {
           console.log("Error loading message from backend", error);
           localStorage.removeItem("accessToken");
@@ -189,6 +199,7 @@ const getState = ({ getStore, getActions, setStore }) => {
           });
         }
       },
+
       searchIngredients: (query) => {
         const store = getStore();
         const lowerCaseQuery = query.toLowerCase();
@@ -213,15 +224,13 @@ const getState = ({ getStore, getActions, setStore }) => {
         const accessToken = localStorage.getItem("accessToken");
         try {
           const response = await axios.post(
-            `${process.env.BACKEND_URL}/api/uploaded_recipies`,
-            {
+            `${process.env.BACKEND_URL}/api/uploaded_recipies`, {
               name,
               description,
               steps,
               ingredients_ids,
               category_ids,
-            },
-            {
+            }, {
               headers: {
                 Authorization: `Bearer ${accessToken}`,
               },
