@@ -16,6 +16,7 @@ const getState = ({
       listaDeCategorias: [],
       listaDeIngredientes: [],
       searchResult: [],
+      detallesDeReceta:[],
     },
     actions: {
       registerUser: async (user_name, first_name, last_name, email, password) => {
@@ -257,6 +258,26 @@ const getState = ({
           console.error("Error:", error);
         }
       },
+    traerDetalleDeReceta: async (id) => {
+    try {
+      const response = await fetch(`${process.env.BACKEND_URL}/api/recipes/${id}`, {
+        method: 'GET',
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+      if (!response.ok) {
+        throw new Error('Error fetching recipes');
+      }
+      const data = await response.json();
+      console.log("Detalles de recetas:", data);
+      setStore({
+        detallesDeReceta: data 
+      });
+    } catch (error) {
+      console.error("Error:", error);
+    }
+  },
     },
   };
 };

@@ -41,7 +41,7 @@ export const Home = () => {
 				<div className="d-flex justify-content-center">
 					{recetas.length > 0 ? (
 						recetas.map((receta) => (
-							<Link key={receta.id} to="recipe">
+							<Link key={receta.id} to={`/recipe/${receta.id}`}>
 							<div className="recipe-card m-3 bg-light p-2">
 							<img
 							src="https://via.placeholder.com/100"
