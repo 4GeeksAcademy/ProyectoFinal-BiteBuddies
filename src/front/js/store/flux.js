@@ -18,48 +18,58 @@ const getState = ({
       searchResult: [],
     },
     actions: {
-      registerUser: async (user_name, name, email, password) => {
-        const store = getStore();
-        try {
-          const response = await fetch(`${process.env.BACKEND_URL}/api/users`, {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-              user_name,
-              name,
-              email,
-              password,
-            }),
-          });
-
-          if (response.ok) {
-            const result = await response.json();
+      registerUser: async (user_name, first_name, last_name, email, password) => {
+    const store = getStore();
+    try {
+        if (!user_name || !first_name || !last_name || !email || !password) {
             setStore({
-              is_active: true,
-              user: {
-                user_name,
-                name,
-                email,
-              },
-              error: null,
-            });
-            return true;
-          } else {
-            const errorResult = await response.json();
-            setStore({
-              error: errorResult.msg,
+                error: 'Todos los campos son requeridos',
             });
             return false;
-          }
-        } catch (error) {
-          setStore({
-            error: "Error al conectar con el servidor",
-          });
-          return false;
         }
-      },
+        const response = await fetch(`${process.env.BACKEND_URL}/api/users`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+                user_name,
+                first_name,
+                last_name,
+                email,
+                password,
+            }),
+        });
+
+        if (response.ok) {
+            const result = await response.json();
+            setStore({
+                is_active: true,
+                user: {
+                    user_name,
+                    first_name,
+                    last_name,
+                    email,
+                },
+                error: null,
+            });
+            return true;
+        } else {
+            const errorResult = await response.json();
+            console.error('Server Error:', errorResult);
+            setStore({
+                error: errorResult.msg || 'Error desconocido',
+            });
+            return false;
+        }
+    } catch (error) {
+        console.error('Network Error:', error);
+        setStore({
+            error: "Error al conectar con el servidor",
+        });
+        return false;
+    }
+},
       traerIngredientes: async () => {
         try {
           console.log("haciendo fetch");
