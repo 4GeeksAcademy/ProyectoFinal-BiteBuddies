@@ -5,7 +5,8 @@ import "../../styles/singIn.css";
 
 export const Sign_in = () => {
   const [user_name, setUserName] = useState("");
-  const [name, setName] = useState("");
+  const [first_name, setFirstName] = useState("");
+  const [last_name, setLastName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const { store, actions } = useContext(Context);
@@ -14,10 +15,10 @@ export const Sign_in = () => {
   const onSubmitHandler = async (e) => {
     e.preventDefault();
 
-    const registered = await actions.registerUser(user_name, name, email, password);
+    const registered = await actions.registerUser(user_name, first_name, last_name, email, password);
     if (registered) {
-      alert("¡Usuario creado exitosamente!");
-      navigate("/login"); // Redirigir después del registro exitoso
+      alert("¡¡Usuario creado exitosamente!!");
+      navigate("/login");
     } else {
       alert("Error al crear el usuario. Por favor, intenta de nuevo.");
     }
@@ -41,14 +42,25 @@ export const Sign_in = () => {
           </div>
           <div className="mb-3 input-container">
             <input
-              value={name}
-              onChange={(e) => setName(e.target.value)}
+              value={first_name}
+              onChange={(e) => setFirstName(e.target.value)}
               type="text"
               className="form-control input"
-              id="inputName"
+              id="inputFirstName"
               placeholder=" "
             />
-            <label htmlFor="inputName" className="floating-label">Nombre y apellidos</label>
+            <label htmlFor="inputName" className="floating-label">Nombre</label>
+          </div>
+          <div className="mb-3 input-container">
+            <input
+              value={last_name}
+              onChange={(e) => setLastName(e.target.value)}
+              type="text"
+              className="form-control input"
+              id="inputLastName"
+              placeholder=" "
+            />
+            <label htmlFor="inputName" className="floating-label">Apellidos</label>
           </div>
           <div className="mb-3 input-container">
             <input
