@@ -17,7 +17,7 @@ export const Sign_in = () => {
 
     const registered = await actions.registerUser(user_name, first_name, last_name, email, password);
     if (registered) {
-      alert("¡Usuario creado exitosamente!");
+      alert("¡¡Usuario creado exitosamente!!");
       navigate("/login");
     } else {
       alert("Error al crear el usuario. Por favor, intenta de nuevo.");
