@@ -14,9 +14,7 @@ export const Navbar = () => {
   }, []);
 
   useEffect(() => {
-    // console.log("Search Input:", search);
-    // console.log("Search Results:", store.searchResult);
-    // console.log("Lista de Ingredientes:", store.listaDeIngredientes);
+
   }, [search, store.searchResult, store.listaDeIngredientes]);
 
   const handleSearchChange = (e) => {

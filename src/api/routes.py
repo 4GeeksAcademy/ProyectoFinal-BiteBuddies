@@ -25,7 +25,8 @@ def create_user():
     if 'user_name' not in user_data or 'email' not in user_data or 'password' not in user_data:
         raise APIException('Faltan datos requeridos', status_code=400)
     user_name = user_data['user_name']
-    name = user_data.get('name', None)  
+    first_name = user_data.get('first_name', None)
+    last_name = user_data.get('last_name',None)  
     email = user_data['email']
     password = user_data['password']
     if User.query.filter_by(user_name=user_name).first() is not None:
@@ -34,7 +35,8 @@ def create_user():
         raise APIException('El correo electrónico ya está en uso', status_code=409)
     nuevo_usuario = User(
         user_name=user_name,
-        name=name,
+        first_name=first_name,
+        last_name=last_name,
         email=email,
         password=password
     )
