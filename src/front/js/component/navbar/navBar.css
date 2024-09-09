@@ -1,17 +1,18 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500&display=swap');
 .navbar-container {
     display: flex;
     justify-content: space-between;
     align-items: center;
     padding: 15px 20px;
-    background-color: #faedcd; 
+    background-color: #faedcd; /* Fondo del navbar */
     width: 100%;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); 
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Sombra suave */
 }
 
 .home-icon {
     color: #6b4423;
     font-size: 1.5rem;
-    margin-right: 1px;
+    margin-right: 10px;
     transition: color 0.3s ease, transform 0.3s ease;
 }
 
@@ -23,19 +24,19 @@
 .search-container {
     display: flex;
     justify-content: center;
-    flex-grow: 1; 
-    margin: 0px 20px; 
+    flex-grow: 1;
+    margin-right: 20px; 
     padding-right: 150px;
 }
 
 .search-input {
     border: 2px solid #d4a373;
     border-radius: 25px;
-    padding: 10px 15px; 
-    font-size: 1rem; 
+    padding: 10px 15px;
+    font-size: 1rem;
     color: #6b4423;
     width: 250%; 
-    max-width: 600px; 
+    max-width: 600px;
     transition: border-color 0.3s ease, box-shadow 0.3s ease;
     box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
 }
@@ -51,7 +52,6 @@
     box-shadow: 0 0 8px rgba(107, 68, 35, 0.4);
 }
 
-
 .custom-button {
     background-color: #6b4423;
     border: none;
@@ -59,7 +59,6 @@
     font-size: 1rem;
     padding: 8px 16px;
     border-radius: 15px;
-    margin-left: 10px; 
     transition: background-color 0.3s ease, box-shadow 0.3s ease;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
@@ -68,62 +67,35 @@
     background-color: #8b5e3c;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
+.navbar-container h1 {
+    font-family: 'Poppins', sans-serif; 
+    font-size: 2.5rem; 
+    font-weight: 500;
+    color: #6b4423;
+    text-align: center; 
+    margin: 0 auto; 
+    padding: 10px 0;
+    flex-grow: 1; 
+}
 
 @media (max-width: 768px) {
     .navbar-container {
-        flex-direction: column; 
-        padding: 10px;
-    }
-
-    .home-icon {
-        font-size: 1.2rem;
-        margin-bottom: 10px; 
+        flex-direction: column;
+        align-items: flex-start;
     }
 
     .search-container {
         width: 100%;
-        padding-right: 0; 
-        margin: 0 0 15px 0; 
+        margin-bottom: 10px;
     }
 
     .search-input {
-        width: 90%; 
-        max-width: 100%; 
-        font-size: 0.9rem; 
+        width: 90%;
+        max-width: 400px;
     }
 
     .custom-button {
-        width: 100%; 
-        margin-left: 0;
-        margin-top: 10px; 
-        font-size: 0.9rem; 
-    }
-}
-
-@media (min-width: 769px) and (max-width: 1024px) {
-    .navbar-container {
-        flex-direction: row;
-        padding: 10px 20px;
-    }
-
-    .home-icon {
-        font-size: 1.4rem;
-        margin-right: 10px;
-    }
-
-    .search-container {
-        margin: 0 10px;
-        padding-right: 50px;
-    }
-
-    .search-input {
-        width: 200%;
-        max-width: 500px;
-        font-size: 1rem;
-    }
-
-    .custom-button {
-        margin-left: 5px;
-        padding: 8px 12px;
+        width: 100%;
+        text-align: center;
     }
 }
