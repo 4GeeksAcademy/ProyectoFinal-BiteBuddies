@@ -1,10 +1,12 @@
-import React, { useContext, useEffect } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "../../styles/stylesUserProfile.css";
 import { Context } from "../store/appContext";
+import { RecipeUploadModal } from "../component/recipeUpLoadModal";
 
 export const UserProfile = () => {
   const { store } = useContext(Context);
+  const [showModal, setShowModal] = useState(false);
   const withSession = !!store?.isLoggedIn;
   const navigate = useNavigate();
 
@@ -16,6 +18,14 @@ export const UserProfile = () => {
 
   const handleEditProfile = () => {
     console.log("Editar perfil");
+  };
+
+  const handleOpenModal = () => {
+    setShowModal(true);
+  };
+
+  const handleCloseModal = () => {
+    setShowModal(false);
   };
 
   if (!store.currentUser) {
@@ -37,7 +47,7 @@ export const UserProfile = () => {
           <p>{store.currentUser.user_name || "error"}</p>
         </div>
         <div className="profile-info col-5 p-1">
-          <p>{store.currentUser.name || "error"}</p>
+          <p>{store.currentUser.first_name || "error"}</p>
           <p>{store.currentUser.email || "error"}</p>
           <p>5 Recetas subidas</p>
           <p>
@@ -47,7 +57,6 @@ export const UserProfile = () => {
         </div>
       </div>
 
-      {/* Botones en una sola línea */}
       <div className="d-flex justify-content-around">
         <button
           className="btn-custom"
@@ -85,18 +94,14 @@ export const UserProfile = () => {
           </div>
         </div>
       </div>
+      <div className="row mt-3">
+        <button className="btn-custom" style={{borderRadius: "5px"}} onClick={handleOpenModal}>
+          Subir Receta
+        </button>
 
-      <button
-        className="btn-custom"
-        onClick={handleEditProfile}
-        style={{
-          position: "absolute",
-          bottom: "20px",
-          right: "20px",
-        }}
-      >
-        Editar perfil
-      </button>
+        {/* Modal para subir receta */}
+        <RecipeUploadModal show={showModal} handleClose={handleCloseModal} />
+      </div>
     </div>
   );
 };

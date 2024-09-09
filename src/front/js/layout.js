@@ -7,9 +7,9 @@ import { Footer } from "./component/footer";
 
 
 import { Home } from "./pages/home";
-import { Login } from "./pages/login";
-import { Sign_in } from "./pages/sign_in";
-import { UserProfile } from "./pages/UserProfile";
+import { Login } from "./pages/logIn";
+import { Sign_in } from "./pages/signIn";
+import { UserProfile } from "./pages/userProfile";
 import { FavoritesView } from "./pages/favoritesView";
 import { RecipeView } from "./pages/recipeView";
 import { ViewOfAllCategories } from "./pages/viewOfAllCategories";

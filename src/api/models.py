@@ -90,12 +90,15 @@ class Recipe(db.Model):
             "name": self.name,
             "description": self.description,
             "steps": self.steps,
-            "is_official": self.is_official,
-            "ingredients": list(map(lambda x: x.serialize(), self.ingredients)),
-            "categories": list(map(lambda x: x.serialize(), self.categories)),
-
-            "user": self.user.serialize() if self.user else None
+            "ingredients": [ingredient.serialize() for ingredient in self.ingredients],
+            "categories": [category.serialize() for category in self.categories],
+            "uploaded_by_user": {
+                "id": self.user.id,
+                "user_name": self.user.user_name
+            } if self.user else None,
+            "is_official": self.is_official
         }
+
 
 class Ingredients(db.Model):
     __tablename__ = 'ingredients'
