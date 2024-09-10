@@ -99,7 +99,6 @@ export const UserProfile = () => {
           Subir Receta
         </button>
 
-        {/* Modal para subir receta */}
         <RecipeUploadModal show={showModal} handleClose={handleCloseModal} />
       </div>
     </div>

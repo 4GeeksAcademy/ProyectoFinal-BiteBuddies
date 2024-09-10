@@ -80,6 +80,7 @@ class Recipe(db.Model):
     categories = db.relationship('Categories', secondary=categories_recipes, backref=db.backref('recipes', lazy='dynamic'))
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=True)
     user = db.relationship('User', backref=db.backref('uploaded_recipes', lazy=True))
+    image_filename = db.Column(db.String(255), nullable=True)
 
     def __repr__(self):
         return '<Recipe %r>' % self.name
@@ -96,7 +97,8 @@ class Recipe(db.Model):
                 "id": self.user.id,
                 "user_name": self.user.user_name
             } if self.user else None,
-            "is_official": self.is_official
+            "is_official": self.is_official,
+            "image_filename": self.image_filename
         }
 
 
