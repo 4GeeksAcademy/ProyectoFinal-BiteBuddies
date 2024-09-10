@@ -5,6 +5,7 @@ import { Context } from "../store/appContext";
 import { ProfileHeader } from "../component/userProfile/profileHeader";
 import { Tabs } from "../component/userProfile/tabs";
 import { RecipeList } from "../component/userProfile/tabViews/recipeList";
+import { RecipeUploadModal } from "../component/userProfile/recipeUpLoadModal";
 import { FavoriteRecipes } from "../component/userProfile/tabViews/favoriteRecipes";
 
 export const UserProfile = () => {
@@ -14,10 +15,15 @@ export const UserProfile = () => {
   const withSession = !!store?.isLoggedIn;
   const navigate = useNavigate();
 
+  // Este efecto se encargará de verificar la sesión y cargar las recetas del usuario
   useEffect(() => {
     if (!withSession) {
       navigate("/login");
+    } else {
+      // Llamamos a la acción que trae las recetas del usuario
+      actions.getUserRecipes();
     }
+    console.log("recetas publicadas", store.listaDeRecetasPublicadas);
   }, [withSession]);
 
   const handleEditProfile = () => {
@@ -45,17 +51,34 @@ export const UserProfile = () => {
 
       <div className="tab-content">
         {activeTab === "misRecetas" && (
-          <RecipeList
-            recipes={store.listaDeRecetas}
-            handleOpenModal={handleOpenModal}
-            showModal={showModal}
-            handleCloseModal={handleCloseModal}
-          />
+          <>
+            {store.listaDeRecetasPublicadas.length === 0 ? (
+              <div className="text-center">
+                <p>No tienes recetas propias.</p>
+              </div>
+            ) : (
+              <RecipeList
+                recipes={store.listaDeRecetasPublicadas}
+                handleOpenModal={handleOpenModal}
+                showModal={showModal}
+                handleCloseModal={handleCloseModal}
+              />
+            )}
+            <div className="row mt-3 justify-content-center">
+              <button
+                className="btn btn-primary"
+                style={{ borderRadius: "5px" }}
+                onClick={handleOpenModal}
+              >
+                Subir Receta
+              </button>
+            </div>
+          </>
         )}
-        {activeTab === "favoritas" && (
-          <FavoriteRecipes store={store} actions={actions} />
-        )}
+
+        {activeTab === "favoritas" && <FavoriteRecipes store={store} actions={actions} />}
       </div>
+      {showModal && <RecipeUploadModal show={showModal} handleClose={handleCloseModal} />}
     </div>
   );
 };
