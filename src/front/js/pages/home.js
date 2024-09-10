@@ -24,10 +24,10 @@ export const Home = () => {
 			<div>
 			<div>
                 <h4>Categorías</h4>
-				<div className="d-flex justify-content-around">
+				<div className="d-flex justify-content-center">
 					{categorias.length > 0 ? (
 						categorias.map((category) => (
-							<div className="border border-primary p-3 m-5"key={category.id}>{category.name}</div>
+							<button className="btn-custom m-3"key={category.id}>{category.name}</button>
 						))
 					) : (
 						<p>No hay categorías disponibles.</p>
@@ -37,10 +37,20 @@ export const Home = () => {
             </div>
 			<div>
                 <h4>Recetas</h4>
-				<div className="d-flex justify-content-around">
+				
+				<div className="d-flex justify-content-center">
 					{recetas.length > 0 ? (
 						recetas.map((receta) => (
-							<div className="border border-primary p-3 m-5" key={receta.id}>{receta.name}</div>
+							<Link key={receta.id} to={`/recipe/${receta.id}`}>
+							<div className="recipe-card m-3 bg-light p-2">
+							<img
+							src="https://via.placeholder.com/100"
+							alt="Receta"
+							className="img-fluid"
+							/>
+							<p className="recipe-name">{receta.name}</p>
+							</div>
+							</Link>
 						))
 					) : (
 						<p>No hay recetas disponibles.</p>
