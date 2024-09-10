@@ -3,7 +3,7 @@ import { BrowserRouter, Route, Routes } from "react-router-dom";
 import ScrollToTop from "./component/scrollToTop";
 import { BackendURL } from "./component/backendURL";
 import { Navbar } from "./component/navbar";
-import { Footer } from "./component/footer/footer";
+import { Footer } from "./component/footer";
 
 
 import { Home } from "./pages/home";
@@ -37,7 +37,7 @@ const Layout = () => {
                         <Route element={<UserProfile />} path="/user-profile/:id" />
                         <Route element={<FavoritesView />} path="/user/favorites" /> 
                         <Route element={<ViewOfAllCategories />} path="/categories" /> 
-                        <Route element={<RecipeView />} path="/recipe" />
+                        <Route element={<RecipeView />} path="/recipe/:id" />
                         <Route element={<h1>Not found!</h1>} />
                     </Routes>
                     </div>

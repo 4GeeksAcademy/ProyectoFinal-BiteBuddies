@@ -76,6 +76,7 @@ class Recipe(db.Model):
     description = db.Column(db.String(255), nullable=False)
     steps = db.Column(db.String(255), nullable=False)
     is_official = db.Column(db.Boolean, nullable=False, default=False)
+    image_url = db.Column(db.String(255), nullable=True)  # Nueva columna para la URL de la imagen
     ingredients = db.relationship('Ingredients', secondary=recipes_ingredients, backref=db.backref('used_in_recipes', lazy='dynamic'))
     categories = db.relationship('Categories', secondary=categories_recipes, backref=db.backref('recipes', lazy='dynamic'))
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=True)
@@ -90,6 +91,7 @@ class Recipe(db.Model):
             "name": self.name,
             "description": self.description,
             "steps": self.steps,
+            "image_url": self.image_url,
             "ingredients": [ingredient.serialize() for ingredient in self.ingredients],
             "categories": [category.serialize() for category in self.categories],
             "uploaded_by_user": {

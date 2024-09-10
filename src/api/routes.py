@@ -163,20 +163,19 @@ def create_recipe():
     current_user_id = get_jwt_identity()
     user = User.query.get(current_user_id)
     if not user:
-         raise APIException("Usuario no encontrado", status_code=404)
-    
+        raise APIException("Usuario no encontrado", status_code=404)
     receta_data = request.get_json()
-    required_fields = ['name', 'description', 'steps', 'ingredients', 'category']
+    required_fields = ['name', 'description', 'steps', 'ingredients_ids', 'category_ids']
     if not all(field in receta_data for field in required_fields):
         raise APIException("Faltan datos requeridos", status_code=400)
-
 
     try:
         name = receta_data['name']
         description = receta_data['description']
         steps = receta_data['steps']
-        ingredients_ids = receta_data['ingredients']
-        category_ids = receta_data['category']
+        ingredients_ids = receta_data['ingredients_ids']
+        category_ids = receta_data['category_ids']
+        image_url = receta_data.get('image_url', None)
         is_official = receta_data.get('is_official', False)
 
         ingredients = Ingredients.query.filter(Ingredients.id.in_(ingredients_ids)).all()
@@ -194,6 +193,7 @@ def create_recipe():
             ingredients=ingredients,
             categories=categories,
             user=user,
+            image_url=image_url,
             is_official=is_official
         )
         db.session.add(nueva_receta)
@@ -205,3 +205,28 @@ def create_recipe():
     except Exception as e:
         db.session.rollback()
         raise APIException(f'Error al crear la receta: {str(e)}', status_code=500)
+    
+@api.route('/recipes/<int:recipe_id>', methods=['DELETE'])
+@jwt_required()
+def delete_recipe(recipe_id):
+    current_user_id = get_jwt_identity()
+    user = User.query.get(current_user_id)
+    
+    if not user:
+        raise APIException("Usuario no encontrado", status_code=404)
+    recipe_query = Recipe.query.get(recipe_id)
+    
+    if not recipe_query:
+        raise APIException("Receta no encontrada", status_code=404)
+    if recipe_query.user_id != current_user_id:
+        raise APIException("No tienes permiso para eliminar esta receta", status_code=403)
+    
+    try:
+        db.session.delete(recipe_query)
+        db.session.commit()
+
+        return jsonify({'msg': 'Receta eliminada con éxito'}), 200
+
+    except Exception as e:
+        db.session.rollback()
+        raise APIException(f'Error al eliminar la receta: {str(e)}', status_code=500)

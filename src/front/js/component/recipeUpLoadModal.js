@@ -1,18 +1,30 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useState, useEffect } from "react";
 import { Context } from "../store/appContext";
 
+
 export const RecipeUploadModal = ({ show, handleClose }) => {
-  const { actions } = useContext(Context);
+  const { store, actions } = useContext(Context);
   const [recipeData, setRecipeData] = useState({
     name: "",
     description: "",
     steps: "",
     ingredients_ids: [],
-    category_ids: []
+    category_ids: [],
+    image: null,
   });
+  
+  useEffect(() => {
+    actions.traerIngredientes();
+    actions.traerCategories();
+  }, []);
 
   const handleChange = (e) => {
-    setRecipeData({ ...recipeData, [e.target.name]: e.target.value });
+    const { name, value, files } = e.target;
+    if (name === "image") {
+      setRecipeData({ ...recipeData, image: files[0] });
+    } else {
+      setRecipeData({ ...recipeData, [name]: value });
+    }
   };
 
   const handleSubmit = async (e) => {
@@ -22,7 +34,8 @@ export const RecipeUploadModal = ({ show, handleClose }) => {
       recipeData.description,
       recipeData.steps,
       recipeData.ingredients_ids,
-      recipeData.category_ids
+      recipeData.category_ids,
+      recipeData.image
     );
     if (success) {
       handleClose();
@@ -53,14 +66,48 @@ export const RecipeUploadModal = ({ show, handleClose }) => {
                 />
               </div>
               <div className="form-group">
-                <label>Descripción</label>
-                <textarea
+                <label>Ingredientes</label>
+                <select
                   className="form-control"
-                  name="description"
-                  value={recipeData.description}
-                  onChange={handleChange}
+                  name="ingredients_ids"
+                  multiple
+                  value={recipeData.ingredients_ids}
+                  onChange={(e) =>
+                    setRecipeData({
+                      ...recipeData,
+                      ingredients_ids: Array.from(e.target.selectedOptions, (option) => option.value),
+                    })
+                  }
                   required
-                />
+                >
+                  {store.listaDeIngredientes.map((ingredient) => (
+                    <option key={ingredient.id} value={ingredient.id}>
+                      {ingredient.name}
+                    </option>
+                  ))}
+                </select>
+              </div>
+              <div className="form-group">
+                <label>Categoria</label>
+                <select
+                  className="form-control"
+                  name="category_ids"
+                  multiple
+                  value={recipeData.category_ids}
+                  onChange={(e) =>
+                    setRecipeData({
+                      ...recipeData,
+                      category_ids: Array.from(e.target.selectedOptions, (option) => option.value),
+                    })
+                  }
+                  required
+                >
+                  {store.listaDeCategorias.map((category) => (
+                    <option key={category.id} value={category.id}>
+                      {category.name}
+                    </option>
+                  ))}
+                </select>
               </div>
               <div className="form-group">
                 <label>Pasos</label>
@@ -72,7 +119,15 @@ export const RecipeUploadModal = ({ show, handleClose }) => {
                   required
                 />
               </div>
-              {/* Aquí puedes agregar selects o inputs para ingredientes y categorías */}
+               <div className="form-group">
+                <label>Imagen</label>
+                <input
+                  type="file"
+                  className="form-control"
+                  name="image"
+                  onChange={handleChange}
+                />
+                </div>
               <button type="submit" className="btn btn-primary">
                 Subir Receta
               </button>

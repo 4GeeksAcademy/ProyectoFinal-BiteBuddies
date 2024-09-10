@@ -13,10 +13,6 @@ export const Navbar = () => {
     actions.traerIngredientes();
   }, []);
 
-  useEffect(() => {
-
-  }, [search, store.searchResult, store.listaDeIngredientes]);
-
   const handleSearchChange = (e) => {
     setSearch(e.target.value);
     actions.searchIngredients(e.target.value);
@@ -55,7 +51,8 @@ export const Navbar = () => {
           <h1 style={{ marginLeft: "90px" }}>Bite Buddies</h1>
         ) : currentPath.startsWith("/user-profile") ? (
           <h1>
-            Bienvenido a tu perfil, {store.currentUser.user_name || "error"}
+            {/* Verificar si store.currentUser está definido */}
+            Bienvenido a tu perfil, {store.currentUser?.user_name || "error"}
           </h1>
         ) : (
           <div className="m-1 w-50" style={{ position: "relative" }}>
@@ -82,7 +79,7 @@ export const Navbar = () => {
                 data-bs-toggle="dropdown"
                 aria-expanded="false"
               >
-                {store.currentUser.user_name || "error"}
+                {store.currentUser?.user_name || "error"}
               </button>
               <ul
                 className="dropdown-menu"
