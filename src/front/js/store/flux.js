@@ -16,6 +16,7 @@ const getState = ({
       listaDeCategorias: [],
       listaDeIngredientes: [],
       searchResult: [],
+      favoriteRecipes: [],
       detallesDeReceta:[],
     },
     actions: {
@@ -67,10 +68,10 @@ const getState = ({
         console.error('Network Error:', error);
         setStore({
             error: "Error al conectar con el servidor",
-        });
-        return false;
-    }
-},
+          });
+          return false;
+        }
+      },
       traerIngredientes: async () => {
         try {
           console.log("haciendo fetch");
@@ -121,7 +122,6 @@ const getState = ({
         }
       },
 
-
       traerCategories: async () => {
         try {
           const response = await fetch(`${process.env.BACKEND_URL}/api/categories`, {
@@ -171,6 +171,7 @@ const getState = ({
           return false;
         }
       },
+
       logout: () => {
         localStorage.removeItem("accessToken");
         setStore({
@@ -289,8 +290,27 @@ const getState = ({
       });
     } catch (error) {
       console.error("Error:", error);
-    }
+          }
   },
+
+  getUserFavorites: async () => {
+        try {
+          const accessToken = localStorage.getItem("accessToken");
+          const res = await axios.get(`${process.env.BACKEND_URL}/api/user/favorites`, {
+            headers: {
+              Authorization: `Bearer ${accessToken}`,
+            },
+          });
+
+          setStore({
+            favoriteRecipes: res.data,
+          });
+
+          console.log("User's favorite recipes:", res.data);
+        } catch (error) {
+          console.error("Error fetching favorite recipes:", error);
+        }
+      },
     },
   };
 };

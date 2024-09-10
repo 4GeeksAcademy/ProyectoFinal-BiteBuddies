@@ -2,11 +2,15 @@ import React, { useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "../../styles/stylesUserProfile.css";
 import { Context } from "../store/appContext";
-import { RecipeUploadModal } from "../component/recipeUpLoadModal";
+import { ProfileHeader } from "../component/userProfile/profileHeader";
+import { Tabs } from "../component/userProfile/tabs";
+import { RecipeList } from "../component/userProfile/tabViews/recipeList";
+import { FavoriteRecipes } from "../component/userProfile/tabViews/favoriteRecipes";
 
 export const UserProfile = () => {
-  const { store } = useContext(Context);
+  const { store, actions } = useContext(Context);
   const [showModal, setShowModal] = useState(false);
+  const [activeTab, setActiveTab] = useState("misRecetas");
   const withSession = !!store?.isLoggedIn;
   const navigate = useNavigate();
 
@@ -25,6 +29,7 @@ export const UserProfile = () => {
   };
 
   const handleCloseModal = () => {
+    console.log("Closing the modal");
     setShowModal(false);
   };
 
@@ -33,17 +38,20 @@ export const UserProfile = () => {
   }
 
   return (
-    <div
-      className="container profile-container"
-      style={{ position: "relative" }}
-    >
-      <div className="navbar-profile d-flex justify-content-between align-items-center p-3 bg-light">
-        <div className="profile-photo text-center col-3 p-1">
-          <img
-            src="https://via.placeholder.com/150"
-            alt="Foto de perfil"
-            className="img-fluid rounded-circle"
+    <div className="container profile-container" style={{ position: "relative" }}>
+      <ProfileHeader user={store.currentUser} />
+
+      <Tabs handleEditProfile={handleEditProfile} setActiveTab={setActiveTab} activeTab={activeTab} />
+
+      <div className="tab-content">
+        {activeTab === "misRecetas" && (
+          <RecipeList
+            recipes={store.listaDeRecetas}
+            handleOpenModal={handleOpenModal}
+            showModal={showModal}
+            handleCloseModal={handleCloseModal}
           />
+<<<<<<< HEAD
           <p>{store.currentUser.user_name || "error"}</p>
         </div>
         <div className="profile-info col-5 p-1">
@@ -100,6 +108,12 @@ export const UserProfile = () => {
         </button>
 
         <RecipeUploadModal show={showModal} handleClose={handleCloseModal} />
+=======
+        )}
+        {activeTab === "favoritas" && (
+          <FavoriteRecipes store={store} actions={actions} />
+        )}
+>>>>>>> origin/main
       </div>
     </div>
   );

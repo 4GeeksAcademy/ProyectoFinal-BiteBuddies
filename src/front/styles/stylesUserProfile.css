@@ -121,3 +121,9 @@ body {
   transform: translateY(-2px);
   box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
 }
+
+.btn-custom.active {
+  background-color: #ab694f; /* Cambia el color de fondo para el botón activo */
+  color: white; /* Color del texto para el botón activo */
+  border: 1px solid #ab694f; /* Borde del botón activo */
+}
