@@ -1,5 +1,5 @@
 import React from "react";
-import "../../styles/recipeView.css"; 
+
 
 export const RecipeView = () => {
     return (

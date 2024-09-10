@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import "../../styles/stylesUserProfile.css";
+
 import { Context } from "../store/appContext";
 import { RecipeUploadModal } from "../component/recipeUpLoadModal";
 

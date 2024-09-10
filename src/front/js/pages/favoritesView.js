@@ -1,6 +1,6 @@
 import React from "react";
 import { useNavigate } from "react-router-dom"; 
-import "../../styles/favoritesView.css";
+
 
 export const FavoritesView = () => {
     const navigate = useNavigate(); 

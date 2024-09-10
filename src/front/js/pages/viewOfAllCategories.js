@@ -1,6 +1,6 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom'; 
-import '../../styles/viewOfAllCategories.css'; 
+
 
 export const ViewOfAllCategories = () => {
     const navigate = useNavigate(); 
