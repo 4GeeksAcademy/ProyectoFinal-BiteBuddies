@@ -16,7 +16,6 @@ const getState = ({
       listaDeCategorias: [],
       listaDeIngredientes: [],
       searchResult: [],
-      favoriteRecipes: [],
       detallesDeReceta:[],
     },
     actions: {
@@ -68,10 +67,10 @@ const getState = ({
         console.error('Network Error:', error);
         setStore({
             error: "Error al conectar con el servidor",
-          });
-          return false;
-        }
-      },
+        });
+        return false;
+    }
+},
       traerIngredientes: async () => {
         try {
           console.log("haciendo fetch");
@@ -122,6 +121,7 @@ const getState = ({
         }
       },
 
+
       traerCategories: async () => {
         try {
           const response = await fetch(`${process.env.BACKEND_URL}/api/categories`, {
@@ -171,7 +171,6 @@ const getState = ({
           return false;
         }
       },
-
       logout: () => {
         localStorage.removeItem("accessToken");
         setStore({
@@ -225,92 +224,77 @@ const getState = ({
           error: null,
         });
       },
-    publicarReceta: async (
-    name,
-    description,
-    steps,
-    ingredients_ids,
-    category_ids,
-    imageFile
-  ) => {
-    const store = getStore();
-    const accessToken = localStorage.getItem("accessToken");
-    if (!accessToken) {
-      alert("No estás autenticado. Por favor, inicia sesión.");
-      return;
-    }
-    try {
-      const formData = new FormData();
-      formData.append('name', name);
-      formData.append('description', description);
-      formData.append('steps', steps);
-      formData.append('ingredients', JSON.stringify(ingredients_ids)); // Convertir array a JSON
-      formData.append('category', JSON.stringify(category_ids)); // Convertir array a JSON
-      formData.append('image', imageFile); // Adjuntar el archivo
+  publicarReceta: async (name, description, steps, ingredients_ids, category_ids, image) => {
+  console.log("publicarReceta ha sido llamada");
 
-      const response = await axios.post(
-        `${process.env.BACKEND_URL}/api/create_recipes`,
-        formData, // Enviar formData aquí
-        {
-          headers: {
-            'Authorization': `Bearer ${accessToken}`,
-            'Content-Type': 'multipart/form-data' // Content-Type para formData
-          }
-        }
-      );
+  const store = getStore();
+  const accessToken = localStorage.getItem("accessToken");
 
-      if (response.status === 201) {
-        alert("Receta publicada exitosamente!");
-        setStore({
-          listaDeRecetas: [...store.listaDeRecetas, response.data]
-        });
-      } else {
-        alert("Hubo un problema al publicar la receta. Por favor, inténtalo de nuevo.");
-      }
-    } catch (error) {
-      console.error("Error:", error);
-      alert("Ocurrió un error al intentar publicar la receta. Verifica la consola para más detalles.");
-    }
-  },
-    traerDetalleDeReceta: async (id) => {
-    try {
-      const response = await fetch(`${process.env.BACKEND_URL}/api/recipes/${id}`, {
-        method: 'GET',
+  try {
+    const response = await axios.post(
+      `${process.env.BACKEND_URL}/api/create_recipes`,
+      {
+        name,
+        description,
+        steps,
+        ingredients_ids,
+        category_ids,
+        image_url: image, // Enviar la URL de la imagen
+      },
+      {
         headers: {
+          Authorization: `Bearer ${accessToken}`,
           "Content-Type": "application/json",
         },
-      });
-      if (!response.ok) {
-        throw new Error('Error fetching recipes');
       }
-      const data = await response.json();
-      console.log("Detalles de recetas:", data);
+    );
+
+    // Si el backend devuelve la receta completa, actualiza el estado con la receta recibida
+    if (response.status === 201) {
+      const newRecipe = response.data.receta; // Asegúrate de que aquí esté la receta completa
+
       setStore({
-        detallesDeReceta: data 
+        listaDeRecetas: [...store.listaDeRecetas, newRecipe],  // Agrega la nueva receta al estado
       });
-    } catch (error) {
-      console.error("Error:", error);
-          }
-  },
 
-  getUserFavorites: async () => {
-        try {
-          const accessToken = localStorage.getItem("accessToken");
-          const res = await axios.get(`${process.env.BACKEND_URL}/api/user/favorites`, {
+      alert("Receta publicada exitosamente!");
+    }
+  } catch (error) {
+    console.error("Error al publicar la receta:", error);
+  }
+},
+    traerDetalleDeReceta: async (id) => {
+    try {
+        const response = await fetch(`${process.env.BACKEND_URL}/api/recipes/${id}`, {
+            method: 'GET',
             headers: {
-              Authorization: `Bearer ${accessToken}`,
+                "Content-Type": "application/json",
             },
-          });
-
-          setStore({
-            favoriteRecipes: res.data,
-          });
-
-          console.log("User's favorite recipes:", res.data);
-        } catch (error) {
-          console.error("Error fetching favorite recipes:", error);
+        });
+        if (!response.ok) {
+            throw new Error('Error fetching recipe details');
         }
-      },
+        
+        const data = await response.json();
+        console.log("Detalles de la receta:", data);
+        
+        setStore({
+            detallesDeReceta: {
+                id: data.id,
+                name: data.name,
+                description: data.description,
+                steps: data.steps,
+                image_url: data.image_url,
+                ingredients: data.ingredients, // Lista de ingredientes
+                categories: data.categories,   // Lista de categorías
+                uploaded_by_user: data.uploaded_by_user, // Info del usuario que subió la receta
+                is_official: data.is_official
+            }
+        });
+    } catch (error) {
+        console.error("Error:", error);
+    }
+},
     },
   };
 };

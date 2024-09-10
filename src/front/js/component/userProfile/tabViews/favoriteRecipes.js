@@ -21,7 +21,7 @@ export const FavoriteRecipes = ({ store, actions }) => {
               key={receta.id || index}
             >
               <img
-                src="https://via.placeholder.com/100"
+                src={receta.image_url}
                 alt="Receta Favorita"
                 className="img-fluid"
               />
