@@ -16,6 +16,7 @@ const getState = ({
       listaDeCategorias: [],
       listaDeIngredientes: [],
       searchResult: [],
+      favoriteRecipes: [],
     },
     actions: {
       registerUser: async (user_name, name, email, password) => {
@@ -60,6 +61,7 @@ const getState = ({
           return false;
         }
       },
+
       traerIngredientes: async () => {
         try {
           console.log("haciendo fetch");
@@ -110,7 +112,6 @@ const getState = ({
         }
       },
 
-
       traerCategories: async () => {
         try {
           const response = await fetch(`${process.env.BACKEND_URL}/api/categories`, {
@@ -160,6 +161,7 @@ const getState = ({
           return false;
         }
       },
+
       logout: () => {
         localStorage.removeItem("accessToken");
         setStore({
@@ -213,38 +215,59 @@ const getState = ({
           error: null,
         });
       },
-      publicarReceta: async (
-        name,
-        description,
-        steps,
-        ingredients_ids,
-        category_ids,
-      ) => {
+
+      publicarReceta: async (name, description, steps, ingredients, category) => {
         const store = getStore();
         const accessToken = localStorage.getItem("accessToken");
+
         try {
           const response = await axios.post(
-            `${process.env.BACKEND_URL}/api/uploaded_recipies`, {
+            `${process.env.BACKEND_URL}/api/create_recipes`, {
               name,
               description,
               steps,
-              ingredients_ids,
-              category_ids,
+              ingredients,
+              category,
             }, {
               headers: {
                 Authorization: `Bearer ${accessToken}`,
               },
             },
           );
+
           console.log(response);
+
           if (response.status === 201) {
+            console.log("Recipe response data:", response.data);
             alert("Receta publicada exitosamente!");
             setStore({
-              listaDeRecetas: [...store.listaDeRecetas, response.data],
+              listaDeRecetas: [...store.listaDeRecetas, response.data.receta],
             });
+
+            return true;
           }
         } catch (error) {
           console.error("Error:", error);
+          return false;
+        }
+      },
+
+      getUserFavorites: async () => {
+        try {
+          const accessToken = localStorage.getItem("accessToken");
+          const res = await axios.get(`${process.env.BACKEND_URL}/api/user/favorites`, {
+            headers: {
+              Authorization: `Bearer ${accessToken}`,
+            },
+          });
+
+          setStore({
+            favoriteRecipes: res.data,
+          });
+
+          console.log("User's favorite recipes:", res.data);
+        } catch (error) {
+          console.error("Error fetching favorite recipes:", error);
         }
       },
     },
