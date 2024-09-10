@@ -156,6 +156,19 @@ def delete_favorite_recipe(recipe_id):
     user_query.favorite_recipes.remove(recipe_query)
     db.session.commit()
     return jsonify(user_query.serialize()), 200
+@api.route('/user/recipes', methods=['GET'])
+@jwt_required()
+def get_user_recipes():
+    try:
+        current_user_id = get_jwt_identity()
+        user_recipes = Recipe.query.filter_by(user_id=current_user_id).all()
+        if not user_recipes:
+            return jsonify({"msg": "No se encontraron recetas para este usuario"}), 404
+        serialized_recipes = [recipe.serialize() for recipe in user_recipes]
+        return jsonify(serialized_recipes), 200
+    except Exception as e:
+        raise APIException(f'Error al obtener las recetas del usuario: {str(e)}', status_code=500)
+
 
 @api.route('/create_recipes', methods=['POST'])
 @jwt_required()
