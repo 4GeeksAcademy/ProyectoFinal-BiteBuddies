@@ -3,7 +3,7 @@ import { BrowserRouter, Route, Routes } from "react-router-dom";
 import ScrollToTop from "./component/scrollToTop";
 import { BackendURL } from "./component/backendURL";
 import { Navbar } from "./component/navbar/navbar";
-import { Footer } from "./component/footer";
+import { Footer } from "./component/footer/footer";
 
 
 import { Home } from "./pages/home";

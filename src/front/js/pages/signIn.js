@@ -1,7 +1,7 @@
 import React, { useState, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import { Context } from "../store/appContext";
-import "../../styles/singIn.css";
+
 
 export const Sign_in = () => {
   const [user_name, setUserName] = useState("");

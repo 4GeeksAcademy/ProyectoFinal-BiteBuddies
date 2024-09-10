@@ -1,7 +1,7 @@
 import React, { useEffect, useContext, useState } from "react";
 import { Context } from "../store/appContext";
 import { useParams } from "react-router-dom";
-import "../../styles/recipeView.css";
+
 
 export const RecipeView = () => {
     const { store, actions } = useContext(Context);
