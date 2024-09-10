@@ -1,6 +1,5 @@
 import React, { useContext, useState, useEffect } from "react";
 import { Context } from "../../store/appContext";
-import Select from "react-select";
 
 export const RecipeUploadModal = ({ show, handleClose }) => {
   const { store, actions } = useContext(Context);
@@ -9,74 +8,39 @@ export const RecipeUploadModal = ({ show, handleClose }) => {
     description: "",
     steps: "",
     ingredients_ids: [],
-    category_ids: []
+    category_ids: [],
+    image: "",  // Aquí guardaremos la URL de la imagen
   });
-
-  const [ingredientsLoaded, setIngredientsLoaded] = useState(false);
-  const [categoriesLoaded, setCategoriesLoaded] = useState(false);
-
+  
   useEffect(() => {
-    if (show) {
-      if (!ingredientsLoaded) {
-        actions.traerIngredientes().then(() => setIngredientsLoaded(true));
-      }
-      if (!categoriesLoaded) {
-        actions.traerCategories().then(() => setCategoriesLoaded(true));
-      }
-    }
-  }, [show, ingredientsLoaded, categoriesLoaded, actions]);
+    actions.traerIngredientes();
+    actions.traerCategories();
+  }, []);
 
   const handleChange = (e) => {
-    setRecipeData({ ...recipeData, [e.target.name]: e.target.value });
-  };
-
-  const handleIngredientsChange = (selectedOptions) => {
-    const ingredientsIds = selectedOptions.map((option) => option.value);
-    setRecipeData({ ...recipeData, ingredients_ids: ingredientsIds });
-  };
-
-  const handleCategoriesChange = (selectedOptions) => {
-    const categoryIds = selectedOptions.map((option) => option.value);
-    setRecipeData({ ...recipeData, category_ids: categoryIds });
+    const { name, value } = e.target;
+    setRecipeData({ ...recipeData, [name]: value });
+    console.log(recipeData);
   };
 
   const handleSubmit = async (e) => {
-  e.preventDefault();
-  console.log("Submitting recipe", recipeData);
-  
-  const success = await actions.publicarReceta(
-    recipeData.name,
-    recipeData.description,
-    recipeData.steps,
-    recipeData.ingredients_ids,
-    recipeData.category_ids
-  );
-  
-  console.log("Submission success:", success);
-  
-  if (success) {
-    console.log("Closing modal");
-    handleClose(); // This should close the modal
-  } else {
-    console.log("Recipe submission failed");
-  }
-};
+    e.preventDefault();
 
-  const ingredientsOptions = store.listaDeIngredientes.map((ingredient) => ({
-    value: ingredient.id,
-    label: ingredient.name,
-  }));
-
-  const categoriesOptions = store.listaDeCategorias.map((category) => ({
-    value: category.id,
-    label: category.name,
-  }));
+    const success = await actions.publicarReceta(
+      recipeData.name,
+      recipeData.description,
+      recipeData.steps,
+      recipeData.ingredients_ids,
+      recipeData.category_ids,
+      recipeData.image  // Usamos `image` para enviar la URL de la imagen
+    );
+    if (success) {
+      handleClose();
+    }
+  };
 
   return (
-    <div
-      className={`modal ${show ? "show" : ""}`}
-      style={{ display: show ? "block" : "none" }}
-    >
+    <div className={`modal ${show ? "show" : ""}`} style={{ display: show ? "block" : "none" }}>
       <div className="modal-dialog">
         <div className="modal-content">
           <div className="modal-header">
@@ -100,13 +64,65 @@ export const RecipeUploadModal = ({ show, handleClose }) => {
               </div>
               <div className="form-group">
                 <label>Descripción</label>
-                <textarea
+                <input
+                  type="text"
                   className="form-control"
                   name="description"
                   value={recipeData.description}
                   onChange={handleChange}
                   required
                 />
+              </div>
+              <div className="form-group">
+                <label>Ingredientes</label>
+                {store.listaDeIngredientes.map((ingredient) => (
+                  <div key={ingredient.id} className="form-check">
+                    <input
+                      className="form-check-input"
+                      type="checkbox"
+                      value={ingredient.id}
+                      onChange={(e) => {
+                        const value = parseInt(e.target.value); // Asegúrate de que sea un número
+                        const selectedIngredients = recipeData.ingredients_ids.includes(value)
+                          ? recipeData.ingredients_ids.filter((id) => id !== value)
+                          : [...recipeData.ingredients_ids, value];
+
+                        setRecipeData({
+                          ...recipeData,
+                          ingredients_ids: selectedIngredients,
+                        });
+                      }}
+                      checked={recipeData.ingredients_ids.includes(ingredient.id)} // Mantener el estado actualizado
+                    />
+                    <label className="form-check-label">{ingredient.name}</label>
+                  </div>
+                ))}
+              </div>
+
+              <div className="form-group">
+                <label>Categorias</label>
+                {store.listaDeCategorias.map((category) => (
+                  <div key={category.id} className="form-check">
+                    <input
+                      className="form-check-input"
+                      type="checkbox"
+                      value={category.id}
+                      onChange={(e) => {
+                        const value = parseInt(e.target.value); // Asegúrate de que sea un número
+                        const selectedCategories = recipeData.category_ids.includes(value)
+                          ? recipeData.category_ids.filter((id) => id !== value)
+                          : [...recipeData.category_ids, value];
+
+                        setRecipeData({
+                          ...recipeData,
+                          category_ids: selectedCategories,
+                        });
+                      }}
+                      checked={recipeData.category_ids.includes(category.id)} // Mantener el estado actualizado
+                    />
+                    <label className="form-check-label">{category.name}</label>
+                  </div>
+                ))}
               </div>
               <div className="form-group">
                 <label>Pasos</label>
@@ -118,35 +134,18 @@ export const RecipeUploadModal = ({ show, handleClose }) => {
                   required
                 />
               </div>
-
-              {/* Ingredientes - Usando React-Select */}
               <div className="form-group">
-                <label>Ingredientes</label>
-                <Select
-                  isMulti
-                  options={ingredientsOptions}
-                  onChange={handleIngredientsChange}
-                  value={ingredientsOptions.filter((option) =>
-                    recipeData.ingredients_ids.includes(option.value)
-                  )}
-                  placeholder="Selecciona ingredientes"
+                <label>URL de la Imagen</label>
+                <input
+                  type="text"  // Cambia a tipo `text` para aceptar la URL de la imagen
+                  className="form-control"
+                  name="image"  // Nombre del campo debe coincidir con el estado
+                  value={recipeData.image}  // Aquí se almacena la URL de la imagen
+                  onChange={handleChange}  // Maneja cambios
+                  placeholder="Ingresa la URL de la imagen"  // Añadir un placeholder opcional
+                  required
                 />
               </div>
-
-              {/* Categorías - Usando React-Select */}
-              <div className="form-group">
-                <label>Categorías</label>
-                <Select
-                  isMulti
-                  options={categoriesOptions}
-                  onChange={handleCategoriesChange}
-                  value={categoriesOptions.filter((option) =>
-                    recipeData.category_ids.includes(option.value)
-                  )}
-                  placeholder="Selecciona categorías"
-                />
-              </div>
-
               <button type="submit" className="btn btn-primary">
                 Subir Receta
               </button>

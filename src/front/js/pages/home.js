@@ -44,7 +44,7 @@ export const Home = () => {
 							<Link key={receta.id} to={`/recipe/${receta.id}`}>
 							<div className="recipe-card m-3 bg-light p-2">
 							<img
-							src="https://via.placeholder.com/100"
+							src={receta.image_url}
 							alt="Receta"
 							className="img-fluid"
 							/>

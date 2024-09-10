@@ -8,14 +8,14 @@ export const RecipeList = ({ recipes, handleOpenModal, showModal, handleCloseMod
         Mis recetas
       </h3>
       <div className="row justify-content-center">
-        {recipes.map((receta, index) => (
+        {recipes.map((receta) => (
           <div
             className="recipe-card col-md-3 bg-light p-2 m-2"
             style={{ width: "23%" }}
-            key={receta.id || index}
+            key={receta.id}  // Usa solo `receta.id`
           >
             <img
-              src="https://via.placeholder.com/100"
+              src={receta.image_url}
               alt="Receta"
               className="img-fluid"
             />
