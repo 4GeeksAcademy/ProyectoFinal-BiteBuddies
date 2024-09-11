@@ -11,11 +11,11 @@
     flex-wrap: wrap;
     justify-content: space-between;
     margin-bottom: 5px; 
+    gap: 10px; /* Reduce el espacio entre las secciones */
 }
 
 .footer-section {
-    flex: 1 1 150px;
-    margin: 5px;
+    margin: 0 10px; /* Reducir el margen entre las secciones */
 }
 
 .footer-section h4 {
