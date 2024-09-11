@@ -118,18 +118,16 @@ const getState = ({ getStore, getActions, setStore }) => {
         }
       },
       getOtherUserProfile: async (userId) => {
-  // Llamada a la API para obtener el perfil del otro usuario
-  const response = await fetch(`/api/user/${userId}`);
-  const data = await response.json();
-  setStore({ otherUserProfile: data });
-},
+        const response = await fetch(`/api/user/${userId}`);
+        const data = await response.json();
+        setStore({ otherUserProfile: data });
+      },
 
-getOtherUserRecipes: async (userId) => {
-  // Llamada a la API para obtener las recetas del otro usuario
-  const response = await fetch(`/api/user/${userId}/recipes`);
-  const data = await response.json();
-  setStore({ listaDeRecetasDeOtroUsuario: data });
-},
+      getOtherUserRecipes: async (userId) => {
+        const response = await fetch(`/api/user/${userId}/recipes`);
+        const data = await response.json();
+        setStore({ listaDeRecetasDeOtroUsuario: data });
+      },
 
       searchUsers: (query) => {
         const store = getStore();
@@ -139,7 +137,7 @@ getOtherUserRecipes: async (userId) => {
           user.user_name.toLowerCase().includes(lowerCaseQuery)
         );
 
-        setStore({ searchResultUsers: filteredUsers }); // Guardar los resultados filtrados
+        setStore({ searchResultUsers: filteredUsers });
       },
 
       traerRecetas: async () => {
