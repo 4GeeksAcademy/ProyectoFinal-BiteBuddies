@@ -1,33 +1,33 @@
 import React from "react";
+import { Link } from 'react-router-dom';
 import "./footer.css";
 
 export const Footer = () => {
 	return (
 		<footer className="custom-footer">
 			<div className="footer-container justify-content-center">
-				<div className="footer-section">
-					<h4>Categorías Populares</h4>
-					<a href="/categoria/postres" className="footer-link">Postres</a><br />
-					<a href="/categoria/vegetariano" className="footer-link">Vegetariano</a><br />
-					<a href="/categoria/comida-rapida" className="footer-link">Comida Rápida</a>
-				</div>
-				<div className="footer-section">
-					<h4 className="text-center">Ayuda y Soporte</h4>
+				<div className="footer-section mx-5">
+					<h4 className="text-center">Categorías Populares</h4>
 					<div className="footer-section-container d-flex">
-						<div className="m-2">
-							<a href="/faq" className="footer-link">Preguntas Frecuentes (FAQ)</a><br />
-							<a href="/contacto" className="footer-link">Contacto</a>
-						</div>
-						<div className="m-2">
-							<a href="/politica-de-privacidad" className="footer-link">Política de Privacidad</a><br />
-							<a href="/terminos-condiciones" className="footer-link">Términos y Condiciones</a>
-						</div>
+						<a href="/categoria/postres" className="footer-link m-2">Postres</a>
+						<a href="/categoria/vegetariano" className="footer-link m-2">Vegetariano</a>
+						<a href="/categoria/comida-rapida" className="footer-link m-2">Comida Rápida</a>
 					</div>
 				</div>
-				<div className="footer-section">
-					<h4>Contacto</h4>
-					<p>Teléfono: +1 800-123-4567</p>
-					<p>Email: contacto@bestchefs.com</p>
+				<div className="footer-section mx-5">
+					<h4 className="text-center">Ayuda y Soporte</h4>
+					<div className="footer-section-container d-flex">
+						<Link to="/faq" className="footer-link m-2">Preguntas Frecuentes (FAQ)</Link>
+						<Link to="/privacy-policy" className="footer-link m-2">Política de Privacidad</Link>
+						<Link to="/terms-and-conditions" className="footer-link m-2">Términos y Condiciones</Link>
+					</div>
+				</div>
+				<div className="footer-section mx-5">
+					<h4 className="text-center">Contacto</h4>
+					<div className="footer-section-container d-flex">
+						<p className="m-2">Teléfono: +1 800-123-4567</p>
+						<p className="m-2">Email: contacto@bestchefs.com</p>
+					</div>
 				</div>
 			</div>
 			<div className="footer-bottom">

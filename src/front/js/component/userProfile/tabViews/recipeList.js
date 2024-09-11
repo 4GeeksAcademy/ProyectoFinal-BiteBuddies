@@ -14,11 +14,11 @@ export const RecipeList = ({ recipes, showModal, handleCloseModal }) => {
       <h3 style={{ borderBottom: "2px solid #000", paddingBottom: "10px" }}>
         Mis recetas
       </h3>
-      <div className="row d-flex justify-content-center">
+      <div className="d-flex flex-wrap justify-content-center">
         {recipes.map((receta) => (
-            <div
+          <Link key={receta.id} to={`/recipe/${receta.id}`}>
+              <div
               className="recipe-card col-md-3 bg-light p-2 m-2"
-              style={{ width: "23%" }}
             >
               <img
                 src={receta.image_url}
@@ -27,6 +27,7 @@ export const RecipeList = ({ recipes, showModal, handleCloseModal }) => {
               />
               <p className="recipe-name">{receta.name || "Receta sin nombre"}</p>
             </div>
+          </Link>
         ))}
       </div>
       <div className="row mt-3 justify-content-center">
