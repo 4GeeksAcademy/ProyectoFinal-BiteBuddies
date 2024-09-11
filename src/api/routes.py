@@ -18,6 +18,13 @@ CORS(api)
 def handle_invalid_usage(error):
     return jsonify(error.to_dict()), error.status_code
 
+@api.route('/all_users', methods=['GET'])
+def get_all_users():
+    users_query = User.query.all()
+    if not users_query:
+        raise APIException("No se encontraron usuarios", status_code=404)
+    all_users = list(map(lambda user: user.serialize(), users_query))
+    return jsonify(all_users), 200
 
 @api.route('/users', methods=['POST'])
 def create_user():
