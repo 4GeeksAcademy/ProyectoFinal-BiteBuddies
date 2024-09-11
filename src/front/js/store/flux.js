@@ -13,10 +13,13 @@ const getState = ({
       currentUser: null,
       isLoggedIn: false,
       listaDeRecetas: [],
+      listaDeRecetasPublicadas: [],
+      recetasSubidas:[],
       listaDeCategorias: [],
       listaDeIngredientes: [],
       searchResult: [],
       detallesDeReceta:[],
+      recetasFavoritas:[],
     },
     actions: {
       registerUser: async (user_name, first_name, last_name, email, password) => {
@@ -239,7 +242,7 @@ const getState = ({
         steps,
         ingredients_ids,
         category_ids,
-        image_url: image, // Enviar la URL de la imagen
+        image_url: image,
       },
       {
         headers: {
@@ -248,13 +251,12 @@ const getState = ({
         },
       }
     );
-
-    // Si el backend devuelve la receta completa, actualiza el estado con la receta recibida
     if (response.status === 201) {
-      const newRecipe = response.data.receta; // Asegúrate de que aquí esté la receta completa
+      const newRecipe = response.data.receta;
 
       setStore({
-        listaDeRecetas: [...store.listaDeRecetas, newRecipe],  // Agrega la nueva receta al estado
+        listaDeRecetas: [...store.listaDeRecetas, newRecipe],
+        listaDeRecetasPublicadas: [...store.listaDeRecetasPublicadas, newRecipe],
       });
 
       alert("Receta publicada exitosamente!");
@@ -295,6 +297,121 @@ const getState = ({
         console.error("Error:", error);
     }
 },
+getUserRecipes: async () => {
+  const store = getStore();
+  const accessToken = localStorage.getItem("accessToken");
+
+  try {
+    const response = await fetch(`${process.env.BACKEND_URL}/api/user/recipes`, {
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+        "Content-Type": "application/json",
+      },
+    });
+
+    if (response.ok) {
+      const data = await response.json();
+      console.log("Recetas del usuario:", data);
+      setStore({
+        listaDeRecetasPublicadas: data,
+        recetasSubidas: data.length
+      });
+    } else {
+      console.error("Error al obtener las recetas del usuario");
+    }
+  } catch (error) {
+    console.error("Error:", error);
+  }
+},
+getUserFavorites: async () => {
+  const store = getStore();
+  const accessToken = localStorage.getItem("accessToken");
+
+  try {
+    const response = await fetch(`${process.env.BACKEND_URL}/api/user/favorites`, {
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+        "Content-Type": "application/json",
+      },
+    });
+
+    if (response.ok) {
+      const data = await response.json();
+      setStore({
+        recetasFavoritas: data,
+      });
+      return true;
+    } else {
+      console.error("Error al obtener los favoritos del usuario");
+      return false;
+    }
+  } catch (error) {
+    console.error("Error:", error);
+    return false;
+  }
+},
+addRecipeToFavorites: async (recipe_id) => {
+        const accessToken = localStorage.getItem("accessToken");
+
+        try {
+          const response = await fetch(`${process.env.BACKEND_URL}/api/favorites/recipes/${recipe_id}`, {
+            method: 'POST',
+            headers: {
+              Authorization: `Bearer ${accessToken}`,
+              "Content-Type": "application/json",
+            },
+          });
+
+          if (response.ok) {
+            console.log("Receta añadida a favoritos");
+            const userFavorites = await response.json();
+            setStore({
+              recetasFavoritas: userFavorites.favorite_recipes, 
+            });
+            return true;
+          } else {
+            console.error("Error al añadir la receta a favoritos");
+            return false;
+          }
+        } catch (error) {
+          console.error("Error:", error);
+          return false;
+        }
+      },
+      removeRecipeFromFavorites: async (recipe_id) => {
+        const accessToken = localStorage.getItem("accessToken");
+
+        try {
+          const response = await fetch(`${process.env.BACKEND_URL}/api/favorites/recipes/${recipe_id}`, {
+            method: 'DELETE',
+            headers: {
+              Authorization: `Bearer ${accessToken}`,
+              "Content-Type": "application/json",
+            },
+          });
+
+          if (response.ok) {
+            console.log("Receta eliminada de favoritos");
+            const userFavorites = await response.json();
+            setStore({
+              recetasFavoritas: userFavorites.favorite_recipes,
+            });
+            return true;
+          } else {
+            console.error("Error al eliminar la receta de favoritos");
+            return false;
+          }
+        } catch (error) {
+          console.error("Error:", error);
+          return false;
+        }
+      },
+      isRecipeFavorite: (recipe_id) => {
+        const store = getStore();
+        return store.recetasFavoritas && store.recetasFavoritas.some((recipe) => recipe.id === recipe_id);
+      },
 
     },
   };
