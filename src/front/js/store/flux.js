@@ -8,18 +8,55 @@ const getState = ({ getStore, getActions, setStore }) => {
       error: null,
       currentUser: null,
       isLoggedIn: false,
-      listaDeRecetas: [],
       listaDeRecetasPublicadas: [],
       recetasSubidas: [],
       listaDeCategorias: [],
       listaDeIngredientes: [],
       listaDeUsuarios: [],
+      listaDeRecetas: [],
+      listaDeRecetasDeOtroUsuario:[],
       searchResult: [],
       searchResultUsers: [],
+      busquedaActiva: false,
       detallesDeReceta: [],
       recetasFavoritas: [],
     },
     actions: {
+      buscar: (query, searchType) => {
+        const store = getStore();
+        let resultadosUsers = [];
+
+        const lowerCaseQuery = query.toLowerCase();
+
+        if (searchType === "recetas") {
+          resultadosUsers = store.listaDeRecetas.filter((receta) =>
+            receta.name.toLowerCase().includes(lowerCaseQuery)
+          );
+          setStore({searchResultUsers: resultadosUsers});
+        }
+        if (searchType === "ingredientes") {
+          resultadosUsers = store.listaDeIngredientes.filter((ingredient) =>
+            ingredient.name.toLowerCase().includes(lowerCaseQuery)
+          );
+        }
+        if (searchType === "usuarios") {
+          resultadosUsers = store.listaDeUsuarios.filter((user) =>
+            user.user_name.toLowerCase().includes(lowerCaseQuery),
+          );
+        }
+        setStore({
+          searchResultUsers: resultadosUsers,
+          busquedaActiva: true,
+        });
+      },
+
+      limpiarBusqueda: () => {
+        setStore({
+          searchResult: [],
+          searchResultUsers:[],
+          busquedaActiva: false,
+        });
+      },
       registerUser: async (user_name, first_name, last_name, email, password) => {
         const store = getStore();
         try {
@@ -117,29 +154,47 @@ const getState = ({ getStore, getActions, setStore }) => {
           console.error("Error al obtener usuarios:", error);
         }
       },
-      getOtherUserProfile: async (userId) => {
-        const response = await fetch(`/api/user/${userId}`);
-        const data = await response.json();
-        setStore({ otherUserProfile: data });
-      },
+  getOtherUserProfile: async (userId) => {
+  console.log("userID", userId);
+  try {
+    const response = await fetch(`${process.env.BACKEND_URL}/api/user/${userId}`); 
+    console.log("API response for profile:", response);
+    if (!response.ok) {
+      throw new Error("Error al obtener el perfil del usuario");
+    }
+    const data = await response.json();
+    console.log("Profile data:", data);
+    setStore({ otherUserProfile: data });
+    console.log("Profile stored in state:", data);
+  } catch (error) {
+    console.error("Error al obtener el perfil de otro usuario:", error);
+  }
+},
 
-      getOtherUserRecipes: async (userId) => {
-        const response = await fetch(`/api/user/${userId}/recipes`);
-        const data = await response.json();
-        setStore({ listaDeRecetasDeOtroUsuario: data });
-      },
+  getOtherUserRecipes: async (userId) => {
+  try {
+    const response = await fetch(`${process.env.BACKEND_URL}/api/user/${userId}/recipes`);
+    const data = await response.json();
 
-      searchUsers: (query) => {
-        const store = getStore();
-        const lowerCaseQuery = query.toLowerCase();
-
-        const filteredUsers = store.listaDeUsuarios.filter((user) =>
-          user.user_name.toLowerCase().includes(lowerCaseQuery)
-        );
-
-        setStore({ searchResultUsers: filteredUsers });
-      },
-
+    // Si la respuesta es un array, significa que las recetas se obtuvieron correctamente
+    if (Array.isArray(data)) {
+      setStore({ listaDeRecetasDeOtroUsuario: data });
+    } 
+    // Si la respuesta tiene un objeto con un mensaje, significa que no se encontraron recetas
+    else if (data.message) {
+      console.error("Mensaje del servidor:", data.message);
+      setStore({ listaDeRecetasDeOtroUsuario: [] }); // Asegurar que siempre sea un array vacío en este caso
+    } 
+    // Manejo de cualquier otra respuesta inesperada
+    else {
+      console.error("Respuesta inesperada del servidor:", data);
+      setStore({ listaDeRecetasDeOtroUsuario: [] });
+    }
+  } catch (error) {
+    console.error("Error al obtener las recetas del otro usuario:", error);
+    setStore({ listaDeRecetasDeOtroUsuario: [] }); // Asegurar que siempre sea un array en caso de error
+  }
+},
       traerRecetas: async () => {
         try {
           const response = await fetch(`${process.env.BACKEND_URL}/api/all_recipes`, {
@@ -239,7 +294,6 @@ const getState = ({ getStore, getActions, setStore }) => {
         const filteredResults = store.listaDeIngredientes.filter((ingredient) =>
           ingredient.name.toLowerCase().startsWith(lowerCaseQuery)
         );
-
         setStore({
           searchResult: filteredResults,
           error: null,
