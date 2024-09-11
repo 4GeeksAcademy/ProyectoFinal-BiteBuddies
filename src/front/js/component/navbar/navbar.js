@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from "react";
-import { Link, useLocation, useNavigate } from "react-router-dom"; // Importa useNavigate
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { Context } from "../../store/appContext";
 import "../navbar/navBar.css";
 
@@ -8,40 +8,58 @@ export const Navbar = () => {
     const { store, actions } = useContext(Context);
     const [search, setSearch] = useState("");
     const [searchCategory, setSearchCategory] = useState("ingredientes");
-    const navigate = useNavigate(); // Inicializa useNavigate
+    const navigate = useNavigate();
 
-    // Cargar los ingredientes y los usuarios cuando el componente se monte
     useEffect(() => {
         actions.traerIngredientes();
         actions.traerUsuarios();
-    }, []);  // Solo ejecutarse una vez al montar el componente
+        actions.traerRecetas();
+    }, []);
 
     const handleSearchChange = (e) => {
+        e.preventDefault();
         setSearch(e.target.value);
-
-        if (searchCategory === "ingredientes") {
-            actions.searchIngredients(e.target.value);
-        } else if (searchCategory === "recetas") {
-            actions.searchRecipes(e.target.value);
-        } else if (searchCategory === "usuarios") {
-            actions.searchUsers(e.target.value);  // Filtrar usuarios mientras escribes
+        if (searchCategory === "usuarios"){
+            actions.buscar(e.target.value, "usuarios")
+        }else if (searchCategory === "ingredientes") {
+            actions.buscar(e.target.value, "ingredientes");
+        }else if (searchCategory === "recetas"){
+            actions.buscar(e.target.value, "recetas")
         }
     };
 
     const handleUserClick = (userId) => {
-    // Verificar si el ID es válido
+        console.log(userId);
     if (userId) {
-        navigate(`/user-profile/${userId}`); // Navega a la URL con el ID del usuario
+        actions.traerUsuarios();
+        actions.getOtherUserProfile(userId)
+        navigate(`/user/${userId}`);        
+        setSearch("");
     }
 };
 
     const renderDropdown = () => {
-        if (search && store.searchResultUsers.length > 0 && searchCategory === "usuarios") {
+        if (searchCategory === "usuarios" && search) {
+            return (
+               <ul className="dropdown-menu show" style={{ position: "absolute", width: "100%" }}>
+                    {store.searchResultUsers.length > 0 ? (
+                    store.searchResultUsers.map((user, index) => (
+                        <li key={index} className="dropdown-item" onClick={() => handleUserClick(user.id)}>
+                        {user.user_name}
+                        </li>
+                    ))
+                    ) : (
+                    <li className="dropdown-item">Buscando usuarios...</li>
+                    )}
+                </ul>
+    );
+        }
+        if (search && store.searchResult.length > 0 && searchCategory !== "usuarios") {
             return (
                 <ul className="dropdown-menu show" style={{ position: "absolute", width: "100%" }}>
-                    {store.searchResultUsers.map((user, index) => (
-                        <li key={index} className="dropdown-item" onClick={() => handleUserClick(user.id)}> {/* Cambia user.id si usas otro campo */}
-                            {user.user_name}
+                    {store.searchResult.map((item, index) => (
+                        <li key={index} className="dropdown-item">
+                            {item.name}
                         </li>
                     ))}
                 </ul>
@@ -49,6 +67,7 @@ export const Navbar = () => {
         }
         return null;
     };
+
 
     return (
         <nav className="navbar-container">
@@ -86,9 +105,9 @@ export const Navbar = () => {
                     className="search-input"
                     placeholder={`Buscar ${searchCategory}...`}
                     value={search}
-                    onChange={handleSearchChange}  // Actualizar la búsqueda dinámicamente
+                    onChange={handleSearchChange}
                 />
-                {renderDropdown()}  {/* Renderizar el dropdown con resultados */}
+                {renderDropdown()}
             </div>
 
             <div className="ml-auto">
@@ -105,7 +124,7 @@ export const Navbar = () => {
                         </button>
                         <ul className="dropdown-menu" aria-labelledby="dropdownMenuButton">
                             <li>
-                                <Link className="dropdown-item" to={`/user-profile/${store.currentUser.id}`}>
+                                <Link className="dropdown-item" to={`/user-profile`}>
                                     Perfil
                                 </Link>
                             </li>
