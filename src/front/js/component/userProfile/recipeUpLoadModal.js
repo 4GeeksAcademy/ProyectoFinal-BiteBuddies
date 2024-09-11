@@ -1,5 +1,6 @@
 import React, { useContext, useState, useEffect } from "react";
 import { Context } from "../../store/appContext";
+import Select from "react-select"
 
 export const RecipeUploadModal = ({ show, handleClose }) => {
   const { store, actions } = useContext(Context);
@@ -12,19 +13,38 @@ export const RecipeUploadModal = ({ show, handleClose }) => {
     image: "",  // Aquí guardaremos la URL de la imagen
   });
   
+const [ingredientsLoaded, setIngredientsLoaded] = useState(false);
+const [categoriesLoaded, setCategoriesLoaded] = useState(false);
+
   useEffect(() => {
-    actions.traerIngredientes();
-    actions.traerCategories();
-  }, []);
+    if (show) {
+      if (!ingredientsLoaded) {
+        actions.traerIngredientes().then(() => setIngredientsLoaded(true));
+      }
+      if (!categoriesLoaded) {
+        actions.traerCategories().then(() => setCategoriesLoaded(true));
+      }
+    }
+  }, [show, ingredientsLoaded, categoriesLoaded, actions]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
     setRecipeData({ ...recipeData, [name]: value });
-    console.log(recipeData);
+  };
+
+  const handleIngredientsChange = (selectedOptions) => {
+    const ingredientsIds = selectedOptions.map((option) => option.value);
+    setRecipeData({ ...recipeData, ingredients_ids: ingredientsIds });
+  };
+
+  const handleCategoriesChange = (selectedOptions) => {
+    const categoryIds = selectedOptions.map((option) => option.value);
+    setRecipeData({ ...recipeData, category_ids: categoryIds });
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    console.log("Submitting recipe", recipeData);
 
     const success = await actions.publicarReceta(
       recipeData.name,
@@ -34,10 +54,26 @@ export const RecipeUploadModal = ({ show, handleClose }) => {
       recipeData.category_ids,
       recipeData.image  // Usamos `image` para enviar la URL de la imagen
     );
+
+    console.log("Submission success:", success);
+
     if (success) {
-      handleClose();
+    console.log("Closing modal");
+    handleClose(); // This should close the modal
+    } else {
+      console.log("Recipe submission failed");
     }
   };
+
+  const ingredientsOptions = store.listaDeIngredientes.map((ingredient) => ({
+    value: ingredient.id,
+    label: ingredient.name,
+  }));
+
+  const categoriesOptions = store.listaDeCategorias.map((category) => ({
+    value: category.id,
+    label: category.name,
+  }));
 
   return (
     <div className={`modal ${show ? "show" : ""}`} style={{ display: show ? "block" : "none" }}>
@@ -73,56 +109,32 @@ export const RecipeUploadModal = ({ show, handleClose }) => {
                   required
                 />
               </div>
+              {/* Ingredientes - Usando React-Select */}
               <div className="form-group">
                 <label>Ingredientes</label>
-                {store.listaDeIngredientes.map((ingredient) => (
-                  <div key={ingredient.id} className="form-check">
-                    <input
-                      className="form-check-input"
-                      type="checkbox"
-                      value={ingredient.id}
-                      onChange={(e) => {
-                        const value = parseInt(e.target.value); // Asegúrate de que sea un número
-                        const selectedIngredients = recipeData.ingredients_ids.includes(value)
-                          ? recipeData.ingredients_ids.filter((id) => id !== value)
-                          : [...recipeData.ingredients_ids, value];
-
-                        setRecipeData({
-                          ...recipeData,
-                          ingredients_ids: selectedIngredients,
-                        });
-                      }}
-                      checked={recipeData.ingredients_ids.includes(ingredient.id)} // Mantener el estado actualizado
-                    />
-                    <label className="form-check-label">{ingredient.name}</label>
-                  </div>
-                ))}
+                <Select
+                  isMulti
+                  options={ingredientsOptions}
+                  onChange={handleIngredientsChange}
+                  value={ingredientsOptions.filter((option) =>
+                    recipeData.ingredients_ids.includes(option.value)
+                  )}
+                  placeholder="Selecciona ingredientes"
+                />
               </div>
 
+              {/* Categorías - Usando React-Select */}
               <div className="form-group">
-                <label>Categorias</label>
-                {store.listaDeCategorias.map((category) => (
-                  <div key={category.id} className="form-check">
-                    <input
-                      className="form-check-input"
-                      type="checkbox"
-                      value={category.id}
-                      onChange={(e) => {
-                        const value = parseInt(e.target.value); // Asegúrate de que sea un número
-                        const selectedCategories = recipeData.category_ids.includes(value)
-                          ? recipeData.category_ids.filter((id) => id !== value)
-                          : [...recipeData.category_ids, value];
-
-                        setRecipeData({
-                          ...recipeData,
-                          category_ids: selectedCategories,
-                        });
-                      }}
-                      checked={recipeData.category_ids.includes(category.id)} // Mantener el estado actualizado
-                    />
-                    <label className="form-check-label">{category.name}</label>
-                  </div>
-                ))}
+                <label>Categorías</label>
+                <Select
+                  isMulti
+                  options={categoriesOptions}
+                  onChange={handleCategoriesChange}
+                  value={categoriesOptions.filter((option) =>
+                    recipeData.category_ids.includes(option.value)
+                  )}
+                  placeholder="Selecciona categorías"
+                />
               </div>
               <div className="form-group">
                 <label>Pasos</label>

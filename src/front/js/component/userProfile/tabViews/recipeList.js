@@ -3,6 +3,12 @@ import { RecipeUploadModal } from "../recipeUpLoadModal";
 import { Link } from "react-router-dom";
 
 export const RecipeList = ({ recipes, showModal, handleCloseModal }) => {
+  
+  // Verificar si recipes es un array y tiene elementos
+  if (!Array.isArray(recipes) || recipes.length === 0) {
+    return <p>No hay recetas disponibles.</p>;
+  }
+
   return (
     <div className="recipes-section mt-4">
       <h3 style={{ borderBottom: "2px solid #000", paddingBottom: "10px" }}>

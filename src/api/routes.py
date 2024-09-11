@@ -82,6 +82,17 @@ def get_recipe_by_id(recipe_id):
         raise APIException("Receta no encontrada", status_code=404)
     return jsonify(recipe_query.serialize()), 200
 
+@api.route('/user/<int:user_id>/recipes', methods=['GET'])
+def get_user_recipes_by_id(user_id):
+    user_query = User.query.get(user_id)
+    if not user_query:
+        raise APIException("Usuario no encontrado", status_code=404)
+    recipes_query = Recipe.query.filter_by(user_id=user_id).all()
+    if not recipes_query:
+        raise APIException("Recetas no encontradas", status_code=404)
+    recipes = [recipe.serialize() for recipe in recipes_query]
+    return jsonify(recipes), 200
+
 
 @api.route('/ingredients', methods=['GET'])
 def get_all_ingredients():
@@ -119,6 +130,12 @@ def login():
     access_token = create_access_token(identity=user_query.id)
     return jsonify(access_token=access_token), 200
 
+@api.route('/user/<int:user_id>', methods=['GET'])
+def get_user_by_id(user_id):
+    user_query = User.query.get(user_id)
+    if not user_query:
+        raise APIException("User no encontrado", status_code=404)
+    return jsonify(user_query.serialize()), 200
 
 @api.route('/user/favorites', methods=['GET'])
 @jwt_required()

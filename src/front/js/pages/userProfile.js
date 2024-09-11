@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import "../../styles/stylesUserProfile.css";
 import { Context } from "../store/appContext";
 import { ProfileHeader } from "../component/userProfile/profileHeader";
@@ -12,25 +12,16 @@ export const UserProfile = () => {
   const { store, actions } = useContext(Context);
   const [showModal, setShowModal] = useState(false);
   const [activeTab, setActiveTab] = useState("misRecetas");
-  const navigate = useNavigate();
-  const { userId } = useParams();
-
   const withSession = !!store?.isLoggedIn;
-
-
-  const isOwnProfile = !userId || userId === String(store.currentUser?.id);
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (!withSession) {
       navigate("/login");
-    } else if (!isOwnProfile) {
-      actions.getOtherUserProfile(userId);
-      actions.getOtherUserRecipes(userId);
     } else {
-   
       actions.getUserRecipes();
     }
-  }, [withSession, userId]);
+  }, [withSession]);
 
   const handleEditProfile = () => {
     console.log("Editar perfil");
@@ -44,40 +35,36 @@ export const UserProfile = () => {
     setShowModal(false);
   };
 
-  // Si los datos no están disponibles, mostrar un mensaje de carga
-  if (!store.currentUser || (userId && !store.otherUserProfile)) {
+  if (!store.currentUser) {
     return <div>Cargando...</div>;
   }
 
   return (
     <div className="container profile-container" style={{ position: "relative" }}>
-      {/* Mostrar los datos del usuario actual o del otro usuario según corresponda */}
-      <ProfileHeader user={isOwnProfile ? store.currentUser : store.otherUserProfile} />
+      <ProfileHeader user={store.currentUser} />
 
-      <Tabs handleEditProfile={isOwnProfile ? handleEditProfile : null} setActiveTab={setActiveTab} activeTab={activeTab} />
+      <Tabs handleEditProfile={handleEditProfile} setActiveTab={setActiveTab} activeTab={activeTab} />
 
       <div className="tab-content">
         {activeTab === "misRecetas" && (
           <>
-            {(isOwnProfile ? store.listaDeRecetasPublicadas : store.listaDeRecetasDeOtroUsuario).length === 0 ? (
+            {store.listaDeRecetasPublicadas.length === 0 ? (
               <div className="text-center">
-                <p>{isOwnProfile ? "No tienes recetas propias." : "Este usuario no tiene recetas propias."}</p>
+                <p>No tienes recetas propias.</p>
               </div>
             ) : (
               <RecipeList
-                recipes={isOwnProfile ? store.listaDeRecetasPublicadas : store.listaDeRecetasDeOtroUsuario}
-                handleOpenModal={isOwnProfile ? handleOpenModal : null}
+                recipes={store.listaDeRecetasPublicadas}
+                handleOpenModal={handleOpenModal}
                 showModal={showModal}
                 handleCloseModal={handleCloseModal}
               />
             )}
-            {isOwnProfile && (
-              <div className="row mt-3 justify-content-center">
-                <button className="btn btn-primary" style={{ borderRadius: "5px" }} onClick={handleOpenModal}>
-                  Subir Receta
-                </button>
-              </div>
-            )}
+            <div className="row mt-3 justify-content-center">
+              <button className="btn btn-primary" style={{ borderRadius: "5px" }} onClick={handleOpenModal}>
+                Subir Receta
+              </button>
+            </div>
           </>
         )}
 
