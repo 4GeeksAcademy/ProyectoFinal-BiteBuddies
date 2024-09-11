@@ -3,7 +3,7 @@ import { BrowserRouter, Route, Routes } from "react-router-dom";
 import ScrollToTop from "./component/scrollToTop";
 import { BackendURL } from "./component/backendURL";
 import { Navbar } from "./component/navbar/navbar";
-import { Footer } from "./component/footer";
+import { Footer } from "./component/footer/index";
 
 
 import { Home } from "./pages/home";
@@ -15,6 +15,9 @@ import { FavoritesView } from "./pages/favoritesView";
 import { RecipeView } from "./pages/recipeView";
 import { ViewOfAllCategories } from "./pages/viewOfAllCategories";
 
+import { PrivacyPolicy } from "./pages/static/privacyPolicy";
+import { TermsAndConditions } from "./pages/static/termsAndConditions";
+import { FAQPage } from "./pages/static/faqPage";
 
 import injectContext from "./store/appContext";
 
@@ -40,6 +43,9 @@ const Layout = () => {
                         <Route element={<FavoritesView />} path="/user/favorites" /> 
                         <Route element={<ViewOfAllCategories />} path="/categories" /> 
                         <Route element={<RecipeView />} path="/recipe/:id" />
+                        <Route element={<PrivacyPolicy />} path="/privacy-policy" />
+                        <Route element={<TermsAndConditions />} path="/terms-and-conditions" />
+                        <Route element={<FAQPage />} path="/faq" />
                         <Route element={<h1>Not found!</h1>} />
                     </Routes>
                     </div>

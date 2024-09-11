@@ -69,6 +69,13 @@ body {
   color: #6b4423;
 }
 
+.recipe-list {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 1rem;
+}
+
 .recipe-card {
   background-color: #ffffff;
   padding: 20px;

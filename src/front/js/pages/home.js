@@ -22,7 +22,6 @@ export const Home = () => {
                 <h4>Cocina compartiendo</h4>
             </div>
 			<div>
-			<div>
                 <h4>Categorías</h4>
 				<div className="d-flex justify-content-center">
 					{categorias.length > 0 ? (
@@ -33,31 +32,28 @@ export const Home = () => {
 						<p>No hay categorías disponibles.</p>
 					)}
 				</div>
-                
             </div>
 			<div>
-                <h4>Recetas</h4>
-				
-				<div className="d-flex justify-content-center">
+				<h4>Recetas</h4>
+				<div className="recipe-list"> {/* Cambié de row a recipe-list */}
 					{recetas.length > 0 ? (
 						recetas.map((receta) => (
 							<Link key={receta.id} to={`/recipe/${receta.id}`}>
-							<div className="recipe-card m-3 bg-light p-2">
-							<img
-							src={receta.image_url}
-							alt="Receta"
-							className="img-fluid"
-							/>
-							<p className="recipe-name">{receta.name}</p>
-							</div>
+								<div className="recipe-card bg-light p-2">
+									<img
+										src={receta.image_url}
+										alt="Receta"
+										className="img-fluid"
+									/>
+									<p className="recipe-name">{receta.name}</p>
+								</div>
 							</Link>
 						))
 					) : (
 						<p>No hay recetas disponibles.</p>
 					)}
 				</div>
-            </div>
 			</div>
-        </div>
+		</div>
     );
 };
