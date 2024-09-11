@@ -1,10 +1,6 @@
 import axios from "axios";
 
-const getState = ({
-  getStore,
-  getActions,
-  setStore
-}) => {
+const getState = ({ getStore, getActions, setStore }) => {
   return {
     store: {
       is_active: false,
@@ -14,66 +10,68 @@ const getState = ({
       isLoggedIn: false,
       listaDeRecetas: [],
       listaDeRecetasPublicadas: [],
-      recetasSubidas:[],
+      recetasSubidas: [],
       listaDeCategorias: [],
       listaDeIngredientes: [],
+      listaDeUsuarios: [],
       searchResult: [],
-      detallesDeReceta:[],
-      recetasFavoritas:[],
+      searchResultUsers: [],
+      detallesDeReceta: [],
+      recetasFavoritas: [],
     },
     actions: {
       registerUser: async (user_name, first_name, last_name, email, password) => {
-    const store = getStore();
-    try {
-        if (!user_name || !first_name || !last_name || !email || !password) {
+        const store = getStore();
+        try {
+          if (!user_name || !first_name || !last_name || !email || !password) {
             setStore({
-                error: 'Todos los campos son requeridos',
+              error: "Todos los campos son requeridos",
             });
             return false;
-        }
-        const response = await fetch(`${process.env.BACKEND_URL}/api/users`, {
+          }
+          const response = await fetch(`${process.env.BACKEND_URL}/api/users`, {
             method: "POST",
             headers: {
-                "Content-Type": "application/json",
+              "Content-Type": "application/json",
             },
             body: JSON.stringify({
+              user_name,
+              first_name,
+              last_name,
+              email,
+              password,
+            }),
+          });
+
+          if (response.ok) {
+            const result = await response.json();
+            setStore({
+              is_active: true,
+              user: {
                 user_name,
                 first_name,
                 last_name,
                 email,
-                password,
-            }),
-        });
-
-        if (response.ok) {
-            const result = await response.json();
-            setStore({
-                is_active: true,
-                user: {
-                    user_name,
-                    first_name,
-                    last_name,
-                    email,
-                },
-                error: null,
+              },
+              error: null,
             });
             return true;
-        } else {
+          } else {
             const errorResult = await response.json();
-            console.error('Server Error:', errorResult);
+            console.error("Server Error:", errorResult);
             setStore({
-                error: errorResult.msg || 'Error desconocido',
+              error: errorResult.msg || "Error desconocido",
             });
             return false;
-        }
-    } catch (error) {
-        console.error('Network Error:', error);
-        setStore({
+          }
+        } catch (error) {
+          console.error("Network Error:", error);
+          setStore({
             error: "Error al conectar con el servidor",
-        });
-        return false;
-    }
-},
+          });
+          return false;
+        }
+      },
       traerIngredientes: async () => {
         try {
           console.log("haciendo fetch");
@@ -104,41 +102,78 @@ const getState = ({
         }
       },
 
+      traerUsuarios: async () => {
+        try {
+          const response = await fetch(`${process.env.BACKEND_URL}/api/all_users`, {
+            method: "GET",
+            headers: { "Content-Type": "application/json" },
+          });
+          if (!response.ok) {
+            throw new Error("Error al obtener usuarios");
+          }
+          const data = await response.json();
+          setStore({ listaDeUsuarios: data }); // Guardar todos los usuarios en el store
+        } catch (error) {
+          console.error("Error al obtener usuarios:", error);
+        }
+      },
+      getOtherUserProfile: async (userId) => {
+  // Llamada a la API para obtener el perfil del otro usuario
+  const response = await fetch(`/api/user/${userId}`);
+  const data = await response.json();
+  setStore({ otherUserProfile: data });
+},
+
+getOtherUserRecipes: async (userId) => {
+  // Llamada a la API para obtener las recetas del otro usuario
+  const response = await fetch(`/api/user/${userId}/recipes`);
+  const data = await response.json();
+  setStore({ listaDeRecetasDeOtroUsuario: data });
+},
+
+      searchUsers: (query) => {
+        const store = getStore();
+        const lowerCaseQuery = query.toLowerCase();
+
+        const filteredUsers = store.listaDeUsuarios.filter((user) =>
+          user.user_name.toLowerCase().includes(lowerCaseQuery)
+        );
+
+        setStore({ searchResultUsers: filteredUsers }); // Guardar los resultados filtrados
+      },
+
       traerRecetas: async () => {
         try {
           const response = await fetch(`${process.env.BACKEND_URL}/api/all_recipes`, {
-            method: 'GET',
+            method: "GET",
             headers: {
               "Content-Type": "application/json",
             },
           });
           if (!response.ok) {
-            throw new Error('Error fetching recepies');
+            throw new Error("Error fetching recipes");
           }
           const data = await response.json();
           setStore({
-            listaDeRecetas: data
+            listaDeRecetas: data,
           });
         } catch (error) {
           console.error("Error:", error);
         }
       },
 
-
       traerCategories: async () => {
         try {
           const response = await fetch(`${process.env.BACKEND_URL}/api/categories`, {
-            method: 'GET',
+            method: "GET",
             headers: {
-              'Content-Type': 'application/json',
+              "Content-Type": "application/json",
             },
           });
           if (!response.ok) {
             throw new Error("Error fetching categories");
           }
-
           const data = await response.json();
-          console.log("categorias:", data);
           setStore({
             listaDeCategorias: data,
           });
@@ -153,19 +188,12 @@ const getState = ({
           password,
         };
         try {
-          const res = await axios.post(
-            `${process.env.BACKEND_URL}/api/login`,
-            bodyData,
-          );
-          const {
-            data
-          } = res;
+          const res = await axios.post(`${process.env.BACKEND_URL}/api/login`, bodyData);
+          const { data } = res;
           const accessToken = data.access_token;
-          const withToken = !!accessToken;
-          if (withToken) {
+          if (accessToken) {
             localStorage.setItem("accessToken", accessToken);
             await getActions().getCurrentUser();
-            console.log(accessToken);
             return true;
           }
           return false;
@@ -174,36 +202,28 @@ const getState = ({
           return false;
         }
       },
+
       logout: () => {
         localStorage.removeItem("accessToken");
         setStore({
           currentUser: null,
           isLoggedIn: false,
         });
-        console.log("Usuario: " + getStore().currentUser);
       },
 
       getCurrentUser: async () => {
         try {
           const accessToken = localStorage.getItem("accessToken");
-          const res = await axios.get(
-            `${process.env.BACKEND_URL}/api/current-user`, {
-              headers: {
-                Authorization: `Bearer ${accessToken}`,
-              },
+          const res = await axios.get(`${process.env.BACKEND_URL}/api/current-user`, {
+            headers: {
+              Authorization: `Bearer ${accessToken}`,
             },
-          );
-
-          const {
-            usuario_actual: currentUser
-          } = res.data;
-
+          });
+          const { usuario_actual: currentUser } = res.data;
           setStore({
             currentUser,
             isLoggedIn: true,
           });
-
-          console.log("currentUser:", currentUser);
         } catch (error) {
           console.log("Error loading message from backend", error);
           localStorage.removeItem("accessToken");
@@ -219,7 +239,7 @@ const getState = ({
         const lowerCaseQuery = query.toLowerCase();
 
         const filteredResults = store.listaDeIngredientes.filter((ingredient) =>
-          ingredient.name.toLowerCase().startsWith(lowerCaseQuery),
+          ingredient.name.toLowerCase().startsWith(lowerCaseQuery)
         );
 
         setStore({
@@ -227,137 +247,80 @@ const getState = ({
           error: null,
         });
       },
-  publicarReceta: async (name, description, steps, ingredients_ids, category_ids, image) => {
-  console.log("publicarReceta ha sido llamada");
 
-  const store = getStore();
-  const accessToken = localStorage.getItem("accessToken");
-
-  try {
-    const response = await axios.post(
-      `${process.env.BACKEND_URL}/api/create_recipes`,
-      {
-        name,
-        description,
-        steps,
-        ingredients_ids,
-        category_ids,
-        image_url: image,
-      },
-      {
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-          "Content-Type": "application/json",
-        },
-      }
-    );
-    if (response.status === 201) {
-      const newRecipe = response.data.receta;
-
-      setStore({
-        listaDeRecetas: [...store.listaDeRecetas, newRecipe],
-        listaDeRecetasPublicadas: [...store.listaDeRecetasPublicadas, newRecipe],
-      });
-
-      alert("Receta publicada exitosamente!");
-    }
-  } catch (error) {
-    console.error("Error al publicar la receta:", error);
-  }
-},
-    traerDetalleDeReceta: async (id) => {
-    try {
-        const response = await fetch(`${process.env.BACKEND_URL}/api/recipes/${id}`, {
-            method: 'GET',
-            headers: {
-                "Content-Type": "application/json",
-            },
-        });
-        if (!response.ok) {
-            throw new Error('Error fetching recipe details');
-        }
-        
-        const data = await response.json();
-        console.log("Detalles de la receta:", data);
-        
-        setStore({
-            detallesDeReceta: {
-                id: data.id,
-                name: data.name,
-                description: data.description,
-                steps: data.steps,
-                image_url: data.image_url,
-                ingredients: data.ingredients, // Lista de ingredientes
-                categories: data.categories,   // Lista de categorías
-                uploaded_by_user: data.uploaded_by_user, // Info del usuario que subió la receta
-                is_official: data.is_official
-            }
-        });
-    } catch (error) {
-        console.error("Error:", error);
-    }
-},
-getUserRecipes: async () => {
-  const store = getStore();
-  const accessToken = localStorage.getItem("accessToken");
-
-  try {
-    const response = await fetch(`${process.env.BACKEND_URL}/api/user/recipes`, {
-      method: "GET",
-      headers: {
-        Authorization: `Bearer ${accessToken}`,
-        "Content-Type": "application/json",
-      },
-    });
-
-    if (response.ok) {
-      const data = await response.json();
-      console.log("Recetas del usuario:", data);
-      setStore({
-        listaDeRecetasPublicadas: data,
-        recetasSubidas: data.length
-      });
-    } else {
-      console.error("Error al obtener las recetas del usuario");
-    }
-  } catch (error) {
-    console.error("Error:", error);
-  }
-},
-getUserFavorites: async () => {
-  const store = getStore();
-  const accessToken = localStorage.getItem("accessToken");
-
-  try {
-    const response = await fetch(`${process.env.BACKEND_URL}/api/user/favorites`, {
-      method: "GET",
-      headers: {
-        Authorization: `Bearer ${accessToken}`,
-        "Content-Type": "application/json",
-      },
-    });
-
-    if (response.ok) {
-      const data = await response.json();
-      setStore({
-        recetasFavoritas: data,
-      });
-      return true;
-    } else {
-      console.error("Error al obtener los favoritos del usuario");
-      return false;
-    }
-  } catch (error) {
-    console.error("Error:", error);
-    return false;
-  }
-},
-addRecipeToFavorites: async (recipe_id) => {
+      publicarReceta: async (name, description, steps, ingredients_ids, category_ids, image) => {
+        const store = getStore();
         const accessToken = localStorage.getItem("accessToken");
 
         try {
-          const response = await fetch(`${process.env.BACKEND_URL}/api/favorites/recipes/${recipe_id}`, {
-            method: 'POST',
+          const response = await axios.post(
+            `${process.env.BACKEND_URL}/api/create_recipes`,
+            {
+              name,
+              description,
+              steps,
+              ingredients_ids,
+              category_ids,
+              image_url: image,
+            },
+            {
+              headers: {
+                Authorization: `Bearer ${accessToken}`,
+                "Content-Type": "application/json",
+              },
+            }
+          );
+          if (response.status === 201) {
+            const newRecipe = response.data.receta;
+            setStore({
+              listaDeRecetas: [...store.listaDeRecetas, newRecipe],
+              listaDeRecetasPublicadas: [...store.listaDeRecetasPublicadas, newRecipe],
+            });
+
+            alert("Receta publicada exitosamente!");
+          }
+        } catch (error) {
+          console.error("Error al publicar la receta:", error);
+        }
+      },
+
+      traerDetalleDeReceta: async (id) => {
+        try {
+          const response = await fetch(`${process.env.BACKEND_URL}/api/recipes/${id}`, {
+            method: "GET",
+            headers: {
+              "Content-Type": "application/json",
+            },
+          });
+          if (!response.ok) {
+            throw new Error("Error fetching recipe details");
+          }
+          const data = await response.json();
+          setStore({
+            detallesDeReceta: {
+              id: data.id,
+              name: data.name,
+              description: data.description,
+              steps: data.steps,
+              image_url: data.image_url,
+              ingredients: data.ingredients, // Lista de ingredientes
+              categories: data.categories, // Lista de categorías
+              uploaded_by_user: data.uploaded_by_user, // Info del usuario que subió la receta
+              is_official: data.is_official,
+            },
+          });
+        } catch (error) {
+          console.error("Error:", error);
+        }
+      },
+
+      getUserRecipes: async () => {
+        const store = getStore();
+        const accessToken = localStorage.getItem("accessToken");
+
+        try {
+          const response = await fetch(`${process.env.BACKEND_URL}/api/user/recipes`, {
+            method: "GET",
             headers: {
               Authorization: `Bearer ${accessToken}`,
               "Content-Type": "application/json",
@@ -365,10 +328,64 @@ addRecipeToFavorites: async (recipe_id) => {
           });
 
           if (response.ok) {
-            console.log("Receta añadida a favoritos");
+            const data = await response.json();
+            setStore({
+              listaDeRecetasPublicadas: data,
+              recetasSubidas: data.length,
+            });
+          } else {
+            console.error("Error al obtener las recetas del usuario");
+          }
+        } catch (error) {
+          console.error("Error:", error);
+        }
+      },
+
+      getUserFavorites: async () => {
+        const store = getStore();
+        const accessToken = localStorage.getItem("accessToken");
+
+        try {
+          const response = await fetch(`${process.env.BACKEND_URL}/api/user/favorites`, {
+            method: "GET",
+            headers: {
+              Authorization: `Bearer ${accessToken}`,
+              "Content-Type": "application/json",
+            },
+          });
+
+          if (response.ok) {
+            const data = await response.json();
+            setStore({
+              recetasFavoritas: data,
+            });
+            return true;
+          } else {
+            console.error("Error al obtener los favoritos del usuario");
+            return false;
+          }
+        } catch (error) {
+          console.error("Error:", error);
+          return false;
+        }
+      },
+
+      addRecipeToFavorites: async (recipe_id) => {
+        const accessToken = localStorage.getItem("accessToken");
+
+        try {
+          const response = await fetch(`${process.env.BACKEND_URL}/api/favorites/recipes/${recipe_id}`, {
+            method: "POST",
+            headers: {
+              Authorization: `Bearer ${accessToken}`,
+              "Content-Type": "application/json",
+            },
+          });
+
+          if (response.ok) {
             const userFavorites = await response.json();
             setStore({
-              recetasFavoritas: userFavorites.favorite_recipes, 
+              recetasFavoritas: userFavorites.favorite_recipes,
             });
             return true;
           } else {
@@ -380,12 +397,13 @@ addRecipeToFavorites: async (recipe_id) => {
           return false;
         }
       },
+
       removeRecipeFromFavorites: async (recipe_id) => {
         const accessToken = localStorage.getItem("accessToken");
 
         try {
           const response = await fetch(`${process.env.BACKEND_URL}/api/favorites/recipes/${recipe_id}`, {
-            method: 'DELETE',
+            method: "DELETE",
             headers: {
               Authorization: `Bearer ${accessToken}`,
               "Content-Type": "application/json",
@@ -393,7 +411,6 @@ addRecipeToFavorites: async (recipe_id) => {
           });
 
           if (response.ok) {
-            console.log("Receta eliminada de favoritos");
             const userFavorites = await response.json();
             setStore({
               recetasFavoritas: userFavorites.favorite_recipes,
@@ -408,11 +425,11 @@ addRecipeToFavorites: async (recipe_id) => {
           return false;
         }
       },
+
       isRecipeFavorite: (recipe_id) => {
         const store = getStore();
         return store.recetasFavoritas && store.recetasFavoritas.some((recipe) => recipe.id === recipe_id);
       },
-
     },
   };
 };

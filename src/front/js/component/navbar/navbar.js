@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from "react";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom"; // Importa useNavigate
 import { Context } from "../../store/appContext";
 import "../navbar/navBar.css";
 
@@ -7,48 +7,41 @@ export const Navbar = () => {
     const location = useLocation();
     const { store, actions } = useContext(Context);
     const [search, setSearch] = useState("");
-    const [selectedIngredients, setSelectedIngredients] = useState([]);
-    const [searchCategory, setSearchCategory] = useState("ingredientes"); 
-    const currentPath = location.pathname;
+    const [searchCategory, setSearchCategory] = useState("ingredientes");
+    const navigate = useNavigate(); // Inicializa useNavigate
 
+    // Cargar los ingredientes y los usuarios cuando el componente se monte
     useEffect(() => {
         actions.traerIngredientes();
-    }, []);
-
-    useEffect(() => {}, [search, store.searchResult, store.listaDeIngredientes]);
+        actions.traerUsuarios();
+    }, []);  // Solo ejecutarse una vez al montar el componente
 
     const handleSearchChange = (e) => {
         setSearch(e.target.value);
+
         if (searchCategory === "ingredientes") {
             actions.searchIngredients(e.target.value);
         } else if (searchCategory === "recetas") {
             actions.searchRecipes(e.target.value);
         } else if (searchCategory === "usuarios") {
-            actions.searchUsers(e.target.value);
+            actions.searchUsers(e.target.value);  // Filtrar usuarios mientras escribes
         }
     };
 
-    const handleSearchSubmit = (e) => {
-        e.preventDefault();
-        if (searchCategory === "ingredientes" && search) {
-            setSelectedIngredients([...selectedIngredients, search]);
-            setSearch(""); 
-        }
-    };
-
-    const handleFinalSearch = () => {
-        if (searchCategory === "recetas") {
-            actions.searchRecipesByIngredients(selectedIngredients);
-        }
-    };
+    const handleUserClick = (userId) => {
+    // Verificar si el ID es válido
+    if (userId) {
+        navigate(`/user-profile/${userId}`); // Navega a la URL con el ID del usuario
+    }
+};
 
     const renderDropdown = () => {
-        if (search && store.searchResult.length > 0) {
+        if (search && store.searchResultUsers.length > 0 && searchCategory === "usuarios") {
             return (
                 <ul className="dropdown-menu show" style={{ position: "absolute", width: "100%" }}>
-                    {store.searchResult.map((ingredient, index) => (
-                        <li key={index} className="dropdown-item" onClick={() => addIngredient(ingredient.name)}>
-                            {ingredient.name}
+                    {store.searchResultUsers.map((user, index) => (
+                        <li key={index} className="dropdown-item" onClick={() => handleUserClick(user.id)}> {/* Cambia user.id si usas otro campo */}
+                            {user.user_name}
                         </li>
                     ))}
                 </ul>
@@ -57,75 +50,46 @@ export const Navbar = () => {
         return null;
     };
 
-    const addIngredient = (ingredient) => {
-        setSelectedIngredients([...selectedIngredients, ingredient]);
-        setSearch(""); 
-    };
-
-    const removeIngredient = (index) => {
-        const newIngredients = selectedIngredients.filter((_, i) => i !== index);
-        setSelectedIngredients(newIngredients);
-    };
-
     return (
         <nav className="navbar-container">
             <Link to="/">
                 <i className="fas fa-home home-icon"></i>
             </Link>
 
-            {currentPath === "/login" || currentPath === "/sign_in" ? (
-                <h1 style={{ marginLeft: "90px" }}>Bite Buddies</h1>
-            ) : currentPath.startsWith("/user-profile") ? (
-                <h1>Bienvenido a tu perfil, {store.currentUser.user_name || "error"}</h1>
-            ) : (
-                <div className="search-container">
-                    <div className="search-options">
-                        <button
-                            type="button"
-                            className={`option-button ${searchCategory === 'ingredientes' ? 'active' : ''}`}
-                            onClick={() => setSearchCategory("ingredientes")}
-                        >
-                            Ingredientes
-                        </button>
-                        <button
-                            type="button"
-                            className={`option-button ${searchCategory === 'recetas' ? 'active' : ''}`}
-                            onClick={() => setSearchCategory("recetas")}
-                        >
-                            Recetas
-                        </button>
-                        <button
-                            type="button"
-                            className={`option-button ${searchCategory === 'usuarios' ? 'active' : ''}`}
-                            onClick={() => setSearchCategory("usuarios")}
-                        >
-                            Usuarios
-                        </button>
-                    </div>
-                    <form onSubmit={handleSearchSubmit}>
-                        <input
-                            type="text"
-                            className="search-input"
-                            placeholder={`Buscar ${searchCategory}...`}
-                            value={search}
-                            onChange={handleSearchChange}
-                        />
-                        {renderDropdown()}
-                    </form>
-
-                    <button className="btn custom-button search-btn" onClick={handleFinalSearch}>
-                        Buscar
+            <div className="search-container">
+                <div className="search-options">
+                    <button
+                        type="button"
+                        className={`option-button ${searchCategory === 'ingredientes' ? 'active' : ''}`}
+                        onClick={() => setSearchCategory("ingredientes")}
+                    >
+                        Ingredientes
                     </button>
-
-                    <div className="selected-ingredients">
-                        {selectedIngredients.map((ingredient, index) => (
-                            <span key={index} className="ingredient-tag">
-                                {ingredient} <button onClick={() => removeIngredient(index)}>x</button>
-                            </span>
-                        ))}
-                    </div>
+                    <button
+                        type="button"
+                        className={`option-button ${searchCategory === 'recetas' ? 'active' : ''}`}
+                        onClick={() => setSearchCategory("recetas")}
+                    >
+                        Recetas
+                    </button>
+                    <button
+                        type="button"
+                        className={`option-button ${searchCategory === 'usuarios' ? 'active' : ''}`}
+                        onClick={() => setSearchCategory("usuarios")}
+                    >
+                        Usuarios
+                    </button>
                 </div>
-            )}
+
+                <input
+                    type="text"
+                    className="search-input"
+                    placeholder={`Buscar ${searchCategory}...`}
+                    value={search}
+                    onChange={handleSearchChange}  // Actualizar la búsqueda dinámicamente
+                />
+                {renderDropdown()}  {/* Renderizar el dropdown con resultados */}
+            </div>
 
             <div className="ml-auto">
                 {store.isLoggedIn && store.currentUser ? (
@@ -171,3 +135,5 @@ export const Navbar = () => {
         </nav>
     );
 };
+
+
