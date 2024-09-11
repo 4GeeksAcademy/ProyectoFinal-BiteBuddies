@@ -1,6 +1,5 @@
 import React, { useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import "../../styles/stylesUserProfile.css";
 import { Context } from "../store/appContext";
 import { ProfileHeader } from "../component/userProfile/profileHeader";
 import { Tabs } from "../component/userProfile/tabs";
@@ -8,10 +7,11 @@ import { RecipeList } from "../component/userProfile/tabViews/recipeList";
 import { RecipeUploadModal } from "../component/userProfile/recipeUpLoadModal";
 import { FavoriteRecipes } from "../component/userProfile/tabViews/favoriteRecipes";
 
-export const Profile = () => {
+export const Profile = (id) => {
   const { store, actions } = useContext(Context);
   const [showModal, setShowModal] = useState(false);
   const [activeTab, setActiveTab] = useState("misRecetas");
+  const [isProfile, setIsProfile] = useState(true)
   const withSession = !!store?.isLoggedIn;
   const navigate = useNavigate();
 
@@ -40,13 +40,10 @@ export const Profile = () => {
 
   return (
     <div className="container profile-container" style={{ position: "relative" }}>
-      <ProfileHeader user={store.currentUser} />
-
-      <Tabs handleEditProfile={handleEditProfile} setActiveTab={setActiveTab} activeTab={activeTab} />
-
+      <ProfileHeader isProfile={isProfile} user={store.currentUser} />
+      <Tabs isProfile={isProfile} handleEditProfile={handleEditProfile} setActiveTab={setActiveTab} activeTab={activeTab} />
       <div className="tab-content">
-        {activeTab === "misRecetas" && <RecipeList store={store} actions={actions} />}
-
+        {activeTab === "misRecetas" && <RecipeList isProfile={isProfile} store={store} actions={actions} />}
         {activeTab === "favoritas" && <FavoriteRecipes store={store} actions={actions} />}
       </div>
       <div className="row mt-3 justify-content-center">

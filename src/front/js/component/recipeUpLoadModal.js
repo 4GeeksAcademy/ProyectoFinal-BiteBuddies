@@ -1,7 +1,6 @@
 import React, { useContext, useState, useEffect } from "react";
 import { Context } from "../store/appContext";
 
-
 export const RecipeUploadModal = ({ show, handleClose }) => {
   const { store, actions } = useContext(Context);
   const [recipeData, setRecipeData] = useState({
@@ -41,6 +40,7 @@ export const RecipeUploadModal = ({ show, handleClose }) => {
       handleClose();
     }
   };
+  
   return (
     <div className={`modal ${show ? "show" : ""}`} style={{ display: show ? "block" : "none" }}>
       <div className="modal-dialog">

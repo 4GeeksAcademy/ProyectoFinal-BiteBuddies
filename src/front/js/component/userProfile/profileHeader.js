@@ -1,7 +1,8 @@
 import React, { useEffect, useContext } from "react";
 import { Context } from "../../store/appContext";
+import "../userProfile/styles.css";
 
-export const ProfileHeader = ({ user }) => {
+export const ProfileHeader = ({ user, isProfile  }) => {
   const { store, actions } = useContext(Context);
   useEffect(() => {
     actions.getUserRecipes();
@@ -20,11 +21,17 @@ export const ProfileHeader = ({ user }) => {
         <p>{user.user_name || "error"}</p>
       </div>
       <div className="profile-info col-5 p-1">
-        <p>
+        <div className="d-flex justify-content-between">
+          <p>
           {(user.first_name && user.last_name) 
             ? `${capitalizeWords(user.first_name.toLowerCase())} ${capitalizeWords(user.last_name.toLowerCase())}`
-            : "error"}
-        </p>
+            : "Nombre no disponible"}
+          </p>
+          {!isProfile&&(
+            <button>Seguir Chef</button> 
+          )}
+        </div>
+        
         <p>{user.email || "error"}</p>
         <p>{store.recetasSubidas || 0} Recetas subidas</p>
         <p>
