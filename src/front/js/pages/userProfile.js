@@ -12,17 +12,22 @@ export const UserProfile = () => {
   const { store, actions } = useContext(Context);
   const [showModal, setShowModal] = useState(false);
   const [activeTab, setActiveTab] = useState("misRecetas");
-  const withSession = !!store?.isLoggedIn;
   const navigate = useNavigate();
   const { userId } = useParams();
 
- useEffect(() => {
+  const withSession = !!store?.isLoggedIn;
+
+
+  const isOwnProfile = !userId || userId === String(store.currentUser?.id);
+
+  useEffect(() => {
     if (!withSession) {
       navigate("/login");
-    } else if (userId && userId !== store.currentUser.id) {
-      actions.getOtherUserRecipes(userId);
+    } else if (!isOwnProfile) {
       actions.getOtherUserProfile(userId);
+      actions.getOtherUserRecipes(userId);
     } else {
+   
       actions.getUserRecipes();
     }
   }, [withSession, userId]);
@@ -36,18 +41,17 @@ export const UserProfile = () => {
   };
 
   const handleCloseModal = () => {
-    console.log("Closing the modal");
     setShowModal(false);
   };
-const isOwnProfile = !userId || userId === store.currentUser.id;
 
-  // Mostrar spinner si no se ha cargado la información del usuario
+  // Si los datos no están disponibles, mostrar un mensaje de carga
   if (!store.currentUser || (userId && !store.otherUserProfile)) {
     return <div>Cargando...</div>;
   }
 
   return (
     <div className="container profile-container" style={{ position: "relative" }}>
+      {/* Mostrar los datos del usuario actual o del otro usuario según corresponda */}
       <ProfileHeader user={isOwnProfile ? store.currentUser : store.otherUserProfile} />
 
       <Tabs handleEditProfile={isOwnProfile ? handleEditProfile : null} setActiveTab={setActiveTab} activeTab={activeTab} />
@@ -69,11 +73,7 @@ const isOwnProfile = !userId || userId === store.currentUser.id;
             )}
             {isOwnProfile && (
               <div className="row mt-3 justify-content-center">
-                <button
-                  className="btn btn-primary"
-                  style={{ borderRadius: "5px" }}
-                  onClick={handleOpenModal}
-                >
+                <button className="btn btn-primary" style={{ borderRadius: "5px" }} onClick={handleOpenModal}>
                   Subir Receta
                 </button>
               </div>
@@ -83,6 +83,7 @@ const isOwnProfile = !userId || userId === store.currentUser.id;
 
         {activeTab === "favoritas" && <FavoriteRecipes store={store} actions={actions} />}
       </div>
+
       {showModal && <RecipeUploadModal show={showModal} handleClose={handleCloseModal} />}
     </div>
   );
