@@ -328,12 +328,13 @@ const getState = ({ getStore, getActions, setStore }) => {
               listaDeRecetas: [...store.listaDeRecetas, newRecipe],
               listaDeRecetasPublicadas: [...store.listaDeRecetasPublicadas, newRecipe],
             });
-
             alert("Receta publicada exitosamente!");
           }
+          return true
         } catch (error) {
           console.error("Error al publicar la receta:", error);
         }
+        return false
       },
 
       traerDetalleDeReceta: async (id) => {
@@ -381,6 +382,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 
           if (response.ok) {
             const data = await response.json();
+            console.log("getUSER",data);
             setStore({
               listaDeRecetasPublicadas: data,
               recetasSubidas: data.length,

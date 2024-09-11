@@ -7,7 +7,7 @@ import { Tabs } from "../component/userProfile/tabs";
 import { RecipeList } from "../component/userProfile/tabViews/recipeList";
 import { FavoriteRecipes } from "../component/userProfile/tabViews/favoriteRecipes";
 
-export const OtherUserProfile = () => {
+export const UserDetails = () => {
   const { store, actions } = useContext(Context);
   const [activeTab, setActiveTab] = useState("misRecetas");
   const { id } = useParams();

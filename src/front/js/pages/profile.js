@@ -8,7 +8,7 @@ import { RecipeList } from "../component/userProfile/tabViews/recipeList";
 import { RecipeUploadModal } from "../component/userProfile/recipeUpLoadModal";
 import { FavoriteRecipes } from "../component/userProfile/tabViews/favoriteRecipes";
 
-export const UserProfile = () => {
+export const Profile = () => {
   const { store, actions } = useContext(Context);
   const [showModal, setShowModal] = useState(false);
   const [activeTab, setActiveTab] = useState("misRecetas");
@@ -26,7 +26,6 @@ export const UserProfile = () => {
   const handleEditProfile = () => {
     console.log("Editar perfil");
   };
-
   const handleOpenModal = () => {
     setShowModal(true);
   };
@@ -46,31 +45,15 @@ export const UserProfile = () => {
       <Tabs handleEditProfile={handleEditProfile} setActiveTab={setActiveTab} activeTab={activeTab} />
 
       <div className="tab-content">
-        {activeTab === "misRecetas" && (
-          <>
-            {store.listaDeRecetasPublicadas.length === 0 ? (
-              <div className="text-center">
-                <p>No tienes recetas propias.</p>
-              </div>
-            ) : (
-              <RecipeList
-                recipes={store.listaDeRecetasPublicadas}
-                handleOpenModal={handleOpenModal}
-                showModal={showModal}
-                handleCloseModal={handleCloseModal}
-              />
-            )}
-            <div className="row mt-3 justify-content-center">
-              <button className="btn btn-primary" style={{ borderRadius: "5px" }} onClick={handleOpenModal}>
-                Subir Receta
-              </button>
-            </div>
-          </>
-        )}
+        {activeTab === "misRecetas" && <RecipeList store={store} actions={actions} />}
 
         {activeTab === "favoritas" && <FavoriteRecipes store={store} actions={actions} />}
       </div>
-
+      <div className="row mt-3 justify-content-center">
+              <button className="btn btn-primary" style={{ borderRadius: "5px" }} onClick={handleOpenModal}>
+                Subir Receta
+              </button>
+      </div>
       {showModal && <RecipeUploadModal show={showModal} handleClose={handleCloseModal} />}
     </div>
   );
