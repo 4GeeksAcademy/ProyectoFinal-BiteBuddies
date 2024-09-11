@@ -12,7 +12,7 @@ export const RecipeList = ({ isProfile }) => {
           <h3 style={{ borderBottom: "2px solid #000", paddingBottom: "10px" }}>
             Mis recetas
           </h3>
-          <div className="row d-flex justify-content-center">
+          <div className="row d-flex flex-wrap justify-content-center">
             {store.listaDeRecetasPublicadas.length === 0 ? (
               <div className="text-center">
                 <p>No tienes recetas propias.</p>
@@ -54,7 +54,7 @@ export const RecipeList = ({ isProfile }) => {
                 <Link key={recipe.id} to={`/recipe/${recipe.id}`}>
                   <div
                     className="recipe-card col-md-3 bg-light p-2 m-2"
-                    style={{ width: "23%" }}
+                  
                   >
                     <img
                       src={recipe.image_url}

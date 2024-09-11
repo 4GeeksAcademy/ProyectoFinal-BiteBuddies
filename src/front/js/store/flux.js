@@ -330,11 +330,11 @@ const getState = ({ getStore, getActions, setStore }) => {
             });
             alert("Receta publicada exitosamente!");
           }
-          return true
+          return true;
         } catch (error) {
           console.error("Error al publicar la receta:", error);
         }
-        return false
+        return false;
       },
 
       traerDetalleDeReceta: async (id) => {
