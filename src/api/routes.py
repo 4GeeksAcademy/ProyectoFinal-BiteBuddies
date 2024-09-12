@@ -144,8 +144,12 @@ def get_user_favorites():
     user_query = User.query.get(current_user_id)
     if not user_query:
         raise APIException("Usuario no encontrado", status_code=404)
-    favoritos = list(map(lambda x: x.serialize(), user_query.favorite_recipes))
-    return jsonify(favoritos), 200
+    favoritos_recetas = list(map(lambda x: x.serialize(), user_query.favorite_recipes))
+    favoritos_usuarios = list(map(lambda x: x.serialize(), user_query.favorite_users.all()))
+    return jsonify({
+        "favorite_recipes": favoritos_recetas,
+        "favorite_users": favoritos_usuarios
+    }), 200
 
 @api.route('/favorites/recipes/<int:recipe_id>', methods=['POST'])
 @jwt_required()
@@ -180,6 +184,35 @@ def delete_favorite_recipe(recipe_id):
     user_query.favorite_recipes.remove(recipe_query)
     db.session.commit()
     return jsonify(user_query.serialize()), 200
+
+@api.route('/favorites/users/<int:user_id>', methods=['POST'])
+@jwt_required()
+def add_user_to_favorite(user_id):
+    current_user_id = get_jwt_identity() 
+    user_to_follow = User.query.get(user_id) 
+    current_user = User.query.get(current_user_id)
+    if not user_to_follow:
+        raise APIException("Usuario no encontrado", status_code=404)
+    if user_to_follow in current_user.favorite_users:
+        raise APIException("El usuario ya está en la lista de favoritos", status_code=400)
+    current_user.favorite_users.append(user_to_follow)
+    db.session.commit()
+    return jsonify(current_user.serialize()), 200
+
+@api.route('/favorites/users/<int:user_id>', methods=['DELETE'])
+@jwt_required()
+def delete_user_from_favorite(user_id):
+    current_user_id = get_jwt_identity()
+    user_to_unfollow = User.query.get(user_id)
+    current_user = User.query.get(current_user_id)
+    if not user_to_unfollow:
+        raise APIException("Usuario no encontrado", status_code=404)
+    if user_to_unfollow not in current_user.favorite_users:
+        raise APIException("El usuario no está en la lista de favoritos", status_code=400)
+    current_user.favorite_users.remove(user_to_unfollow)
+    db.session.commit()
+    return jsonify(current_user.serialize()), 200
+
 @api.route('/user/recipes', methods=['GET'])
 @jwt_required()
 def get_user_recipes():
