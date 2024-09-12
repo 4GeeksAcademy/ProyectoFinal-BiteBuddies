@@ -53,14 +53,16 @@ export const Profile = (id) => {
       <Tabs isProfile={isProfile} handleEditProfile={handleEditProfile} setActiveTab={setActiveTab} activeTab={activeTab} />
       <div className="tab-content">
         {activeTab === "misRecetas" && <RecipeList isProfile={isProfile} store={store} actions={actions} />}
-        {activeTab === "recetasFavoritas" && <FavoriteRecipes store={store} actions={actions} />}
+        {activeTab === "recetasFavoritas" && <FavoriteRecipes isProfile={isProfile} store={store} actions={actions} />}
         {activeTab === "chefsFavoritos" && <FavoriteChefs store={store} actions={actions} />}
       </div>
-      <div className="row mt-3 justify-content-center">
-              <button className="btn btn-primary" style={{ borderRadius: "5px" }} onClick={handleOpenModal}>
-                Subir Receta
-              </button>
-      </div>
+        {(activeTab === "misRecetas" || activeTab === "recetasFavoritas") && (
+          <div className="row mt-3 justify-content-center">
+            <button className="btn btn-primary" style={{ borderRadius: "5px" }} onClick={handleOpenModal}>
+              Subir Receta
+            </button>
+          </div>
+        )}
       {showModal && <RecipeUploadModal show={showModal} handleClose={handleCloseModal} />}
     </div>
   );

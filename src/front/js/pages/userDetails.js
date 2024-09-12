@@ -5,6 +5,7 @@ import { ProfileHeader } from "../component/userProfile/profileHeader";
 import { Tabs } from "../component/userProfile/tabs";
 import { RecipeList } from "../component/userProfile/tabViews/recipeList";
 import { FavoriteRecipes } from "../component/userProfile/tabViews/favoriteRecipes";
+import { FavoriteChefs } from "../component/userProfile/tabViews/favoriteChefs";
 
 export const UserDetails = () => {
   const { store, actions } = useContext(Context);
@@ -37,7 +38,8 @@ export const UserDetails = () => {
       <Tabs isProfile={isProfile} setActiveTab={setActiveTab} activeTab={activeTab} />
       <div className="tab-content">
         {activeTab === "misRecetas" && (<RecipeList isProfile={isProfile} recipes={userRecipes} store={store} actions={actions} />)}
-        {activeTab === "favoritas" && <FavoriteRecipes store={store} actions={actions} />}
+        {activeTab === "recetasFavoritas" && <FavoriteRecipes isProfile={isProfile} store={store} actions={actions} />}
+        {activeTab === "chefsFavoritos" && <FavoriteChefs isProfile={isProfile} store={store} actions={actions} />}
       </div>
     </div>
   );

@@ -8,26 +8,16 @@ import "../../styles/home.css";
 export const Home = () => {
     const { store, actions } = useContext(Context);
     const [selectedCategory, setSelectedCategory] = useState(null);
-    const [isLoading, setIsLoading] = useState(true);
 
     useEffect(() => {
-        const fetchData = async () => {
-            try {
-                setIsLoading(true);
-                await Promise.all([
-                    actions.traerRecetas(),
-                    actions.traerCategories(),
-                    actions.traerUsuarios()
-                ]);
-                setIsLoading(false);
-            } catch (error) {
-                console.error("Error fetching data:", error);
-                setIsLoading(false);
-            }
-        };
+        actions.traerRecetas();
+        actions.traerCategories();
+        actions.getCurrentUser();
+        actions.traerUsuarios();
+        console.log("Current User HOME: ", store.currentUser);
+        console.log("Usuarios: ", store.listaDeUsuarios)
+    }, []);
 
-        fetchData();
-    }, [actions]);
 
     const handleSelectCategory = (categoryId) => {
         setSelectedCategory(categoryId); 
@@ -45,6 +35,7 @@ export const Home = () => {
                 <Users 
                     usuarios={store.listaDeUsuarios} 
                     searchResults={store.searchResultUsers}
+                    currentUser={store.currentUser}
                 />
             ) : (
                 <>

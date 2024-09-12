@@ -151,13 +151,17 @@ const getState = ({ getStore, getActions, setStore }) => {
             method: "GET",
             headers: { "Content-Type": "application/json" },
           });
+
           if (!response.ok) {
-            throw new Error("Error al obtener usuarios");
+            console.error("Error al obtener usuarios:", response.status);
+            throw new Error("Error al obtener usuarios: " + response.statusText);
           }
+
           const data = await response.json();
+          
           setStore({ listaDeUsuarios: data }); // Guardar todos los usuarios en el store
         } catch (error) {
-          console.error("Error al obtener usuarios:", error);
+          console.error("Error al obtener usuarios:", error.message);
         }
       },
 
@@ -275,6 +279,8 @@ const getState = ({ getStore, getActions, setStore }) => {
             },
           });
           const { usuario_actual: currentUser } = res.data;
+          console.log("currentUserData:", res.data);
+          
           setStore({
             currentUser,
             isLoggedIn: true,

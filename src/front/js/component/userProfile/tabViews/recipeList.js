@@ -12,7 +12,7 @@ export const RecipeList = ({ isProfile }) => {
           <h3 style={{ borderBottom: "2px solid #000", paddingBottom: "10px" }}>
             Mis recetas
           </h3>
-          <div className="d-flex flex-wrap justify-content-center">
+          <div className="row justify-content-center">
             {store.listaDeRecetasPublicadas.length === 0 ? (
               <div className="text-center">
                 <p>No tienes recetas propias.</p>
