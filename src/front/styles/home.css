@@ -44,3 +44,10 @@
   transform: translateY(-5px);
   box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
 }
+.categories-container {
+    margin-bottom: 30px; /* Añade espacio inferior entre las categorías y las recetas */
+}
+
+.recipes-container {
+    margin-top: 30px; /* Espacio superior si necesitas entre las recetas y cualquier contenido anterior */
+}

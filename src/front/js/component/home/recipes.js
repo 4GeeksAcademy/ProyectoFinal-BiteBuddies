@@ -1,8 +1,7 @@
 import React from "react";
 import { Link } from "react-router-dom";
 
-export const Recipes = ({ recetas = [], selectedCategory, searchResults = [] }) => {
-    // Aseguramos que 'recetas' y 'searchResults' sean arrays para evitar el error
+export const Recipes = ({ recetas = [], selectedCategory, searchResults = [], isLoading}) => {
     const filteredRecetas = searchResults.length > 0 
         ? searchResults 
         : selectedCategory 
@@ -10,6 +9,13 @@ export const Recipes = ({ recetas = [], selectedCategory, searchResults = [] }) 
             receta.categories.some(category => category.id === selectedCategory)
         )
         : recetas;
+        if (recetas.length === 0) {
+        return (
+            <div className="loading-spinner">
+                Cargando recetas ... <i className="fa-solid fa-spinner fa-spin"></i>
+            </div>
+        ); 
+    }
 
     return (
         <div>

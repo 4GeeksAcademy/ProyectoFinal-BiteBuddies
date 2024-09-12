@@ -12,8 +12,12 @@ export const Home = () => {
     useEffect(() => {
         actions.traerRecetas();
         actions.traerCategories();
-        actions.traerUsuarios(); 
-    }, [actions]);
+        actions.getCurrentUser();
+        actions.traerUsuarios();
+        console.log("Current User HOME: ", store.currentUser);
+        console.log("Usuarios: ", store.listaDeUsuarios)
+    }, []);
+
 
     const handleSelectCategory = (categoryId) => {
         setSelectedCategory(categoryId); 
@@ -30,20 +34,26 @@ export const Home = () => {
             {store.isUserView ? (
                 <Users 
                     usuarios={store.listaDeUsuarios} 
-                    searchResults={store.searchResultUsers} // Pasamos los resultados de búsqueda
+                    searchResults={store.searchResultUsers}
+                    currentUser={store.currentUser}
                 />
             ) : (
                 <>
-                    <Categories 
-                        categorias={store.listaDeCategorias} 
-                        selectedCategory={selectedCategory} 
-                        onSelectCategory={handleSelectCategory} 
-                    />
-                    <Recipes 
-                        recetas={store.listaDeRecetas} 
-                        selectedCategory={selectedCategory}
-                        searchResults={store.searchResultRecipes} // Pasamos los resultados de búsqueda
-                    />
+                    <div className="categories-container">
+                        <Categories 
+                            categorias={store.listaDeCategorias} 
+                            selectedCategory={selectedCategory} 
+                            onSelectCategory={handleSelectCategory} 
+                        />
+                    </div>
+                    
+                    <div className="recipes-container">
+                        <Recipes 
+                            recetas={store.listaDeRecetas} 
+                            selectedCategory={selectedCategory}
+                            searchResults={store.searchResultRecipes} 
+                        />
+                    </div>
                 </>
             )}
         </div>

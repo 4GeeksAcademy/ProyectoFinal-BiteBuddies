@@ -8,6 +8,7 @@ const getState = ({ getStore, getActions, setStore }) => {
       error: null,
       currentUser: null,
       isLoggedIn: false,
+      isLoadingUser: true,
       listaDeRecetasPublicadas: [],
       recetasSubidas: [],
       listaDeCategorias: [],
@@ -150,13 +151,17 @@ const getState = ({ getStore, getActions, setStore }) => {
             method: "GET",
             headers: { "Content-Type": "application/json" },
           });
+
           if (!response.ok) {
-            throw new Error("Error al obtener usuarios");
+            console.error("Error al obtener usuarios:", response.status);
+            throw new Error("Error al obtener usuarios: " + response.statusText);
           }
+
           const data = await response.json();
+          
           setStore({ listaDeUsuarios: data }); // Guardar todos los usuarios en el store
         } catch (error) {
-          console.error("Error al obtener usuarios:", error);
+          console.error("Error al obtener usuarios:", error.message);
         }
       },
 
@@ -264,15 +269,22 @@ const getState = ({ getStore, getActions, setStore }) => {
       getCurrentUser: async () => {
         try {
           const accessToken = localStorage.getItem("accessToken");
+          if (!accessToken) {
+            setStore({ isLoadingUser: false });
+            return;  
+          }
           const res = await axios.get(`${process.env.BACKEND_URL}/api/current-user`, {
             headers: {
               Authorization: `Bearer ${accessToken}`,
             },
           });
           const { usuario_actual: currentUser } = res.data;
+          console.log("currentUserData:", res.data);
+          
           setStore({
             currentUser,
             isLoggedIn: true,
+            isLoadingUser: false,
           });
         } catch (error) {
           console.log("Error loading message from backend", error);
@@ -280,6 +292,7 @@ const getState = ({ getStore, getActions, setStore }) => {
           setStore({
             currentUser: null,
             isLoggedIn: false,
+            isLoadingUser: false,
           });
         }
       },
@@ -297,9 +310,19 @@ const getState = ({ getStore, getActions, setStore }) => {
         });
       },
 
-      publicarReceta: async (name, description, steps, ingredients_ids, category_ids, image) => {
+     publicarReceta: async (name, description, steps, ingredients_ids, category_ids, image_url) => {
         const store = getStore();
         const accessToken = localStorage.getItem("accessToken");
+
+        // Verificar qué se está enviando
+        console.log({
+          name,
+          description,
+          steps,
+          ingredients_ids,
+          category_ids,
+          image_url
+        });
 
         try {
           const response = await axios.post(
@@ -310,7 +333,7 @@ const getState = ({ getStore, getActions, setStore }) => {
               steps,
               ingredients_ids,
               category_ids,
-              image_url: image,
+              image_url,
             },
             {
               headers: {
@@ -321,20 +344,17 @@ const getState = ({ getStore, getActions, setStore }) => {
           );
           if (response.status === 201) {
             const newRecipe = response.data.receta;
-
-            // Actualiza las recetas del currentUser directamente
             const currentUser = { ...store.currentUser };
             currentUser.uploaded_recipes = [...currentUser.uploaded_recipes, newRecipe];
-
             setStore({
-              currentUser, // Actualiza el usuario con la nueva receta
+              currentUser,
             });
-
             alert("Receta publicada exitosamente!");
           }
           return true;
         } catch (error) {
-          console.error("Error al publicar la receta:", error);
+          // Imprimir el error del backend para más detalles
+          console.error("Error al publicar la receta:", error.response ? error.response.data : error);
         }
         return false;
       },

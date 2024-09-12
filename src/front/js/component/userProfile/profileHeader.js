@@ -9,8 +9,6 @@ export const ProfileHeader = ({ user, isProfile  }) => {
   const [hasFetched, setHasFetched] = useState(false);
 
   useEffect(() => {
-    console.log(`Verificando si el usuario con ID ${user.id} es favorito...`);
-    console.log('Usuarios favoritos en el store:', store.usuariosFavoritos);
     actions.getUserRecipes();
     const checkFavoriteStatus = () => {
       const isUserFavorite = actions.isUserFavorite(user.id);
@@ -24,12 +22,9 @@ export const ProfileHeader = ({ user, isProfile  }) => {
   };
 
   const handleFavoriteClick = async ()=> {
-     console.log(`Clic en el botón para el usuario con ID ${user.id}. Estado actual de favorito:`, isFavorite);
     if(isFavorite){
-      console.log(`Eliminando de favoritos al usuario con ID ${user.id}`);
       await actions.removeUserFromFavorites(user.id);
     } else {
-      console.log(`Agregando a favoritos al usuario con ID ${user.id}`);
       await actions.addUserToFavorite(user.id)
     }
     actions.getUserFavorites();
@@ -59,14 +54,14 @@ export const ProfileHeader = ({ user, isProfile  }) => {
             >
               {isFavorite 
                 ? <>Chef Favorito <i className='bx bxs-cookie' style={{ color: '#ffffff' }}></i></> 
-                : <>Seguir Chef <i className="fa-solid fa-cookie" style={{color: '#000000;'}}></i></>
+                : <>Seguir Chef <i className="fa-solid fa-cookie" style={{color: '#ffffff'}}></i></>
               }
             </button> 
           )}
         </div>
         
         <p>{user.email || "error"}</p>
-        <p>{store.recetasSubidas || 0} Recetas subidas</p>
+        <p>{user.uploaded_recipes ? user.uploaded_recipes.length : 0} Recetas subidas</p>
         <p>
           Lorem Ipsum is simply dummy text of the printing and typesetting
           industry...
