@@ -15,15 +15,14 @@ export const Navbar = () => {
     }, []);
 
     const handleRecetasClick = () => {
-        actions.switchToRecipesView(); // Cambia a la vista de recetas
-        navigate('/'); // Navegar a la ruta principal de recetas
+        actions.switchToRecipesView();
+        navigate('/'); // Redirigir al Home
     };
 
     const handleUsuariosClick = () => {
-        actions.switchToUsersView(); // Cambia a la vista de usuarios
-        navigate('/usuarios'); // Navegar a la ruta de usuarios
+        actions.switchToUsersView();
+        navigate('/'); // Redirigir al Home
     };
-
 
     return (
         <nav className="navbar-container">
@@ -31,7 +30,13 @@ export const Navbar = () => {
                 <i className="fas fa-home home-icon"></i>
             </Link>
 
-            <SearchBar actions={actions} store={store} />
+            {/* Usar el SearchBar para manejar la búsqueda y las opciones */}
+            <SearchBar 
+                actions={actions} 
+                store={store} 
+                handleRecetasClick={handleRecetasClick} 
+                handleUsuariosClick={handleUsuariosClick} 
+            />
 
             <div className="ml-auto">
                 {store.isLoggedIn && store.currentUser ? (
@@ -50,6 +55,11 @@ export const Navbar = () => {
                                 <Link className="dropdown-item" to={`/user-profile`}>
                                     Perfil
                                 </Link>
+                            </li>
+                            <li>
+                                <a className="dropdown-item" href="#">
+                                    Favoritos
+                                </a>
                             </li>
                             <li>
                                 <Link className="dropdown-item" to={`/login`} onClick={actions.logout}>

@@ -1,8 +1,7 @@
 import React, { useState } from "react";
 import { SearchOptions } from "./searchOptions";
-import { SearchDropdown } from "./searchDropdown";
 
-export const SearchBar = ({ actions, store }) => {
+export const SearchBar = ({ actions, store, handleRecetasClick, handleUsuariosClick }) => {
     const [search, setSearch] = useState("");
     const [searchCategory, setSearchCategory] = useState("recetas");
 
@@ -13,23 +12,26 @@ export const SearchBar = ({ actions, store }) => {
     };
 
     return (
-        <div className="search-container">
-            <SearchOptions 
-                searchCategory={searchCategory} 
-                setSearchCategory={setSearchCategory} 
-                isUserView={store.isUserView} // Estado de vista
-                switchToUsersView={actions.switchToUsersView} // Acción para cambiar a vista de usuarios
-                switchToRecipesView={actions.switchToRecipesView} // Acción para cambiar a vista de recetas
-            />
-            <input
-                type="text"
-                className="search-input"
-                placeholder={`Buscar ${searchCategory}...`}
-                value={search}
-                onChange={handleSearchChange}
-            />
-            {/* <SearchDropdown searchCategory={searchCategory} search={search} store={store} /> */}
+        <div className="search-bar-container">
+            {/* Colocamos los botones y el input juntos */}
+            <div className="input-group">
+                <input
+                    type="text"
+                    className="form-control mx-2"
+                    placeholder={`Buscar ${searchCategory}...`}
+                    value={search}
+                    onChange={handleSearchChange}
+                />
+                <SearchOptions
+                    searchCategory={searchCategory}
+                    setSearchCategory={setSearchCategory}
+                    isUserView={store.isUserView}
+                    switchToUsersView={handleUsuariosClick}
+                    switchToRecipesView={handleRecetasClick}
+                />
+            </div>
         </div>
     );
 };
+
 

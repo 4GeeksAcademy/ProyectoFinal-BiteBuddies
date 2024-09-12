@@ -158,6 +158,53 @@
     flex-grow: 1;
 }
 
+.search-bar-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.input-group {
+    display: flex;
+}
+
+.btn-primary {
+    background-color: #0d6efd; /* Color de botón activo */
+    color: white;
+    border-color: #0d6efd;
+}
+
+.btn-secondary {
+    background-color: #6c757d; /* Color de botón desactivado */
+    color: white;
+    border-color: #6c757d;
+}
+
+.btn-active {
+    background-color: #ffb703; /* Color de pestaña activa personalizado */
+    color: white;
+    border-color: #ffb703;
+}
+
+.btn-inactive {
+    background-color: #f4a261; /* Color de pestaña inactiva personalizado */
+    color: white;
+    border-color: #f4a261;
+}
+
+.btn-group .btn {
+    flex: 1;
+    margin-left: -1px;
+    border-radius: 0;
+}
+
+
+
+.form-control {
+    flex-grow: 1;
+    border-radius: 0;
+}
+
 @media (max-width: 768px) {
     .navbar-container {
         flex-direction: column;

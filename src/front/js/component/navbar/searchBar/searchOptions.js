@@ -2,26 +2,24 @@ import React from "react";
 
 export const SearchOptions = ({ searchCategory, setSearchCategory, isUserView, switchToUsersView, switchToRecipesView }) => {
     return (
-        <div className="search-options">
-            {/* Botón para cambiar a la vista de recetas */}
+        <div className="btn-group">
             <button
                 type="button"
-                className={`option-button ${!isUserView ? 'active' : ''}`}
+                className={`btn ${!isUserView ? 'btn-active' : 'btn-inactive'} mx-2`}
                 onClick={() => {
                     setSearchCategory("recetas");
-                    switchToRecipesView(); // Cambia a la vista de recetas
+                    switchToRecipesView();
                 }}
             >
                 Recetas
             </button>
 
-            {/* Botón para cambiar a la vista de usuarios */}
             <button
                 type="button"
-                className={`option-button ${isUserView ? 'active' : ''}`}
+                className={`btn ${isUserView ? 'btn-active' : 'btn-inactive'} mx-2`}
                 onClick={() => {
                     setSearchCategory("usuarios");
-                    switchToUsersView(); // Cambia a la vista de usuarios
+                    switchToUsersView();
                 }}
             >
                 Usuarios
