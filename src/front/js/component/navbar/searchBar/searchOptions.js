@@ -9,7 +9,7 @@ export const SearchOptions = ({ searchCategory, setSearchCategory, isUserView, s
                 className={`option-button ${!isUserView ? 'active' : ''}`}
                 onClick={() => {
                     setSearchCategory("recetas");
-                    switchToRecipesView(); // Cambiar a la vista de recetas
+                    switchToRecipesView(); // Cambia a la vista de recetas
                 }}
             >
                 Recetas
@@ -21,7 +21,7 @@ export const SearchOptions = ({ searchCategory, setSearchCategory, isUserView, s
                 className={`option-button ${isUserView ? 'active' : ''}`}
                 onClick={() => {
                     setSearchCategory("usuarios");
-                    switchToUsersView(); // Cambiar a la vista de usuarios
+                    switchToUsersView(); // Cambia a la vista de usuarios
                 }}
             >
                 Usuarios
@@ -29,3 +29,4 @@ export const SearchOptions = ({ searchCategory, setSearchCategory, isUserView, s
         </div>
     );
 };
+

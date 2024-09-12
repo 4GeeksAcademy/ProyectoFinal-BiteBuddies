@@ -14,6 +14,17 @@ export const Navbar = () => {
         actions.traerRecetas();
     }, []);
 
+    const handleRecetasClick = () => {
+        actions.switchToRecipesView(); // Cambia a la vista de recetas
+        navigate('/'); // Navegar a la ruta principal de recetas
+    };
+
+    const handleUsuariosClick = () => {
+        actions.switchToUsersView(); // Cambia a la vista de usuarios
+        navigate('/usuarios'); // Navegar a la ruta de usuarios
+    };
+
+
     return (
         <nav className="navbar-container">
             <Link to="/">

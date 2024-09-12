@@ -25,11 +25,11 @@ const getState = ({ getStore, getActions, setStore }) => {
       isUserView: false,
     },
     actions: {
-      switchToUsersView: () => {
-        setStore({ isUserView: true });
-      },
       switchToRecipesView: () => {
-        setStore({ isUserView: false });
+          setStore({ isUserView: false });
+      },
+      switchToUsersView: () => {
+          setStore({ isUserView: true });
       },
       buscar: (query, searchType) => {
           const store = getStore();
