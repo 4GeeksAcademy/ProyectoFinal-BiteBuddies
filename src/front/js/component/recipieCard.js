@@ -2,7 +2,7 @@ import React, { useContext } from "react";
 import { Link } from "react-router-dom";
 import { Context } from "../store/appContext";
 
-export const recipieCard = ({ recipie }) => {
+export const RecipieCard = ({ recipie }) => {
   const { store, actions } = useContext(Context);
 
   return (

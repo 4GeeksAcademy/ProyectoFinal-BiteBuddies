@@ -4,7 +4,7 @@ import { SearchDropdown } from "./searchDropdown";
 
 export const SearchBar = ({ actions, store }) => {
     const [search, setSearch] = useState("");
-    const [searchCategory, setSearchCategory] = useState("ingredientes");
+    const [searchCategory, setSearchCategory] = useState("recetas");
 
     const handleSearchChange = (e) => {
         e.preventDefault();
@@ -14,7 +14,13 @@ export const SearchBar = ({ actions, store }) => {
 
     return (
         <div className="search-container">
-            <SearchOptions searchCategory={searchCategory} setSearchCategory={setSearchCategory} />
+            <SearchOptions 
+                searchCategory={searchCategory} 
+                setSearchCategory={setSearchCategory} 
+                isUserView={store.isUserView} // Estado de vista
+                switchToUsersView={actions.switchToUsersView} // Acción para cambiar a vista de usuarios
+                switchToRecipesView={actions.switchToRecipesView} // Acción para cambiar a vista de recetas
+            />
             <input
                 type="text"
                 className="search-input"
@@ -22,7 +28,8 @@ export const SearchBar = ({ actions, store }) => {
                 value={search}
                 onChange={handleSearchChange}
             />
-            <SearchDropdown searchCategory={searchCategory} search={search} store={store} />
+            {/* <SearchDropdown searchCategory={searchCategory} search={search} store={store} /> */}
         </div>
     );
 };
+
