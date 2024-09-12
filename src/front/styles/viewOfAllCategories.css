@@ -1,5 +1,5 @@
 body {
-  background-color: #fefae0;
+  background-color: #FAF3E0;
   font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
   margin: 0;
   padding: 0;
@@ -10,7 +10,7 @@ body {
   max-width: 1200px;
   margin: 0 auto;
   padding: 20px;
-  background-color: #faedcd;
+  background-color: #FAF3E0;
   border-radius: 12px;
   box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
 }
@@ -54,7 +54,7 @@ body {
   background-color: #ffffff;
   padding: 15px;
   border-radius: 10px;
-  border: 2px solid #d4a373;
+  border: 2px solid #e2975e;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   text-align: center;
   cursor: pointer;
@@ -81,11 +81,11 @@ body {
 }
 
 .btn-custom {
-  color: #ffffff;
-  background-color: #6b4423;
+  color: #4B2E1F;
+  background-color: #e8ae61;
   border: none;
   padding: 10px 20px;
-  /* border-radius: 20px; */
+
   font-size: 1rem;
   transition:
     background-color 0.3s ease,
@@ -94,15 +94,20 @@ body {
   cursor: pointer;
   border-bottom-right-radius: 10px;
   border-bottom-left-radius: 10px;
-  /* margin-top: 20px; */
+
 }
 
 .btn-custom:hover {
-  background-color: #8b5e3c;
+  background-color: #D18B40;
   transform: translateY(-2px);
   box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
 }
-
+.btn-custom.active {
+  background-color: #FFA500;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+  border: none;
+}
 .back-button {
   display: block;
   margin: 30px auto;

@@ -1,0 +1,78 @@
+.body {
+    background-color: #def0d6;
+  font-family: "Poppins", sans-serif;
+  margin: 0;
+  padding: 0;
+  color: #6D4C41;
+}
+
+.btn-custom-h {
+  color: #ffffff;
+  background-color: #D85436; /* Cinnabar */
+  padding: 12px 25px;
+  border-radius: 20px; 
+  font-size: 1rem;
+  transition:
+    background-color 0.3s ease,
+    transform 0.2s ease;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  display: inline-block;
+  border: none;
+}
+
+.btn-custom-h:hover {
+  background-color: #FF7043;
+  border:none;
+}
+.btn-custom-h.active {
+  background-color: #df755d; /* Cambia el color de fondo para el botón activo */
+  color: white; /* Color del texto para el botón activo */
+  border: 1px solid #ab694f; /* Borde del botón activo */
+}
+.bite-title {
+  font-weight: 700;
+  font-size: 48px;
+  color: #6fb316; /* Yellow Green */
+  text-transform: uppercase;
+  margin-bottom: 20px;
+}
+
+h4 {
+  font-weight: 600;
+  color: #e1bb12; /* Maize */
+  margin-bottom: 20px;
+}
+
+.recipe-list-h {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 1rem;
+}
+.recipe-card-h{
+    width: 200px;
+    height: 200px;
+    background-color: #f8f0cf;
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    border: 1px solid #d7d2a5;
+    text-align: center;
+    transition:
+        transform 0.3s ease,
+        box-shadow 0.3s ease;
+}
+.recipe-card-h img{
+    width: 100px;
+    height: 100px;
+    object-fit: cover;
+    border-radius: 8px;
+    margin-bottom: 15px;
+    border: 2px solid #f8f0cf;
+}
+.recipe-card-h .recipe-name-h{
+    font-size: 1.2rem;
+    
+}
+
+

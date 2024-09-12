@@ -3,7 +3,7 @@ import { Context } from "../store/appContext";
 import { Categories } from "../component/home/categories";
 import { Recipes } from "../component/home/recipes";
 import { Users } from "../component/home/users"; 
-import "../../styles/home.css";
+import "../component/home/homeStyles.css";
 
 export const Home = () => {
     const { store, actions } = useContext(Context);
@@ -18,15 +18,14 @@ export const Home = () => {
         console.log("Usuarios: ", store.listaDeUsuarios)
     }, []);
 
-
     const handleSelectCategory = (categoryId) => {
         setSelectedCategory(categoryId); 
     };
 
     return (
-        <div className="text-center h-100">
-            <div className="m-3">
-                <h1>Bienvenido a Bite Buddies</h1>
+        <div className="body text-center h-100">
+            <div className="titles m-3">
+                <h1 className="bite-title">BiteBuddies</h1>
                 <h4>Descubre recetas deliciosas creadas por chefs como tú</h4>
                 <p>Busca, comparte y explora miles de recetas subidas por nuestra comunidad de chefs. ¡Comparte tu pasión por la cocina con el mundo!</p>
             </div>

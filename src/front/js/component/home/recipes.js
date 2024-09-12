@@ -1,5 +1,6 @@
 import React from "react";
 import { Link } from "react-router-dom";
+import "./homeStyles.css";
 
 export const Recipes = ({ recetas = [], selectedCategory, searchResults = [], isLoading}) => {
     const filteredRecetas = searchResults.length > 0 
@@ -19,18 +20,18 @@ export const Recipes = ({ recetas = [], selectedCategory, searchResults = [], is
 
     return (
         <div>
-            <h4>Recetas</h4>
-            <div className="recipe-list d-flex flex-wrap justify-content-center">
+            <h4 className="sub-title">Recetas</h4>
+            <div className="recipe-list-h">
                 {filteredRecetas.length > 0 ? (
                     filteredRecetas.map((receta) => (
                         <Link key={receta.id} to={`/recipe/${receta.id}`}>
-                            <div className="recipe-card bg-light p-2">
+                            <div className="recipe-card-h p-2">
                                 <img
                                     src={receta.image_url}
                                     alt={receta.name}
                                     className="img-fluid"
                                 />
-                                <p className="recipe-name">{receta.name}</p>
+                                <p className="recipe-name-h">{receta.name}</p>
                             </div>
                         </Link>
                     ))
