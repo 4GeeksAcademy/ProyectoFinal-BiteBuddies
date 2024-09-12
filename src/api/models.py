@@ -29,24 +29,30 @@ favorite_users = db.Table(
 class User(db.Model):
     __tablename__ = 'user'
     id = db.Column(db.Integer, primary_key=True)
-    first_name = db.Column(db.String(250), unique=False, nullable=False)
-    last_name = db.Column(db.String(250), unique=False, nullable=False)
+    first_name = db.Column(db.String(250), nullable=False)
+    last_name = db.Column(db.String(250), nullable=False)
     user_name = db.Column(db.String(250), unique=True, nullable=False)
     email = db.Column(db.String(250), unique=True, nullable=False)
     password = db.Column(db.String(250), nullable=False)
     is_active = db.Column(db.Boolean, nullable=False, default=True)
+
+    uploaded_recipes = db.relationship('Recipe', back_populates='user')
+
     favorite_recipes = db.relationship('Recipe', secondary=favorite_recipes, backref=db.backref('favorited_by_users', lazy='dynamic'))
-    favorite_users = db.relationship('User', secondary=favorite_users, primaryjoin=id==favorite_users.c.follower_id, secondaryjoin=id==favorite_users.c.followed_id, backref='followers', lazy='dynamic')
-    uploaded_recipes = db.relationship('Recipe', backref='userUp', lazy=True)
+
+    favorite_users = db.relationship('User', secondary=favorite_users, 
+                                     primaryjoin=id==favorite_users.c.follower_id, 
+                                     secondaryjoin=id==favorite_users.c.followed_id, 
+                                     backref='followers', lazy='dynamic')
+
     def __repr__(self):
         return '<User %r>' % self.email
 
     def serialize(self):
         return {
             "id": self.id,
-            # "full_name": self.first_name + self.last_name,
             "first_name": self.first_name,
-            "last_name":self.last_name,
+            "last_name": self.last_name,
             "user_name": self.user_name,
             "email": self.email,
             "is_active": self.is_active,
@@ -54,6 +60,7 @@ class User(db.Model):
             "favorite_users": list(map(lambda x: x.serialize(), self.favorite_users.all())),
             "uploaded_recipes": [recipe.serialize() for recipe in self.uploaded_recipes]
         }
+
 
 
 class Categories(db.Model):
@@ -77,11 +84,13 @@ class Recipe(db.Model):
     description = db.Column(db.String(255), nullable=False)
     steps = db.Column(db.String(255), nullable=False)
     is_official = db.Column(db.Boolean, nullable=False, default=False)
-    image_url = db.Column(db.String(255), nullable=True)  # Nueva columna para la URL de la imagen
+    image_url = db.Column(db.String(255), nullable=True)
     ingredients = db.relationship('Ingredients', secondary=recipes_ingredients, backref=db.backref('used_in_recipes', lazy='dynamic'))
     categories = db.relationship('Categories', secondary=categories_recipes, backref=db.backref('recipes', lazy='dynamic'))
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=True)
-    user = db.relationship('User', backref=db.backref('userUp', lazy=True))
+
+    user = db.relationship('User', back_populates='uploaded_recipes')
+
 
     def __repr__(self):
         return '<Recipe %r>' % self.name

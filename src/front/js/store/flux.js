@@ -21,35 +21,39 @@ const getState = ({ getStore, getActions, setStore }) => {
       detallesDeReceta: [],
       recetasFavoritas: [],
       usuariosFavoritos: [],
+      isUserView: false,
     },
     actions: {
-      buscar: (query, searchType) => {
-        const store = getStore();
-        let resultadosUsers = [];
-
-        const lowerCaseQuery = query.toLowerCase();
-
-        if (searchType === "recetas") {
-          resultadosUsers = store.listaDeRecetas.filter((receta) =>
-            receta.name.toLowerCase().includes(lowerCaseQuery)
-          );
-          setStore({ searchResultUsers: resultadosUsers });
-        }
-        if (searchType === "ingredientes") {
-          resultadosUsers = store.listaDeIngredientes.filter((ingredient) =>
-            ingredient.name.toLowerCase().includes(lowerCaseQuery)
-          );
-        }
-        if (searchType === "usuarios") {
-          resultadosUsers = store.listaDeUsuarios.filter((user) =>
-            user.user_name.toLowerCase().includes(lowerCaseQuery)
-          );
-        }
-        setStore({
-          searchResultUsers: resultadosUsers,
-          busquedaActiva: true,
-        });
+      switchToUsersView: () => {
+        setStore({ isUserView: true });
       },
+      switchToRecipesView: () => {
+        setStore({ isUserView: false });
+      },
+      buscar: (query, searchType) => {
+          const store = getStore();
+          let resultados = [];
+
+          const lowerCaseQuery = query.toLowerCase();
+
+          if (searchType === "recetas") {
+              resultados = store.listaDeRecetas.filter((receta) =>
+                  receta.name.toLowerCase().includes(lowerCaseQuery)
+              );
+              setStore({ searchResultRecipes: resultados });
+          }
+          if (searchType === "usuarios") {
+              resultados = store.listaDeUsuarios.filter((user) =>
+                  user.user_name.toLowerCase().includes(lowerCaseQuery)
+              );
+              setStore({ searchResultUsers: resultados });
+          }
+
+          setStore({
+              busquedaActiva: true,
+          });
+      },
+
 
       limpiarBusqueda: () => {
         setStore({
