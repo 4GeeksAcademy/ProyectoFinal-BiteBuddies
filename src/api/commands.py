@@ -11,7 +11,7 @@ def add_user(first_name, last_name, user_name, is_active=True):
 # Función para insertar usuarios de prueba
 def insert_test_users():
     print('\n\n--- Add test USERS | START ---')
-    user1 = add_user("Pepe", "Doe", "Pepe_Doe")
+    user1 = add_user("Pepe", "Doe", "admin")
     user2 = add_user("John", "Doe", "John_Doe")
     user3 = add_user("Jane", "Doe", "Jane_Doe")
     db.session.add_all([user1, user2, user3])
