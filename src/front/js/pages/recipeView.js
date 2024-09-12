@@ -1,6 +1,6 @@
 import React, { useEffect, useContext, useState } from "react";
 import { Context } from "../store/appContext";
-import { useParams } from "react-router-dom";
+import { useParams, Link } from "react-router-dom";
 import "../../styles/recipeView.css";
 
 export const RecipeView = () => {
@@ -24,7 +24,7 @@ export const RecipeView = () => {
     loadRecipeDetailsAndFavorites();
   }, [id, actions, hasFetched]);
 
-  const recipe = store.detallesDeReceta || {};  // Asegurarse de que detallesDeReceta existe
+  const recipe = store.detallesDeReceta || {};
 
   const handleFavoriteClick = async () => {
     if (isFavorite) {
@@ -50,9 +50,11 @@ export const RecipeView = () => {
       </div>
       <div className="recipe-details">
         <h1>{recipe.name || "Nombre de la Receta"}</h1>
-        <p>{recipe.description || "Descripción no disponible"}</p>
 
-        <div className="recipe-instructions">
+        <div className="recipe-instructions d-flex flex-column">
+          <div>
+            <h2>Descripción:</h2>
+          <p>{recipe.description || "Descripción no disponible"}</p>
           <h2>Preparación:</h2>
           {recipe.steps ? (
             recipe.steps.split("\n").map((step, index) => (
@@ -61,7 +63,28 @@ export const RecipeView = () => {
           ) : (
             <p>Instrucciones no disponibles</p>
           )}
+
         </div>
+          
+        <div className= "published-by">
+          <p>
+              {recipe.uploaded_by_user ? (
+                <>
+                  Publicada por{" "}
+                  <Link to={`/user/${recipe.uploaded_by_user.id}`}>
+                    {recipe.uploaded_by_user.user_name}
+                  </Link>
+                </>
+              ) : (
+                "Publicada por BiteBuddies"
+              )}
+            </p>
+
+        </div>
+
+        </div>
+        
+        
       </div>
       <div className="recipe-sidebar">
         <div className="ingredients">
