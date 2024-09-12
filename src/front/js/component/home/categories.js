@@ -2,7 +2,11 @@ import React from "react";
 
 export const Categories = ({ categorias, selectedCategory, onSelectCategory }) => {
     if (categorias.length === 0) {
-        return <p>Cargando categorías...</p>; // Muestra un mensaje de carga si no hay categorías
+        return (
+            <div className="loading-spinner">
+                Cargando categorias ... <i className="fa-solid fa-spinner fa-spin"></i>
+            </div>
+        ); 
     }
 
     return (

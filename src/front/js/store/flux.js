@@ -8,6 +8,7 @@ const getState = ({ getStore, getActions, setStore }) => {
       error: null,
       currentUser: null,
       isLoggedIn: false,
+      isLoadingUser: true,
       listaDeRecetasPublicadas: [],
       recetasSubidas: [],
       listaDeCategorias: [],
@@ -264,6 +265,10 @@ const getState = ({ getStore, getActions, setStore }) => {
       getCurrentUser: async () => {
         try {
           const accessToken = localStorage.getItem("accessToken");
+          if (!accessToken) {
+            setStore({ isLoadingUser: false });
+            return;  
+          }
           const res = await axios.get(`${process.env.BACKEND_URL}/api/current-user`, {
             headers: {
               Authorization: `Bearer ${accessToken}`,
@@ -273,6 +278,7 @@ const getState = ({ getStore, getActions, setStore }) => {
           setStore({
             currentUser,
             isLoggedIn: true,
+            isLoadingUser: false,
           });
         } catch (error) {
           console.log("Error loading message from backend", error);
@@ -280,6 +286,7 @@ const getState = ({ getStore, getActions, setStore }) => {
           setStore({
             currentUser: null,
             isLoggedIn: false,
+            isLoadingUser: false,
           });
         }
       },

@@ -8,11 +8,25 @@ import "../../styles/home.css";
 export const Home = () => {
     const { store, actions } = useContext(Context);
     const [selectedCategory, setSelectedCategory] = useState(null);
+    const [isLoading, setIsLoading] = useState(true);
 
     useEffect(() => {
-        actions.traerRecetas();
-        actions.traerCategories();
-        actions.traerUsuarios(); 
+        const fetchData = async () => {
+            try {
+                setIsLoading(true);
+                await Promise.all([
+                    actions.traerRecetas(),
+                    actions.traerCategories(),
+                    actions.traerUsuarios()
+                ]);
+                setIsLoading(false);
+            } catch (error) {
+                console.error("Error fetching data:", error);
+                setIsLoading(false);
+            }
+        };
+
+        fetchData();
     }, [actions]);
 
     const handleSelectCategory = (categoryId) => {
@@ -30,20 +44,25 @@ export const Home = () => {
             {store.isUserView ? (
                 <Users 
                     usuarios={store.listaDeUsuarios} 
-                    searchResults={store.searchResultUsers} // Pasamos los resultados de búsqueda
+                    searchResults={store.searchResultUsers}
                 />
             ) : (
                 <>
-                    <Categories 
-                        categorias={store.listaDeCategorias} 
-                        selectedCategory={selectedCategory} 
-                        onSelectCategory={handleSelectCategory} 
-                    />
-                    <Recipes 
-                        recetas={store.listaDeRecetas} 
-                        selectedCategory={selectedCategory}
-                        searchResults={store.searchResultRecipes} // Pasamos los resultados de búsqueda
-                    />
+                    <div className="categories-container">
+                        <Categories 
+                            categorias={store.listaDeCategorias} 
+                            selectedCategory={selectedCategory} 
+                            onSelectCategory={handleSelectCategory} 
+                        />
+                    </div>
+                    
+                    <div className="recipes-container">
+                        <Recipes 
+                            recetas={store.listaDeRecetas} 
+                            selectedCategory={selectedCategory}
+                            searchResults={store.searchResultRecipes} 
+                        />
+                    </div>
                 </>
             )}
         </div>

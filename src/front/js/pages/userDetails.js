@@ -24,7 +24,11 @@ export const UserDetails = () => {
     ? store.listaDeRecetasDeOtroUsuario
     : [];
   if (!store.otherUserProfile) {
-    return <div>Cargando perfil...</div>;
+    return (
+      <div className="loading-spinner">
+        Cargando chef ... <i className="fa-solid fa-spinner fa-spin"></i>
+      </div>
+      );
   }
   
   return (

@@ -17,12 +17,14 @@ export const Profile = (id) => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (!withSession) {
-      navigate("/login");
-    } else {
-      actions.getUserRecipes();
+    if (!store.isLoadingUser) {
+      if (!store.isLoggedIn) {
+        navigate("/login");
+      } else {
+        actions.getUserRecipes();
+      }
     }
-  }, [withSession]);
+  }, [store.isLoadingUser, store.isLoggedIn]);
 
   const handleEditProfile = () => {
     console.log("Editar perfil");
@@ -35,8 +37,14 @@ export const Profile = (id) => {
     setShowModal(false);
   };
 
+ if (store.isLoadingUser) {
+    return( 
+      <div className="loading-spinner">
+        Cargando ... <i className="fa-solid fa-spinner fa-spin"></i>
+      </div>);
+  }
   if (!store.currentUser) {
-    return <div>Cargando...</div>;
+    return <div>No se encontró el usuario.</div>;
   }
 
   return (
