@@ -10,6 +10,7 @@
     padding-bottom: 80px; /* Ajusta este valor según la altura de tu footer */   flex: 1;
     overflow: auto;
     padding-bottom: 80px; /* Ajusta este valor según la altura de tu footer */
+    background-color: #def0d6;
 }
 /* /* Asegúrate de que el footer tenga una posición fija o relativa para evitar solapamientos */
 footer {

@@ -1,11 +1,28 @@
-import React, { useContext,useState } from "react";
-import { Link } from "react-router-dom";
+import React, { useContext,useState,useEffect } from "react";
 import { Context } from "../../store/appContext";
+import { useParams, Link } from "react-router-dom";
 import "./styles.css";
 
 export const RecipeCard = ({ recipe }) => {
   const { actions } = useContext(Context);
   const [isFavorite, setIsFavorite] = useState(false);
+  const { id } = useParams();
+  const [hasFetched, setHasFetched] = useState(false);
+
+   useEffect(() => {
+    const loadRecipeDetailsAndFavorites = async () => {
+      if (!hasFetched && id) {
+        await actions.traerDetalleDeReceta(id);
+        setHasFetched(true);
+      }
+      await actions.getUserFavorites();
+      if (id) {
+        const isFav = actions.isRecipeFavorite(parseInt(id));
+        setIsFavorite(isFav);
+      }
+    };
+    loadRecipeDetailsAndFavorites();
+  }, [id, actions, hasFetched]);
 
   const handleFavoriteClick = async () => {
     if (isFavorite) {

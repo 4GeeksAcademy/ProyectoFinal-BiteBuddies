@@ -1,6 +1,21 @@
+.bite-title{
+  font-family: 'Quicksand', sans-serif;
+  font-weight: 700;
+  font-size: 48px;
+  color: #6A8A37
+}
+h4 {
+  color: #FFA500;
+  font-family: 'Quicksand', sans-serif;
+  font-weight: 700;
+  margin-bottom: 10px;
+}
+p{
+  margin-bottom: 30px;
+}
 .btn-custom {
   color: #ffffff;
-  background-color: #6b4423;
+  background-color: #8a4d1a;
   border: solid 5px white;
   padding: 12px 25px;
   border-radius: 10px;
@@ -16,7 +31,7 @@
   padding: 20px;
   border-radius: 12px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
-  border: 1px solid #d4a373;
+  border: 1px solid #829c45;
   text-align: center;
   transition:
     transform 0.3s ease,
@@ -31,13 +46,18 @@
   object-fit: cover;
   border-radius: 8px;
   margin-bottom: 15px;
-  border: 2px solid #d4a373;
+  border: 2px solid #829c45;
 }
 
+a {
+    text-decoration: none;
+    color: inherit; 
+}
 .recipe-card .recipe-name {
   font-size: 1.2rem;
   font-weight: 500;
   color: #6b4423;
+  font-family: "Quicksand", sans-serif;
 }
 
 .recipe-card:hover {

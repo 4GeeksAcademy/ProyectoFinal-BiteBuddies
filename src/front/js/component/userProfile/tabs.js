@@ -31,13 +31,6 @@ export const Tabs = ({ handleEditProfile, setActiveTab, activeTab, isProfile }) 
       >
         Chefs Favoritos
       </button>
-      <button
-        className={`btn-custom ${activeTab === "chats" ? "active" : ""}`}
-        onClick={() => setActiveTab("chats")}
-        style={{ width: "20%" }}
-      >
-        Chats
-      </button>
     </div>
   );
 };
