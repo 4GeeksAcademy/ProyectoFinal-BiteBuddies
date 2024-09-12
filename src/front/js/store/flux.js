@@ -505,7 +505,6 @@ const getState = ({ getStore, getActions, setStore }) => {
 
       addRecipeToFavorites: async (recipe_id) => {
         const accessToken = localStorage.getItem("accessToken");
-
         try {
           const response = await fetch(`${process.env.BACKEND_URL}/api/favorites/recipes/${recipe_id}`, {
             method: "POST",
@@ -514,10 +513,8 @@ const getState = ({ getStore, getActions, setStore }) => {
               "Content-Type": "application/json",
             },
           });
-
           if (response.ok) {
-            const userFavorites = await response.json();
-
+            const userFavorites = await response.json();          
             if (userFavorites && userFavorites.favorite_recipes && userFavorites.favorite_users) {
               setStore({
                 recetasFavoritas: userFavorites.favorite_recipes,
@@ -527,7 +524,6 @@ const getState = ({ getStore, getActions, setStore }) => {
               console.error("Formato inesperado en la respuesta al añadir receta a favoritos");
               return false;
             }
-
             return true;
           } else {
             console.error("Error al añadir la receta a favoritos");
@@ -538,7 +534,6 @@ const getState = ({ getStore, getActions, setStore }) => {
           return false;
         }
       },
-      
 
       removeRecipeFromFavorites: async (recipe_id) => {
         const accessToken = localStorage.getItem("accessToken");
@@ -551,7 +546,6 @@ const getState = ({ getStore, getActions, setStore }) => {
               "Content-Type": "application/json",
             },
           });
-
           if (response.ok) {
             const userFavorites = await response.json();
 
@@ -563,7 +557,6 @@ const getState = ({ getStore, getActions, setStore }) => {
               console.error("Formato inesperado en la respuesta al eliminar receta de favoritos");
               return false;
             }
-
             return true;
           } else {
             console.error("Error al eliminar la receta de favoritos");

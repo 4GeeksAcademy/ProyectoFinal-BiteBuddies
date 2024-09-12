@@ -6,7 +6,7 @@ export const Users = ({ usuarios, searchResults, currentUser }) => {
     if (!currentUser || !displayedUsers) {
         return (
             <div className="loading-spinner">
-                Cargando chefs ... <i className="fa-solid fa-spinner fa-spin"></i>
+                Inicie sesión para buscar chefs
             </div>
         )}
 

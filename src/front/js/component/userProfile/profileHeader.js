@@ -53,8 +53,8 @@ export const ProfileHeader = ({ user, isProfile  }) => {
               onClick={handleFavoriteClick}
             >
               {isFavorite 
-                ? <>Chef Favorito <i className='bx bxs-cookie' style={{ color: '#ffffff' }}></i></> 
-                : <>Seguir Chef <i className="fa-solid fa-cookie" style={{color: '#ffffff'}}></i></>
+                ? <>Siguiendo <i className='bx bxs-cookie' style={{ color: '#d4a373' }}></i></> 
+                : <>Seguir <i className="fa-solid fa-cookie" style={{color: '#d4a373'}}></i></>
               }
             </button> 
           )}

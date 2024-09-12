@@ -1,4 +1,5 @@
 import React from "react";
+import "./homeStyles.css";
 
 export const Categories = ({ categorias, selectedCategory, onSelectCategory }) => {
     if (categorias.length === 0) {
@@ -10,12 +11,12 @@ export const Categories = ({ categorias, selectedCategory, onSelectCategory }) =
     }
 
     return (
-        <div>
-            <h4>Categorías</h4>
+       <div>
+            <h4 className="sub-title">Categorías</h4>
             <div className="d-flex justify-content-center">
                 {/* Botón para mostrar todas las recetas */}
                 <button
-                    className={`btn-custom m-3 ${selectedCategory === null ? 'active' : ''}`}
+                    className={`btn-custom-h m-3 ${selectedCategory === null ? 'active' : ''}`}
                     onClick={() => onSelectCategory(null)} // Muestra todas las recetas si se selecciona null
                 >
                     Todas las recetas
@@ -24,7 +25,7 @@ export const Categories = ({ categorias, selectedCategory, onSelectCategory }) =
                 {/* Botones de categorías individuales */}
                 {categorias.map((category) => (
                     <button
-                        className={`btn-custom m-3 ${selectedCategory === category.id ? 'active' : ''}`}
+                        className={`btn-custom-h m-3 ${selectedCategory === category.id ? 'active' : ''}`}
                         key={category.id}
                         onClick={() => onSelectCategory(category.id)} // Llama a la función para seleccionar una categoría
                     >

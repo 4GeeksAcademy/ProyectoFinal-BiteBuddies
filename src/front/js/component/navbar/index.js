@@ -1,7 +1,7 @@
 import React, { useContext, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Context } from "../../store/appContext";
-import { SearchBar } from "./searchBar";
+import { SearchBar } from "./searchBar/searchBar";
 import "../navbar/navBar.css";
 
 export const Navbar = () => {
@@ -50,11 +50,6 @@ export const Navbar = () => {
                                 <Link className="dropdown-item" to={`/user-profile`}>
                                     Perfil
                                 </Link>
-                            </li>
-                            <li>
-                                <a className="dropdown-item" href="#">
-                                    Favoritos
-                                </a>
                             </li>
                             <li>
                                 <Link className="dropdown-item" to={`/login`} onClick={actions.logout}>

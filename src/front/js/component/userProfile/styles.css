@@ -135,7 +135,7 @@ body {
   border: 1px solid #ab694f; /* Borde del botón activo */
 }
 .btn-follow{
-  background-color: #d4a373;
+  background-color: #8b5e3c;
   border: none;
   border-radius: 8px;
   color: white;
@@ -155,4 +155,8 @@ body {
   background-color: #ab694f; /* Cambia el color de fondo para el botón activo */
   color: white; /* Color del texto para el botón activo */
   border: 1px solid #ab694f; /* Borde del botón activo */
+}
+.loading-spinner{
+  margin-left: 20px;
+  margin-top: 20px;
 }
