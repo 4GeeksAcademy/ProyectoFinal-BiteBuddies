@@ -4,29 +4,23 @@ import { useParams } from "react-router-dom";
 import "../../styles/recipeView.css";
 
 export const RecipeView = () => {
-    const { store, actions } = useContext(Context);
+  const { store, actions } = useContext(Context);
   const { id } = useParams();
   const [hasFetched, setHasFetched] = useState(false);
   const [isFavorite, setIsFavorite] = useState(false);
 
   useEffect(() => {
     const loadRecipeDetailsAndFavorites = async () => {
-      // Cargar los detalles de la receta
       if (!hasFetched && id) {
         await actions.traerDetalleDeReceta(id);
-        setHasFetched(true);  // Marcar como ya cargado
+        setHasFetched(true);
       }
-      
-      // Cargar los favoritos del usuario
       await actions.getUserFavorites();
-      
-      // Verificar si la receta actual está en favoritos
       if (id) {
         const isFav = actions.isRecipeFavorite(parseInt(id));
         setIsFavorite(isFav);
       }
     };
-
     loadRecipeDetailsAndFavorites();
   }, [id, actions, hasFetched]);
 
@@ -94,7 +88,6 @@ export const RecipeView = () => {
             )}
           </ul>
         </div>
-        {/* Botón para añadir o eliminar de favoritos */}
         <button
           className="favorite-button btn btn-outline-primary"
           onClick={handleFavoriteClick}

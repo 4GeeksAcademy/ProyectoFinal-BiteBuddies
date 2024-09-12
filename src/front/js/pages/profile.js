@@ -6,6 +6,7 @@ import { Tabs } from "../component/userProfile/tabs";
 import { RecipeList } from "../component/userProfile/tabViews/recipeList";
 import { RecipeUploadModal } from "../component/userProfile/recipeUpLoadModal";
 import { FavoriteRecipes } from "../component/userProfile/tabViews/favoriteRecipes";
+import { FavoriteChefs } from "../component/userProfile/tabViews/favoriteChefs";
 
 export const Profile = (id) => {
   const { store, actions } = useContext(Context);
@@ -44,7 +45,8 @@ export const Profile = (id) => {
       <Tabs isProfile={isProfile} handleEditProfile={handleEditProfile} setActiveTab={setActiveTab} activeTab={activeTab} />
       <div className="tab-content">
         {activeTab === "misRecetas" && <RecipeList isProfile={isProfile} store={store} actions={actions} />}
-        {activeTab === "favoritas" && <FavoriteRecipes store={store} actions={actions} />}
+        {activeTab === "recetasFavoritas" && <FavoriteRecipes store={store} actions={actions} />}
+        {activeTab === "chefsFavoritos" && <FavoriteChefs store={store} actions={actions} />}
       </div>
       <div className="row mt-3 justify-content-center">
               <button className="btn btn-primary" style={{ borderRadius: "5px" }} onClick={handleOpenModal}>

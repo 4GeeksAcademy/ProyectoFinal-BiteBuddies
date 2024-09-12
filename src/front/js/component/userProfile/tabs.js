@@ -18,15 +18,15 @@ export const Tabs = ({ handleEditProfile, setActiveTab, activeTab, isProfile }) 
         {isProfile ? "Mis Recetas": "Recetas Publicadas"}
       </button>
       <button
-        className={`btn-custom ${activeTab === "favoritas" ? "active" : ""}`}
-        onClick={() => setActiveTab("favoritas")}
+        className={`btn-custom ${activeTab === "recetasFavoritas"? "active" : ""}`}
+        onClick={() => setActiveTab("recetasFavoritas")}
         style={{ width: "20%" }}
       >
         Recetas Favoritas
       </button>
       <button
-        className={`btn-custom ${activeTab === "chefs" ? "active" : ""}`}
-        onClick={() => setActiveTab("chefs")}
+        className={`btn-custom ${activeTab === "chefsFavoritos" ? "active" : ""}`}
+        onClick={() => setActiveTab("chefsFavoritos")}
         style={{ width: "20%" }}
       >
         Chefs Favoritos

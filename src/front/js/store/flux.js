@@ -14,12 +14,13 @@ const getState = ({ getStore, getActions, setStore }) => {
       listaDeIngredientes: [],
       listaDeUsuarios: [],
       listaDeRecetas: [],
-      listaDeRecetasDeOtroUsuario:[],
+      listaDeRecetasDeOtroUsuario: [],
       searchResult: [],
       searchResultUsers: [],
       busquedaActiva: false,
       detallesDeReceta: [],
       recetasFavoritas: [],
+      usuariosFavoritos: [],
     },
     actions: {
       buscar: (query, searchType) => {
@@ -32,7 +33,7 @@ const getState = ({ getStore, getActions, setStore }) => {
           resultadosUsers = store.listaDeRecetas.filter((receta) =>
             receta.name.toLowerCase().includes(lowerCaseQuery)
           );
-          setStore({searchResultUsers: resultadosUsers});
+          setStore({ searchResultUsers: resultadosUsers });
         }
         if (searchType === "ingredientes") {
           resultadosUsers = store.listaDeIngredientes.filter((ingredient) =>
@@ -41,7 +42,7 @@ const getState = ({ getStore, getActions, setStore }) => {
         }
         if (searchType === "usuarios") {
           resultadosUsers = store.listaDeUsuarios.filter((user) =>
-            user.user_name.toLowerCase().includes(lowerCaseQuery),
+            user.user_name.toLowerCase().includes(lowerCaseQuery)
           );
         }
         setStore({
@@ -53,12 +54,12 @@ const getState = ({ getStore, getActions, setStore }) => {
       limpiarBusqueda: () => {
         setStore({
           searchResult: [],
-          searchResultUsers:[],
+          searchResultUsers: [],
           busquedaActiva: false,
         });
       },
+
       registerUser: async (user_name, first_name, last_name, email, password) => {
-        const store = getStore();
         try {
           if (!user_name || !first_name || !last_name || !email || !password) {
             setStore({
@@ -66,6 +67,7 @@ const getState = ({ getStore, getActions, setStore }) => {
             });
             return false;
           }
+
           const response = await fetch(`${process.env.BACKEND_URL}/api/users`, {
             method: "POST",
             headers: {
@@ -109,18 +111,17 @@ const getState = ({ getStore, getActions, setStore }) => {
           return false;
         }
       },
+
       traerIngredientes: async () => {
         try {
           console.log("haciendo fetch");
 
-          const response = await fetch(
-            `${process.env.BACKEND_URL}/api/ingredients`, {
-              method: "GET",
-              headers: {
-                "Content-Type": "application/json",
-              },
+          const response = await fetch(`${process.env.BACKEND_URL}/api/ingredients`, {
+            method: "GET",
+            headers: {
+              "Content-Type": "application/json",
             },
-          );
+          });
           if (!response.ok) {
             console.log("Respuesta no ok:", response.status);
             throw new Error("Error fetching ingredients");
@@ -132,7 +133,7 @@ const getState = ({ getStore, getActions, setStore }) => {
           });
           console.log(
             "Nuevo estado de listaDeIngredientes:",
-            getStore().listaDeIngredientes,
+            getStore().listaDeIngredientes
           );
         } catch (error) {
           console.error("Error:", error);
@@ -154,47 +155,43 @@ const getState = ({ getStore, getActions, setStore }) => {
           console.error("Error al obtener usuarios:", error);
         }
       },
-  getOtherUserProfile: async (userId) => {
-  console.log("userID", userId);
-  try {
-    const response = await fetch(`${process.env.BACKEND_URL}/api/user/${userId}`); 
-    console.log("API response for profile:", response);
-    if (!response.ok) {
-      throw new Error("Error al obtener el perfil del usuario");
-    }
-    const data = await response.json();
-    console.log("Profile data:", data);
-    setStore({ otherUserProfile: data });
-    console.log("Profile stored in state:", data);
-  } catch (error) {
-    console.error("Error al obtener el perfil de otro usuario:", error);
-  }
-},
 
-  getOtherUserRecipes: async (userId) => {
-  try {
-    const response = await fetch(`${process.env.BACKEND_URL}/api/user/${userId}/recipes`);
-    const data = await response.json();
+      getOtherUserProfile: async (userId) => {
+        console.log("userID", userId);
+        try {
+          const response = await fetch(`${process.env.BACKEND_URL}/api/user/${userId}`);
+          console.log("API response for profile:", response);
+          if (!response.ok) {
+            throw new Error("Error al obtener el perfil del usuario");
+          }
+          const data = await response.json();
+          console.log("Profile data:", data);
+          setStore({ otherUserProfile: data });
+          console.log("Profile stored in state:", data);
+        } catch (error) {
+          console.error("Error al obtener el perfil de otro usuario:", error);
+        }
+      },
 
-    // Si la respuesta es un array, significa que las recetas se obtuvieron correctamente
-    if (Array.isArray(data)) {
-      setStore({ listaDeRecetasDeOtroUsuario: data });
-    } 
-    // Si la respuesta tiene un objeto con un mensaje, significa que no se encontraron recetas
-    else if (data.message) {
-      console.error("Mensaje del servidor:", data.message);
-      setStore({ listaDeRecetasDeOtroUsuario: [] }); // Asegurar que siempre sea un array vacío en este caso
-    } 
-    // Manejo de cualquier otra respuesta inesperada
-    else {
-      console.error("Respuesta inesperada del servidor:", data);
-      setStore({ listaDeRecetasDeOtroUsuario: [] });
-    }
-  } catch (error) {
-    console.error("Error al obtener las recetas del otro usuario:", error);
-    setStore({ listaDeRecetasDeOtroUsuario: [] }); // Asegurar que siempre sea un array en caso de error
-  }
-},
+      getOtherUserRecipes: async (userId) => {
+        try {
+          const response = await fetch(`${process.env.BACKEND_URL}/api/user/${userId}/recipes`);
+          const data = await response.json();
+          if (Array.isArray(data)) {
+            setStore({ listaDeRecetasDeOtroUsuario: data });
+          } else if (data.message) {
+            console.error("Mensaje del servidor:", data.message);
+            setStore({ listaDeRecetasDeOtroUsuario: [] });
+          } else {
+            console.error("Respuesta inesperada del servidor:", data);
+            setStore({ listaDeRecetasDeOtroUsuario: [] });
+          }
+        } catch (error) {
+          console.error("Error al obtener las recetas del otro usuario:", error);
+          setStore({ listaDeRecetasDeOtroUsuario: [] });
+        }
+      },
+
       traerRecetas: async () => {
         try {
           const response = await fetch(`${process.env.BACKEND_URL}/api/all_recipes`, {
@@ -382,7 +379,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 
           if (response.ok) {
             const data = await response.json();
-            console.log("getUSER",data);
+            console.log("getUSER", data);
             setStore({
               listaDeRecetasPublicadas: data,
               recetasSubidas: data.length,
@@ -407,15 +404,87 @@ const getState = ({ getStore, getActions, setStore }) => {
               "Content-Type": "application/json",
             },
           });
-
           if (response.ok) {
             const data = await response.json();
+
+            const favorite_recipes = data.favorite_recipes || [];
+            const favorite_users = data.favorite_users || [];
             setStore({
-              recetasFavoritas: data,
+              recetasFavoritas: favorite_recipes,
+              usuariosFavoritos: favorite_users,
             });
             return true;
           } else {
             console.error("Error al obtener los favoritos del usuario");
+            return false;
+          }
+        } catch (error) {
+          console.error("Error:", error);
+          return false;
+        }
+      },
+
+      addUserToFavorite: async (user_id) => {
+        const accessToken = localStorage.getItem("accessToken");
+
+        try {
+          const response = await fetch(`${process.env.BACKEND_URL}/api/favorites/users/${user_id}`, {
+            method: "POST",
+            headers: {
+              Authorization: `Bearer ${accessToken}`,
+              "Content-Type": "application/json",
+            },
+          });
+
+          if (response.ok) {
+            const userFavorites = await response.json();
+
+            if (userFavorites && userFavorites.favorite_users) {
+              setStore({
+                usuariosFavoritos: userFavorites.favorite_users,
+              });
+            } else {
+              console.error("Formato inesperado en la respuesta al añadir usuario a favoritos");
+              return false;
+            }
+
+            return true;
+          } else {
+            console.error("Error al añadir el usuario a favoritos");
+            return false;
+          }
+        } catch (error) {
+          console.error("Error:", error);
+          return false;
+        }
+      },
+
+      removeUserFromFavorites: async (user_id) => {
+        const accessToken = localStorage.getItem("accessToken");
+
+        try {
+          const response = await fetch(`${process.env.BACKEND_URL}/api/favorites/users/${user_id}`, {
+            method: "DELETE",
+            headers: {
+              Authorization: `Bearer ${accessToken}`,
+              "Content-Type": "application/json",
+            },
+          });
+
+          if (response.ok) {
+            const userFavorites = await response.json();
+            if (userFavorites && userFavorites.favorite_users) {
+              setStore({
+                usuariosFavoritos: userFavorites.favorite_users,
+              });
+            } else {
+              console.error("Formato inesperado en la respuesta al eliminar usuario de favoritos");
+              return false;
+            }
+
+            return true;
+          } else {
+            console.error("Error al eliminar el usuario de favoritos");
             return false;
           }
         } catch (error) {
@@ -438,9 +507,17 @@ const getState = ({ getStore, getActions, setStore }) => {
 
           if (response.ok) {
             const userFavorites = await response.json();
-            setStore({
-              recetasFavoritas: userFavorites.favorite_recipes,
-            });
+
+            if (userFavorites && userFavorites.favorite_recipes && userFavorites.favorite_users) {
+              setStore({
+                recetasFavoritas: userFavorites.favorite_recipes,
+                usuariosFavoritos: userFavorites.favorite_users,
+              });
+            } else {
+              console.error("Formato inesperado en la respuesta al añadir receta a favoritos");
+              return false;
+            }
+
             return true;
           } else {
             console.error("Error al añadir la receta a favoritos");
@@ -451,6 +528,7 @@ const getState = ({ getStore, getActions, setStore }) => {
           return false;
         }
       },
+      
 
       removeRecipeFromFavorites: async (recipe_id) => {
         const accessToken = localStorage.getItem("accessToken");
@@ -466,9 +544,16 @@ const getState = ({ getStore, getActions, setStore }) => {
 
           if (response.ok) {
             const userFavorites = await response.json();
-            setStore({
-              recetasFavoritas: userFavorites.favorite_recipes,
-            });
+
+            if (userFavorites && userFavorites.favorite_recipes) {
+              setStore({
+                recetasFavoritas: userFavorites.favorite_recipes,
+              });
+            } else {
+              console.error("Formato inesperado en la respuesta al eliminar receta de favoritos");
+              return false;
+            }
+
             return true;
           } else {
             console.error("Error al eliminar la receta de favoritos");
@@ -484,8 +569,14 @@ const getState = ({ getStore, getActions, setStore }) => {
         const store = getStore();
         return store.recetasFavoritas && store.recetasFavoritas.some((recipe) => recipe.id === recipe_id);
       },
+
+      isUserFavorite: (user_id) => {
+        const store = getStore();
+        return store.usuariosFavoritos && store.usuariosFavoritos.some((user) => user.id === user_id);
+      },
     },
   };
 };
 
 export default getState;
+
