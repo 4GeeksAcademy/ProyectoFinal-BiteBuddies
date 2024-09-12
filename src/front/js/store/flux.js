@@ -25,11 +25,13 @@ const getState = ({ getStore, getActions, setStore }) => {
       isUserView: false,
     },
     actions: {
-      switchToUsersView: () => {
-        setStore({ isUserView: true });
-      },
       switchToRecipesView: () => {
-        setStore({ isUserView: false });
+          console.log("Switching to Recipes View");
+          setStore({ isUserView: false });
+      },
+      switchToUsersView: () => {
+          console.log("Switching to Users View");
+          setStore({ isUserView: true });
       },
       buscar: (query, searchType) => {
           const store = getStore();
