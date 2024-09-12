@@ -1,5 +1,5 @@
 import React from "react";
-import { UserCard } from "../userCard";
+import { UserCard } from "./userCard";
 
 export const Users = ({ usuarios, searchResults, currentUser }) => {
     const displayedUsers = searchResults.length > 0 ? searchResults : usuarios;

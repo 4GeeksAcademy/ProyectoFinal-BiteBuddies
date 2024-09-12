@@ -31,7 +31,6 @@ export const UserDetails = () => {
       </div>
       );
   }
-  
   return (
     <div className="container profile-container" style={{ position: "relative" }}>
       <ProfileHeader  user={store.otherUserProfile} isProfile={isProfile} />
