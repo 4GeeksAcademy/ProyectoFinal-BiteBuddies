@@ -5,6 +5,34 @@
   padding: 0;
   color: #6D4C41;
 }
+.bite-title {
+  font-weight: 700;
+  font-size: 48px;
+  color: #78bc1f; 
+  text-transform: uppercase;
+  margin-bottom: 30px;
+  margin-top:40px;
+}
+h4{
+    margin-top: 50px;
+    color: #4f800f;
+
+}
+p{
+    margin-bottom:50px;
+    color: #4f800f;
+}
+
+.sub-title-h {
+  font-weight: 600;
+  color: #93183d; /* Maize */
+  margin-bottom: 20px;
+}
+
+.conjunto-botones{
+    margin-top: 45px;
+    margin-bottom: 45px;
+}
 
 .btn-custom-h {
   color: #ffffff;
@@ -29,19 +57,6 @@
   color: white; /* Color del texto para el botón activo */
   border: 1px solid #ab694f; /* Borde del botón activo */
 }
-.bite-title {
-  font-weight: 700;
-  font-size: 48px;
-  color: #6fb316; /* Yellow Green */
-  text-transform: uppercase;
-  margin-bottom: 20px;
-}
-
-h4 {
-  font-weight: 600;
-  color: #e1bb12; /* Maize */
-  margin-bottom: 20px;
-}
 
 .recipe-list-h {
     display: flex;
@@ -52,7 +67,7 @@ h4 {
 .recipe-card-h{
     width: 200px;
     height: 200px;
-    background-color: #f8f0cf;
+    background-color: #efbfb4;
     padding: 20px;
     border-radius: 12px;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
@@ -72,7 +87,12 @@ h4 {
 }
 .recipe-card-h .recipe-name-h{
     font-size: 1.2rem;
-    
+    font-weight:500;
+    color:#700b29;
+}
+a {
+  text-decoration: none; 
+  color: inherit; 
 }
 
 

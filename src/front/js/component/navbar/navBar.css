@@ -5,13 +5,14 @@
     justify-content: space-between;
     align-items: center;
     padding: 15px 20px;
-    background-color: #faedcd; 
+    background-color: #f1a493; 
     width: 100%;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    font-family: "Poppins", sans-serif;
 }
 
 .home-icon {
-    color: #6b4423;
+    color: #a23016;
     font-size: 2rem;
     margin-right: 10px;
     transition: color 0.3s ease, transform 0.3s ease;
@@ -39,12 +40,12 @@
     gap: 10px; 
     margin-bottom: 10px;
     padding: 5px;
-    background-color: #fefae0;
+    background-color: #ecc4bb;
     border-radius: 15px;
 }
 
 .option-button {
-    background-color: #d4a373;
+    background-color: #D85436;
     border: none;
     color: white;
     padding: 8px 15px;
@@ -55,11 +56,11 @@
 }
 
 .option-button.active {
-    background-color: #6b4423; 
+    background-color: #aa2f13; 
 }
 
 .option-button:hover {
-    background-color: #8b5e3c;
+    background-color: #b7452b;
 }
 
 .search-input {
@@ -88,7 +89,7 @@
 }
 
 .custom-button {
-    background-color: #6b4423;
+    background-color: #D85436;
     border: none;
     color: white;
     font-size: 1rem;
@@ -99,7 +100,7 @@
 }
 
 .custom-button:hover {
-    background-color: #8b5e3c;
+    background-color: #FF7043;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
 

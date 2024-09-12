@@ -12,8 +12,8 @@ export const Categories = ({ categorias, selectedCategory, onSelectCategory }) =
 
     return (
        <div>
-            <h4 className="sub-title">Categorías</h4>
-            <div className="d-flex justify-content-center">
+            
+            <div className="conjunto-botones d-flex justify-content-center">
                 {/* Botón para mostrar todas las recetas */}
                 <button
                     className={`btn-custom-h m-3 ${selectedCategory === null ? 'active' : ''}`}
