@@ -11,7 +11,7 @@ export const RecipeUploadModal = ({ show, handleClose }) => {
     steps: "",
     ingredients_ids: [],
     category_ids: [],
-    image: "",  // Aquí guardaremos la URL de la imagen
+    image: "",  
   });
   
 const [ingredientsLoaded, setIngredientsLoaded] = useState(false);
@@ -53,14 +53,13 @@ const [categoriesLoaded, setCategoriesLoaded] = useState(false);
       recipeData.steps,
       recipeData.ingredients_ids,
       recipeData.category_ids,
-      recipeData.image  // Usamos `image` para enviar la URL de la imagen
+      recipeData.image
     );
-
     console.log("Submission success:", success);
-
     if (success) {
     console.log("Closing modal");
-    handleClose(); // This should close the modal
+    await actions.getUserRecipes();
+    handleClose()
     } else {
       console.log("Recipe submission failed");
     }
@@ -124,7 +123,6 @@ const [categoriesLoaded, setCategoriesLoaded] = useState(false);
                 />
               </div>
 
-              {/* Categorías - Usando React-Select */}
               <div className="form-group">
                 <label>Categorías</label>
                 <Select
@@ -137,6 +135,7 @@ const [categoriesLoaded, setCategoriesLoaded] = useState(false);
                   placeholder="Selecciona categorías"
                 />
               </div>
+
               <div className="form-group">
                 <label>Pasos</label>
                 <textarea
@@ -150,12 +149,12 @@ const [categoriesLoaded, setCategoriesLoaded] = useState(false);
               <div className="form-group">
                 <label>URL de la Imagen</label>
                 <input
-                  type="text"  // Cambia a tipo `text` para aceptar la URL de la imagen
+                  type="text"
                   className="form-control"
-                  name="image"  // Nombre del campo debe coincidir con el estado
-                  value={recipeData.image}  // Aquí se almacena la URL de la imagen
-                  onChange={handleChange}  // Maneja cambios
-                  placeholder="Ingresa la URL de la imagen"  // Añadir un placeholder opcional
+                  name="image" 
+                  value={recipeData.image}
+                  onChange={handleChange}
+                  placeholder="Ingresa la URL de la imagen"
                   required
                 />
               </div>
