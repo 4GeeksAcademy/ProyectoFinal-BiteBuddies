@@ -156,20 +156,16 @@ const getState = ({ getStore, getActions, setStore }) => {
         }
       },
 
-      getOtherUserProfile: async (userId) => {
-        console.log("userID", userId);
+     getOtherUserProfile: async (userId) => {
         try {
           const response = await fetch(`${process.env.BACKEND_URL}/api/user/${userId}`);
-          console.log("API response for profile:", response);
           if (!response.ok) {
             throw new Error("Error al obtener el perfil del usuario");
           }
           const data = await response.json();
-          console.log("Profile data:", data);
           setStore({ otherUserProfile: data });
-          console.log("Profile stored in state:", data);
         } catch (error) {
-          console.error("Error al obtener el perfil de otro usuario:", error);
+          console.error("Error al obtener el perfil del usuario:", error);
         }
       },
 
@@ -321,10 +317,15 @@ const getState = ({ getStore, getActions, setStore }) => {
           );
           if (response.status === 201) {
             const newRecipe = response.data.receta;
+
+            // Actualiza las recetas del currentUser directamente
+            const currentUser = { ...store.currentUser };
+            currentUser.uploaded_recipes = [...currentUser.uploaded_recipes, newRecipe];
+
             setStore({
-              listaDeRecetas: [...store.listaDeRecetas, newRecipe],
-              listaDeRecetasPublicadas: [...store.listaDeRecetasPublicadas, newRecipe],
+              currentUser, // Actualiza el usuario con la nueva receta
             });
+
             alert("Receta publicada exitosamente!");
           }
           return true;
@@ -364,31 +365,16 @@ const getState = ({ getStore, getActions, setStore }) => {
         }
       },
 
-      getUserRecipes: async () => {
+      getUserRecipes: () => {
         const store = getStore();
-        const accessToken = localStorage.getItem("accessToken");
+        const currentUser = store.currentUser;
 
-        try {
-          const response = await fetch(`${process.env.BACKEND_URL}/api/user/recipes`, {
-            method: "GET",
-            headers: {
-              Authorization: `Bearer ${accessToken}`,
-              "Content-Type": "application/json",
-            },
+        if (currentUser && currentUser.uploaded_recipes) {
+          setStore({
+            listaDeRecetasPublicadas: currentUser.uploaded_recipes,
           });
-
-          if (response.ok) {
-            const data = await response.json();
-            console.log("getUSER", data);
-            setStore({
-              listaDeRecetasPublicadas: data,
-              recetasSubidas: data.length,
-            });
-          } else {
-            console.error("Error al obtener las recetas del usuario");
-          }
-        } catch (error) {
-          console.error("Error:", error);
+        } else {
+          console.error("No hay recetas subidas para este usuario");
         }
       },
 

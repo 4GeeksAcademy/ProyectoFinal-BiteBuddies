@@ -45,7 +45,23 @@ body {
     font-size: 1.5rem;
     color: #8b5e3c; 
     margin-bottom: 10px;
+    display:flex;
+    flex-direction: column;
 }
+.published-by{
+    margin-top:80px;
+    align-self: end;
+}
+.published-by a {
+    color:#8b5e3c;
+    text-decoration: none;   
+}
+
+.published-by a:hover {
+  color: #6b4423;             
+  text-decoration: underline; 
+}
+
 
 .recipe-instructions p {
     font-size: 1rem;

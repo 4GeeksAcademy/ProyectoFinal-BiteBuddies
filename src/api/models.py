@@ -37,7 +37,7 @@ class User(db.Model):
     is_active = db.Column(db.Boolean, nullable=False, default=True)
     favorite_recipes = db.relationship('Recipe', secondary=favorite_recipes, backref=db.backref('favorited_by_users', lazy='dynamic'))
     favorite_users = db.relationship('User', secondary=favorite_users, primaryjoin=id==favorite_users.c.follower_id, secondaryjoin=id==favorite_users.c.followed_id, backref='followers', lazy='dynamic')
-    
+    uploaded_recipes = db.relationship('Recipe', backref='userUp', lazy=True)
     def __repr__(self):
         return '<User %r>' % self.email
 
@@ -51,7 +51,8 @@ class User(db.Model):
             "email": self.email,
             "is_active": self.is_active,
             "favorite_recipes": list(map(lambda x: x.serialize(), self.favorite_recipes)),
-            "favorite_users": list(map(lambda x: x.serialize(), self.favorite_users.all()))
+            "favorite_users": list(map(lambda x: x.serialize(), self.favorite_users.all())),
+            "uploaded_recipes": [recipe.serialize() for recipe in self.uploaded_recipes]
         }
 
 
@@ -80,7 +81,7 @@ class Recipe(db.Model):
     ingredients = db.relationship('Ingredients', secondary=recipes_ingredients, backref=db.backref('used_in_recipes', lazy='dynamic'))
     categories = db.relationship('Categories', secondary=categories_recipes, backref=db.backref('recipes', lazy='dynamic'))
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=True)
-    user = db.relationship('User', backref=db.backref('uploaded_recipes', lazy=True))
+    user = db.relationship('User', backref=db.backref('userUp', lazy=True))
 
     def __repr__(self):
         return '<Recipe %r>' % self.name
