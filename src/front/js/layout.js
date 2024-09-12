@@ -9,8 +9,8 @@ import { Footer } from "./component/footer/index";
 import { Home } from "./pages/home";
 import { Login } from "./pages/logIn";
 import { Sign_in } from "./pages/signIn";
-import { UserProfile } from "./pages/userProfile";
-import { OtherUserProfile } from "./pages/otherUserProfile";
+import { Profile } from "./pages/profile";
+import { UserDetails } from "./pages/userDetails"
 import { FavoritesView } from "./pages/favoritesView";
 import { RecipeView } from "./pages/recipeView";
 import { ViewOfAllCategories } from "./pages/viewOfAllCategories";
@@ -38,8 +38,8 @@ const Layout = () => {
                         <Route element={<Home />} path="/" />
                         <Route element={<Login />} path="/login" />
                         <Route element={<Sign_in />} path="/sign_in" />
-                        <Route element={<UserProfile />}path="/user-profile"  /> 
-                        <Route element={<OtherUserProfile />}path="/user/:id"  /> 
+                        <Route element={<Profile/>}path="/user-profile"  /> 
+                        <Route element={<UserDetails />}path="/user/:id"  /> 
                         <Route element={<FavoritesView />} path="/user/favorites" /> 
                         <Route element={<ViewOfAllCategories />} path="/categories" /> 
                         <Route element={<RecipeView />} path="/recipe/:id" />

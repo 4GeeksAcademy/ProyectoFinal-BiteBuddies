@@ -1,6 +1,7 @@
 import React, { useContext, useState, useEffect } from "react";
 import { Context } from "../../store/appContext";
 import Select from "react-select"
+import "../userProfile/styles.css";
 
 export const RecipeUploadModal = ({ show, handleClose }) => {
   const { store, actions } = useContext(Context);
