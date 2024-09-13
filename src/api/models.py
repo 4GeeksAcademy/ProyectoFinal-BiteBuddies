@@ -36,6 +36,9 @@ class User(db.Model):
     password = db.Column(db.String(250), nullable=False)
     is_active = db.Column(db.Boolean, nullable=False, default=True)
 
+    bio = db.Column(db.String(500), nullable=True)
+    profile_image = db.Column(db.String(255), nullable=True)
+
     uploaded_recipes = db.relationship('Recipe', back_populates='user')
 
     favorite_recipes = db.relationship('Recipe', secondary=favorite_recipes, backref=db.backref('favorited_by_users', lazy='dynamic'))
@@ -56,10 +59,13 @@ class User(db.Model):
             "user_name": self.user_name,
             "email": self.email,
             "is_active": self.is_active,
+            "bio": self.bio,  # Incluimos la bio en la serialización
+            "profile_image": self.profile_image,  # Incluimos la imagen de perfil en la serialización
             "favorite_recipes": list(map(lambda x: x.serialize(), self.favorite_recipes)),
             "favorite_users": list(map(lambda x: x.serialize(), self.favorite_users.all())),
             "uploaded_recipes": [recipe.serialize() for recipe in self.uploaded_recipes]
         }
+
 
 
 
