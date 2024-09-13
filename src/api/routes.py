@@ -19,7 +19,7 @@ CORS(api)
 def handle_invalid_usage(error):
     return jsonify(error.to_dict()), error.status_code
 def setup_commands(app):
-    @app.cli.command("insert-test-data")
+    @api.cli.command("insert-test-data")
     def insert_test_data():
         print('\n\n\n*******************************')
         print('ADD TEST DATA | START')
@@ -32,7 +32,7 @@ def setup_commands(app):
         print('*******************************\n\n\n')
     
     # --- AÑADIR EL ENDPOINT TEMPORAL AQUÍ ---
-    @app.route('/insert-test-data', methods=['POST'])
+    @api.route('/insert-test-data', methods=['POST'])
     def insert_test_data_endpoint():
         try:
             # Llamar a las funciones para insertar datos de prueba
