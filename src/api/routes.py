@@ -7,11 +7,63 @@ from api.models import db, User, Ingredients, Recipe, Categories, Comment
 from api.utils import APIException
 from flask_cors import CORS
 from flask_jwt_extended import create_access_token, get_jwt_identity, jwt_required
+from commands import insert_test_users, insert_test_categories, insert_test_ingredients, insert_test_recipes
 
 api = Blueprint('api', __name__)
 
 # Permitir solicitudes CORS a esta API
 CORS(api)
+
+def handle_invalid_usage(error):
+    return jsonify(error.to_dict()), error.status_code
+
+@app.route('/insert-test-data', methods=['GET'])
+def insert_test_data_endpoint():
+    try:
+        insert_test_users()         # Insertar usuarios
+        insert_test_categories()    # Insertar categorías
+        insert_test_ingredients()   # Insertar ingredientes
+        insert_test_recipes()       # Insertar recetas
+        return "Test data inserted successfully!"
+    except Exception as e:
+        return f"An error occurred: {str(e)}"
+
+
+@api.route('/all_users', methods=['GET'])
+def get_all_users():
+    users_query = User.query.all()
+    if not users_query:
+        raise APIException("No se encontraron usuarios", status_code=404)
+    all_users = list(map(lambda user: user.serialize(), users_query))
+    return jsonify(all_users), 200
+@api.route('/users', methods=['POST'])
+def create_user():
+    user_data = request.get_json()
+    if 'user_name' not in user_data or 'email' not in user_data or 'password' not in user_data:
+        raise APIException('Faltan datos requeridos', status_code=400)
+    user_name = user_data['user_name']
+    first_name = user_data.get('first_name', None)
+    last_name = user_data.get('last_name',None)  
+    email = user_data['email']
+    password = user_data['password']
+    if User.query.filter_by(user_name=user_name).first() is not None:
+        raise APIException('El nombre de usuario ya está en uso', status_code=409)
+    if User.query.filter_by(email=email).first() is not None:
+        raise APIException('El correo electrónico ya está en uso', status_code=409)
+    nuevo_usuario = User(
+        user_name=user_name,
+        first_name=first_name,
+        last_name=last_name,
+        email=email,
+        password=password
+    )
+    try:
+        db.session.add(nuevo_usuario)
+        db.session.commit()
+        return jsonify({'msg': 'Usuario creado con éxito', 'usuario': nuevo_usuario.serialize()}), 201
+    except Exception as e:
+        db.session.rollback()
+        raise APIException(f'Error al crear usuario: {str(e)}', status_code=500)
 
 
 @api.route("/current-user", methods=["GET"])
