@@ -6,15 +6,15 @@ export const ProfileHeader = ({ user, isProfile  }) => {
 
   const { store, actions } = useContext(Context);
   const [isFavorite, setIsFavorite] = useState(false);
-  const [hasFetched, setHasFetched] = useState(false);
 
   useEffect(() => {
+    console.log("User ID or favoritos changed");
     actions.getUserRecipes();
     const checkFavoriteStatus = () => {
       const isUserFavorite = actions.isUserFavorite(user.id);
       setIsFavorite(isUserFavorite);
     };
-    checkFavoriteStatus() 
+    checkFavoriteStatus();
   }, [user.id, store.usuariosFavoritos]);
 
   const capitalizeWords = (str) => {
@@ -29,12 +29,12 @@ export const ProfileHeader = ({ user, isProfile  }) => {
     }
     actions.getUserFavorites();
   }
-  
+
   return (
     <div className="navbar-profile d-flex justify-content-between align-items-center p-3">
       <div className="profile-photo text-center col-3 p-1">
         <img
-          src="https://via.placeholder.com/150"
+          src={user.profile_image ? user.profile_image : "https://via.placeholder.com/150"}
           alt="Foto de perfil"
           className="img-fluid rounded-circle"
         />
@@ -47,7 +47,7 @@ export const ProfileHeader = ({ user, isProfile  }) => {
             ? `${capitalizeWords(user.first_name.toLowerCase())} ${capitalizeWords(user.last_name.toLowerCase())}`
             : "Nombre no disponible"}
           </p>
-          {!isProfile&&(
+          {!isProfile && (
             <button 
               className="btn-follow"
               onClick={handleFavoriteClick}
@@ -62,10 +62,7 @@ export const ProfileHeader = ({ user, isProfile  }) => {
         
         <p>{user.email || "error"}</p>
         <p>{user.uploaded_recipes ? user.uploaded_recipes.length : 0} Recetas subidas</p>
-        <p>
-          Lorem Ipsum is simply dummy text of the printing and typesetting
-          industry...
-        </p>
+        <p>{user.bio ? user.bio : "No bio available."}</p>
       </div>
     </div>
   );

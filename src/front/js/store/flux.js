@@ -26,13 +26,13 @@ const getState = ({ getStore, getActions, setStore }) => {
     },
     actions: {
       switchToRecipesView: () => {
-          console.log("Switching to Recipes View");
-          setStore({ isUserView: false });
-      },
-      switchToUsersView: () => {
-          console.log("Switching to Users View");
-          setStore({ isUserView: true });
-      },
+        console.log("Switching to Recipes View");
+        setStore({ isUserView: false });
+    },
+    switchToUsersView: () => {
+        console.log("Switching to Users View");
+        setStore({ isUserView: true });
+    },
       buscar: (query, searchType) => {
           const store = getStore();
           let resultados = [];
@@ -579,6 +579,54 @@ const getState = ({ getStore, getActions, setStore }) => {
         const store = getStore();
         return store.usuariosFavoritos && store.usuariosFavoritos.some((user) => user.id === user_id);
       },
+        updateUserProfile: async (profileData, userId) => {
+          const token = localStorage.getItem("accessToken");
+          try {
+              const response = await fetch(`${process.env.BACKEND_URL}/api/current-user`, {
+                  method: "PUT",
+                  headers: {
+                      "Content-Type": "application/json",
+                      "Authorization": `Bearer ${token}`
+                  },
+                  body: JSON.stringify(profileData)
+              });
+
+              if (!response.ok) {
+                  throw new Error("Error en la solicitud de actualización del perfil");
+              }
+
+              const data = await response.json();
+              console.log("Perfil actualizado con éxito:", data);
+
+              // After successful update, fetch the updated profile
+              const updatedUserResponse = await fetch(`${process.env.BACKEND_URL}/api/current-user`, {
+                  headers: {
+                      "Authorization": `Bearer ${token}`
+                  }
+              });
+
+              if (updatedUserResponse.ok) {
+                  const updatedUserData = await updatedUserResponse.json();
+                  // Update the store with the new user data
+                  setStore({ currentUser: updatedUserData.usuario_actual });
+
+                  // Show success alert
+                  alert("Perfil actualizado con éxito");
+              }
+
+              return true;
+          } catch (error) {
+              console.error("Error actualizando el perfil:", error);
+              alert("Error actualizando el perfil");
+              return false;
+          }
+      },
+
+
+
+
+
+
     },
   };
 };
