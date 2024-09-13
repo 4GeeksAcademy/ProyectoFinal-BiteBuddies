@@ -15,6 +15,7 @@ export const Profile = (id) => {
   const [showEditProfileModal, setShowEditProfileModal] = useState(false); // Estado para el modal de editar perfil
   const [activeTab, setActiveTab] = useState("misRecetas");
   const [isProfile, setIsProfile] = useState(true);
+  const [isLoggedIn,setIsLoggedIn]= useState(false)
   const withSession = !!store?.isLoggedIn;
   const navigate = useNavigate();
 
@@ -64,15 +65,15 @@ export const Profile = (id) => {
         {activeTab === "recetasFavoritas" && <FavoriteRecipes isProfile={isProfile} store={store} actions={actions} />}
         {activeTab === "chefsFavoritos" && <FavoriteChefs store={store} actions={actions} />}
       </div>
-      {(activeTab === "misRecetas" || activeTab === "recetasFavoritas") && (
-        <div className="row mt-3 justify-content-center">
-          <button className="btn btn-primary" style={{ borderRadius: "5px" }} onClick={handleOpenModal}>
-            Subir Receta
-          </button>
-        </div>
+      {(activeTab === "misRecetas" || activeTab === "recetasFavoritas") && !isLoggedIn && (
+      <div className="row mt-3 justify-content-center">
+        <button className="btn btn-primary" style={{ borderRadius: "5px" }} onClick={handleOpenModal}>
+          Subir Receta
+        </button>
+      </div>
       )}
-      {showModal && <RecipeUploadModal show={showModal} handleClose={handleCloseModal} />}
-      {showEditProfileModal && <EditProfileModal show={showEditProfileModal} handleClose={handleCloseEditProfileModal} />}
+    {showModal && <RecipeUploadModal show={showModal} handleClose={handleCloseModal} />}
+    {showEditProfileModal && <EditProfileModal show={showEditProfileModal} handleClose={handleCloseEditProfileModal} />}
     </div>
   );
 };
