@@ -90,3 +90,30 @@
 .footer-botom a {
     color:#93183d;
 }
+.main-container-fot {
+    padding: 30px;
+    background-color: #efbfb4;
+    border-radius: 10px;
+    width: 700px;
+    margin: 40px auto; 
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    font-family: "Poppins", sans-serif;
+}
+.main-container-fot h1{
+    text-align: center;
+    color:#700b29
+    
+}
+.content-fot{
+    margin:10px;
+    text-align: justify;
+}
+.content-fot h2{
+    color:#700b29
+}
+.content-fot p{
+    color:#93183d;   
+}
+.content-fot ul li{
+    color:#93183d;
+}

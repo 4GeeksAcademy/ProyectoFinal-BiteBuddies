@@ -9,7 +9,7 @@ export const RecipeList = ({ isProfile }) => {
     <>
       {isProfile && (
         <div className="recipes-section mt-4">
-          <h3 style={{ borderBottom: "2px solid #000", paddingBottom: "10px" }}>
+          <h3>
             Mis recetas
           </h3>
           <div className="d-flex flex-wrap justify-content-center">
@@ -21,7 +21,7 @@ export const RecipeList = ({ isProfile }) => {
               store.listaDeRecetasPublicadas.map((recipe) => (
                 <Link key={recipe.id} to={`/recipe/${recipe.id}`}>
                   <div
-                    className="recipe-card col-md-3 bg-light p-2 m-2"
+                    className="recipe-card p-2 m-2"
                   >
                     <img
                       src={recipe.image_url}

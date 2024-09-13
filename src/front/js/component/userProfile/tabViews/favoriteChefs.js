@@ -12,8 +12,8 @@ export const FavoriteChefs = ({ store, actions, isProfile }) => {
   return (
     <>
       {isProfile && (
-        <div className="favorite-recipes-section mt-4">
-          <h3 style={{ borderBottom: "2px solid #000", paddingBottom: "10px" }}>
+        <div className="favorite-chefs-section mt-4">
+          <h3>
             Chefs Favoritos
           </h3>
           <div className="d-flex flex-wrap justify-content-center">
@@ -40,8 +40,8 @@ export const FavoriteChefs = ({ store, actions, isProfile }) => {
         </div>
       )}
       {!isProfile && (
-        <div className="favorite-recipes-section mt-4">
-          <h3 style={{ borderBottom: "2px solid #000", paddingBottom: "10px" }}>
+        <div className="favorite-chefs-section mt-4">
+          <h3>
             Chefs Favoritos
           </h3>
           <div className="d-flex flex-wrap justify-content-center">

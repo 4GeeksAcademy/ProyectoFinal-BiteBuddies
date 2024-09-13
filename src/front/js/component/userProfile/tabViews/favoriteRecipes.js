@@ -13,7 +13,7 @@ export const FavoriteRecipes = ({ store, actions, isProfile }) => {
     <>
       {isProfile && (
         <div className="favorite-recipes-section mt-4">
-          <h3 style={{ borderBottom: "2px solid #000", paddingBottom: "10px" }}>
+          <h3>
             Recetas Favoritas
           </h3>
           <div className="d-flex flex-wrap justify-content-center">

@@ -39,9 +39,8 @@ export const Login = () => {
             type="text"
             className="input"
             id="inputEmail"
-            placeholder=" "
+            placeholder="Email"
           />
-          <label htmlFor="inputEmail" className="floating-label">Email</label>
         </div>
         <div className="input-container">
           <input
@@ -50,9 +49,8 @@ export const Login = () => {
             type="password"
             className="input"
             id="inputPassword"
-            placeholder=" "
+            placeholder="Contraseña "
           />
-          <label htmlFor="inputPassword" className="floating-label">Password</label>
         </div>
         <div className="text-center">
           <button type="submit" className="btn-primary">Entrar</button>

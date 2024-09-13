@@ -4,7 +4,7 @@ import "./styles.css";
 export const Tabs = ({ handleEditProfile, setActiveTab, activeTab, isProfile }) => {
   
   return (
-    <div className="d-flex justify-content-around">
+    <div className="btn-custom-all d-flex justify-content-around">
       {isProfile &&(
         <button className="btn-custom" onClick={handleEditProfile} style={{ width: "20%" }}>
         Editar Perfil
