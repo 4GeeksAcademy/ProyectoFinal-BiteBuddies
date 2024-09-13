@@ -1,49 +1,58 @@
 body {
-    background-color: #fefae0; 
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #def0d6;
+    font-family: "Poppins", sans-serif;
     margin: 0;
     padding: 0;
-    color: #6b4423; 
+    color: #93183d;
 }
 
 .recipe-container {
     padding: 30px;
-    background-color: #faedcd; 
+    background-color: #def0d6;
     border-radius: 10px;
     display: flex;
     flex-wrap: wrap;
     gap: 20px;
+    text-align: justify;
 }
 
 .recipe-photo {
     flex: 1;
     padding: 10px;
+    margin-top: 0px;
+    padding-top: 0px;
+    
 }
 
 .recipe-photo img {
     width: 100%;
     border-radius: 10px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    border: 3px solid #d4a373; 
+    border: 4px solid #c75275;
 }
 
 .recipe-details {
+    text-align: justify;
     flex: 2;
     padding: 20px;
-    background-color: #ffffff; 
+    background-color:  #efbfb4;
+    color: #93183d;
     border-radius: 10px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
 .recipe-details h1 {
+    text-align: center;
     font-size: 2rem;
-    color: #6b4423; 
-    margin-bottom: 20px;
+    color: #7a082a; 
+    margin-bottom: 35px;
+    text-shadow: 0 4px 5px rgba(43, 60, 27, 0.2);
+    
 }
 
 .recipe-instructions h2 {
     font-size: 1.5rem;
-    color: #8b5e3c; 
+    color: #7a082a;
     margin-bottom: 10px;
     display:flex;
     flex-direction: column;
@@ -53,19 +62,19 @@ body {
     align-self: end;
 }
 .published-by a {
-    color:#8b5e3c;
-    text-decoration: none;   
+    color: #93183d;
+    text-decoration: none !important;   
 }
 
 .published-by a:hover {
-  color: #6b4423;             
+  color: #d2587c;;             
   text-decoration: underline; 
 }
 
 
 .recipe-instructions p {
     font-size: 1rem;
-    color: #6b4423; 
+    color: #93183d;
     line-height: 1.5;
     margin-bottom: 10px;
 }
@@ -73,20 +82,24 @@ body {
 .recipe-sidebar {
     flex: 1;
     padding: 20px;
-    background-color: #ffffff; 
+    background-color:  #efbfb4;
     border-radius: 10px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+.recipe-sidebar h2{
+    color: #93183d;
+    font-size: 1.5rem;
 }
 
 .ingredients h2 {
     font-size: 1.5rem;
-    color: #8b5e3c; 
+    color: #93183d;
     margin-bottom: 10px;
 }
 
 .ingredients ul {
     padding-left: 20px;
-    color: #6b4423; 
+    color: #93183d; 
 }
 
 .ingredients li {
@@ -100,21 +113,25 @@ body {
     padding: 10px 0;
     margin-top: 20px;
     font-size: 1rem;
-    color: #ffffff; 
-    background-color: #6b4423; 
+    background-color: #D85436;
     border: none;
     border-radius: 5px;
-    transition: background-color 0.3s ease;
+    transition:
+    background-color 0.3s ease,
+    transform 0.2s ease;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
 .favorite-button:hover {
-    background-color: #8b5e3c; 
+    background-color: #FF7043;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
 }
 
 .comments-section {
     flex: 1 100%;
     padding: 20px;
-    background-color: #ffffff; 
+    background-color: #efbfb4;
     border-radius: 10px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     margin-top: 20px;
@@ -122,7 +139,7 @@ body {
 
 .comments-section h2 {
     font-size: 1.5rem;
-    color: #8b5e3c; 
+    color: #93183d; 
     margin-bottom: 10px;
 }
 
@@ -131,7 +148,7 @@ body {
     padding-top: 10px;
     margin-top: 10px;
     font-size: 1rem;
-    color: #6b4423; 
+    color: #93183d;
 }
 
 .add-comment {
@@ -142,20 +159,30 @@ body {
     width: calc(100% - 110px);
     margin-right: 10px;
     padding: 8px;
-    border: 1px solid #d4a373; 
+    border: 1px solid #93183d; 
     border-radius: 5px;
+}
+input:focus{
+    outline: none !important;
+    box-shadow: none !important;
+    border: 1px solid #93183d !important;
 }
 
 .add-comment button {
     padding: 8px 20px;
     font-size: 1rem;
     color: #ffffff; 
-    background-color: #6b4423; 
+    background-color: #D85436;
     border: none;
     border-radius: 5px;
-    transition: background-color 0.3s ease;
+    transition:
+    background-color 0.3s ease,
+    transform 0.2s ease;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
 .add-comment button:hover {
-    background-color: #8b5e3c; 
+    background-color: #FF7043;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
 }
