@@ -6,7 +6,7 @@ export const UserCard = ({ user }) => {
         <div className="recipe-list">
             <div className="recipe-card m-3 p-2">
                 <img
-                    src={user.profile_image_url || "https://via.placeholder.com/150"} // Imagen del perfil del usuario
+                    src={user.profile_image || "https://via.placeholder.com/150"} // Imagen del perfil del usuario
                     alt={user.user_name}
                     className="img-fluid"
                 />
