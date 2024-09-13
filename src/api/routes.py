@@ -5,6 +5,7 @@ import os
 from flask import jsonify, Blueprint, request
 from api.models import db, User, Ingredients, Recipe, Categories
 from api.utils import APIException
+from werkzeug.utils import secure_filename
 
 from flask_cors import CORS
 from flask_jwt_extended import create_access_token, get_jwt_identity, jwt_required
@@ -13,6 +14,7 @@ api = Blueprint('api', __name__)
 
 # Permitir solicitudes CORS a esta API
 CORS(api)
+
 
 
 def handle_invalid_usage(error):
@@ -300,3 +302,29 @@ def delete_recipe(recipe_id):
     except Exception as e:
         db.session.rollback()
         raise APIException(f'Error al eliminar la receta: {str(e)}', status_code=500)
+    
+@api.route('/current-user', methods=['PUT'])
+@jwt_required()
+def edit_user_profile():
+    current_user_id = get_jwt_identity()
+    user = User.query.get(current_user_id)
+    if not user:
+        raise APIException("Usuario no encontrado", status_code=404)
+
+    data = request.get_json()
+
+    if 'first_name' in data and data['first_name']:
+        user.first_name = data['first_name']
+    if 'last_name' in data and data['last_name']:
+        user.last_name = data['last_name']
+    if 'bio' in data and data['bio']:
+        user.bio = data['bio']
+    if 'profile_image' in data and data['profile_image']:
+        user.profile_image = data['profile_image']
+
+    try:
+        db.session.commit()
+        return jsonify({"msg": "Perfil actualizado con éxito", "user": user.serialize()}), 200
+    except Exception as e:
+        db.session.rollback()
+        raise APIException(f"Error al actualizar el perfil: {str(e)}", status_code=500)

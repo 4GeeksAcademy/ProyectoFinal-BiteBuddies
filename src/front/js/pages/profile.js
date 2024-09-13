@@ -5,14 +5,16 @@ import { ProfileHeader } from "../component/userProfile/profileHeader";
 import { Tabs } from "../component/userProfile/tabs";
 import { RecipeList } from "../component/userProfile/tabViews/recipeList";
 import { RecipeUploadModal } from "../component/userProfile/recipeUpLoadModal";
+import { EditProfileModal } from "../component/userProfile/editProfileModal"; // Importamos el nuevo modal
 import { FavoriteRecipes } from "../component/userProfile/tabViews/favoriteRecipes";
 import { FavoriteChefs } from "../component/userProfile/tabViews/favoriteChefs";
 
 export const Profile = (id) => {
   const { store, actions } = useContext(Context);
   const [showModal, setShowModal] = useState(false);
+  const [showEditProfileModal, setShowEditProfileModal] = useState(false); // Estado para el modal de editar perfil
   const [activeTab, setActiveTab] = useState("misRecetas");
-  const [isProfile, setIsProfile] = useState(true)
+  const [isProfile, setIsProfile] = useState(true);
   const withSession = !!store?.isLoggedIn;
   const navigate = useNavigate();
 
@@ -27,8 +29,9 @@ export const Profile = (id) => {
   }, [store.isLoadingUser, store.isLoggedIn]);
 
   const handleEditProfile = () => {
-    console.log("Editar perfil");
+    setShowEditProfileModal(true); // Abrir el modal de editar perfil
   };
+
   const handleOpenModal = () => {
     setShowModal(true);
   };
@@ -37,11 +40,16 @@ export const Profile = (id) => {
     setShowModal(false);
   };
 
- if (store.isLoadingUser) {
-    return( 
+  const handleCloseEditProfileModal = () => {
+    setShowEditProfileModal(false); // Cerrar el modal de editar perfil
+  };
+
+  if (store.isLoadingUser) {
+    return (
       <div className="loading-spinner">
         Cargando ... <i className="fa-solid fa-spinner fa-spin"></i>
-      </div>);
+      </div>
+    );
   }
   if (!store.currentUser) {
     return <div>No se encontró el usuario.</div>;
@@ -56,14 +64,15 @@ export const Profile = (id) => {
         {activeTab === "recetasFavoritas" && <FavoriteRecipes isProfile={isProfile} store={store} actions={actions} />}
         {activeTab === "chefsFavoritos" && <FavoriteChefs store={store} actions={actions} />}
       </div>
-        {(activeTab === "misRecetas" || activeTab === "recetasFavoritas") && (
-          <div className="row mt-3 justify-content-center">
-            <button className="btn btn-primary" style={{ borderRadius: "5px" }} onClick={handleOpenModal}>
-              Subir Receta
-            </button>
-          </div>
-        )}
+      {(activeTab === "misRecetas" || activeTab === "recetasFavoritas") && (
+        <div className="row mt-3 justify-content-center">
+          <button className="btn btn-primary" style={{ borderRadius: "5px" }} onClick={handleOpenModal}>
+            Subir Receta
+          </button>
+        </div>
+      )}
       {showModal && <RecipeUploadModal show={showModal} handleClose={handleCloseModal} />}
+      {showEditProfileModal && <EditProfileModal show={showEditProfileModal} handleClose={handleCloseEditProfileModal} />} {/* Modal de editar perfil */}
     </div>
   );
 };
