@@ -4,10 +4,11 @@ import { useParams, Link } from "react-router-dom";
 import "./styles.css";
 
 export const RecipeCard = ({ recipe }) => {
-  const { actions } = useContext(Context);
+  const { actions, store } = useContext(Context);
   const [isFavorite, setIsFavorite] = useState(false);
   const { id } = useParams();
   const [hasFetched, setHasFetched] = useState(false);
+
 
    useEffect(() => {
     const loadRecipeDetailsAndFavorites = async () => {
@@ -22,7 +23,7 @@ export const RecipeCard = ({ recipe }) => {
       }
     };
     loadRecipeDetailsAndFavorites();
-  }, [id, actions, hasFetched]);
+  }, [id, actions, hasFetched, store.isLoggedIn]);
 
   const handleFavoriteClick = async () => {
     if (isFavorite) {
@@ -102,14 +103,16 @@ export const RecipeCard = ({ recipe }) => {
               <li>Categorías no disponibles</li>
             )}
           </ul>
+          </div>
+        {store.isLoggedIn && (
+          <button
+            className="favorite-button btn btn-outline-primary"
+            onClick={handleFavoriteClick}
+          >
+            {isFavorite ? "❤️ Favorito" : "♡ Añadir a favoritos"}
+          </button>
+        )}
         </div>
-        <button
-          className="favorite-button btn btn-outline-primary"
-          onClick={handleFavoriteClick}
-        >
-          {isFavorite ? "❤️ Favorito" : "♡ Añadir a favoritos"}
-        </button>
-      </div>
       <div className="comments-section">
         <h2>Comentarios</h2>
         {recipe.comments && recipe.comments.length > 0 ? (
@@ -122,6 +125,7 @@ export const RecipeCard = ({ recipe }) => {
         ) : (
           <p>No hay comentarios disponibles.</p>
         )}
+        {store.isLoggedIn && (
         <div className="add-comment">
           <input
             type="text"
@@ -130,6 +134,7 @@ export const RecipeCard = ({ recipe }) => {
           />
           <button className="btn btn-primary mt-2">Enviar</button>
         </div>
+        )}
       </div>
     </div>
   );
