@@ -5,7 +5,6 @@ import os
 from flask import jsonify, Blueprint, request
 from api.models import db, User, Ingredients, Recipe, Categories, Comment
 from api.utils import APIException
-
 from flask_cors import CORS
 from flask_jwt_extended import create_access_token, get_jwt_identity, jwt_required
 
@@ -14,59 +13,98 @@ api = Blueprint('api', __name__)
 # Permitir solicitudes CORS a esta API
 CORS(api)
 
+# -----------------------------------------------
+# FUNCIONES DE INSERCIÓN DE DATOS DE PRUEBA
+# -----------------------------------------------
+
+def insert_test_users():
+    print('\n\n--- Add test USERS | START ---')
+    # Lista de URLs de imágenes de prueba para usuarios
+    user_image_urls = [
+        "https://img.freepik.com/foto-gratis/mujer-moderna-haciendose-selfie_23-2147893976.jpg",
+        "https://img.freepik.com/foto-gratis/retrato-hombre-joven-feliz_23-2149309266.jpg",
+        "https://img.freepik.com/foto-gratis/mujer-tiro-medio-vistiendo-halal-al-aire-libre_23-2150701553.jpg",
+        "https://img.freepik.com/foto-gratis/vista-frontal-sonriente-mujer-casa_23-2150062545.jpg"
+    ]
+    
+    user1 = User(first_name="Alisa", last_name="Doe", user_name="Alisani", email="alisani@test.com", password="123", profile_image=user_image_urls[0])
+    user2 = User(first_name="Nikita", last_name="Doe", user_name="Niki", email="niki@test.com", password="123", profile_image=user_image_urls[1])
+    user3 = User(first_name="Diana", last_name="Doe", user_name="Diwoop", email="diwoop@test.com", password="123", profile_image=user_image_urls[2])
+    user4 = User(first_name="Ximena", last_name="Doe", user_name="Xime", email="xime@test.com", password="123", profile_image=user_image_urls[3])
+    
+    users = [user1, user2, user3, user4]
+    
+    db.session.add_all(users)
+    db.session.commit()
+
+    print("Usuarios creados.")
+    print('\n\n--- Add test USERS | END ---')
 
 
-def handle_invalid_usage(error):
-    return jsonify(error.to_dict()), error.status_code
-@api.route('/insert-test-data', methods=['GET'])
+def insert_test_categories():
+    print('\n\n--- Add test CATEGORIES | START ---')
+    categories = ["Postre", "Desayuno", "Comida", "Cena", "Merienda"]
+    for category_name in categories:
+        category = Categories(name=category_name)
+        db.session.add(category)
+        db.session.commit()
+        print(f"Category '{category_name}' created.")
+    print('\n\n--- Add test CATEGORIES | END ---')
+
+
+def insert_test_ingredients():
+    print('\n\n--- Add test INGREDIENTS | START ---')
+    ingredients = ["Pimienta", "Azúcar", "Mantequilla", "Huevos", "Sal", "Leche", "Harina"]
+    for ingredient_name in ingredients:
+        ingredient = Ingredients(name=ingredient_name)
+        db.session.add(ingredient)
+        db.session.commit()
+        print(f"Ingredient '{ingredient_name}' created.")
+    print('\n\n--- Add test INGREDIENTS | END ---')
+
+
+def insert_test_recipes():
+    print('\n\n--- Add test RECIPES | START ---')
+    ingredients = Ingredients.query.all()[:3]
+    categories = Categories.query.all()[:2]
+    users = User.query.all()[:3]
+    
+    image_urls = [
+        "https://img.freepik.com/foto-gratis/ai-generado-pasta_23-2150637305.jpg",
+        "https://img.freepik.com/foto-gratis/deliciosa-comida-arreglo-mesa_23-2150227886.jpg",
+        "https://img.freepik.com/foto-gratis/ensalada-higos-queso-nueces-sobre-mesa-madera-azul_123827-19469.jpg"
+    ]
+    
+    for i in range(3):
+        recipe = Recipe(
+            name=f"Recipe {i + 1}",
+            description=f"Descripción de prueba para la receta {i + 1}",
+            steps="Step 1: Do this, Step 2: Do that",
+            user=users[i % len(users)],  
+            image_url=image_urls[i]
+        )
+        recipe.ingredients = ingredients
+        recipe.categories = categories
+        db.session.add(recipe)
+        db.session.commit()
+        print(f"Recipe '{recipe.name}' created.")
+    print('\n\n--- Add test RECIPES | END ---')
+
+# -----------------------------------------------
+# FIN DE LAS FUNCIONES DE INSERCIÓN
+# -----------------------------------------------
+
+# Ruta para insertar datos de prueba
+@api.route('/insert-test-data', methods=['POST'])
 def insert_test_data_endpoint():
     try:
-        insert_test_users()         # Insertar usuarios
-        insert_test_categories()    # Insertar categorías
-        insert_test_ingredients()   # Insertar ingredientes
-        insert_test_recipes()       # Insertar recetas
-        return "Test data inserted successfully!"
+        insert_test_users()
+        insert_test_categories()
+        insert_test_ingredients()
+        insert_test_recipes()
+        return jsonify({"message": "Test data inserted successfully!"}), 200
     except Exception as e:
-        return f"An error occurred: {str(e)}"
-
-@api.route('/all_users', methods=['GET'])
-def get_all_users():
-    users_query = User.query.all()
-    if not users_query:
-        raise APIException("No se encontraron usuarios", status_code=404)
-    all_users = list(map(lambda user: user.serialize(), users_query))
-    return jsonify(all_users), 200
-
-@api.route('/users', methods=['POST'])
-def create_user():
-    user_data = request.get_json()
-    if 'user_name' not in user_data or 'email' not in user_data or 'password' not in user_data:
-        raise APIException('Faltan datos requeridos', status_code=400)
-    user_name = user_data['user_name']
-    first_name = user_data.get('first_name', None)
-    last_name = user_data.get('last_name',None)  
-    email = user_data['email']
-    password = user_data['password']
-    if User.query.filter_by(user_name=user_name).first() is not None:
-        raise APIException('El nombre de usuario ya está en uso', status_code=409)
-    if User.query.filter_by(email=email).first() is not None:
-        raise APIException('El correo electrónico ya está en uso', status_code=409)
-    nuevo_usuario = User(
-        user_name=user_name,
-        first_name=first_name,
-        last_name=last_name,
-        email=email,
-        password=password
-    )
-    try:
-        db.session.add(nuevo_usuario)
-        db.session.commit()
-        return jsonify({'msg': 'Usuario creado con éxito', 'usuario': nuevo_usuario.serialize()}), 201
-    except Exception as e:
-        db.session.rollback()
-        raise APIException(f'Error al crear usuario: {str(e)}', status_code=500)
-
-
+        return jsonify({"error": str(e)}), 500
 @api.route("/current-user", methods=["GET"])
 @jwt_required()
 def get_current_user():
