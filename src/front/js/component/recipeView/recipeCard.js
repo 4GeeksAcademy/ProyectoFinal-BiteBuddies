@@ -6,8 +6,8 @@ import "./styles.css";
 export const RecipeCard = ({ recipe }) => {
   const { store, actions } = useContext(Context);
   const [isFavorite, setIsFavorite] = useState(false);
-  const [comments, setComments] = useState([]);  // Estado para los comentarios
-  const [commentText, setCommentText] = useState("");  // Estado para el nuevo comentario
+  const [comments, setComments] = useState([]);  
+  const [commentText, setCommentText] = useState("");
   const { id } = useParams();
   const [hasFetched, setHasFetched] = useState(false);
 
@@ -17,9 +17,9 @@ export const RecipeCard = ({ recipe }) => {
         const recipeDetails = await actions.traerDetalleDeReceta(id);
         
         if (recipeDetails && recipeDetails.comments) {
-            setComments(recipeDetails.comments);  // Asegúrate de que los comentarios se cargan
+            setComments(recipeDetails.comments);
         } else {
-            setComments([]);  // Si no hay comentarios, inicializa con un array vacío
+            setComments([]);
         }
     };
 
