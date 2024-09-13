@@ -40,7 +40,7 @@ export const RecipeList = ({ isProfile }) => {
       )}
       {!isProfile && (
         <div className="recipes-section mt-4">
-          <h3 style={{ borderBottom: "2px solid #000", paddingBottom: "10px" }}>
+          <h3>
             Mis recetas
           </h3>
           <div className="d-flex flex-wrap justify-content-center">
