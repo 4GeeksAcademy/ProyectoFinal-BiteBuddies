@@ -96,7 +96,7 @@ class Recipe(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=True)
 
     user = db.relationship('User', back_populates='uploaded_recipes')
-
+    comments = db.relationship('Comment', back_populates='recipe')  # Usa back_populates aquí
 
     def __repr__(self):
         return '<Recipe %r>' % self.name
@@ -114,8 +114,12 @@ class Recipe(db.Model):
                 "id": self.user.id,
                 "user_name": self.user.user_name
             } if self.user else None,
-            "is_official": self.is_official
+            "is_official": self.is_official,
+            "comments": [comment.serialize() for comment in self.comments]  # Serializa los comentarios aquí
         }
+
+
+
 
 
 class Ingredients(db.Model):
@@ -130,4 +134,25 @@ class Ingredients(db.Model):
         return {
             "id": self.id,
             "name": self.name,
+        }
+    
+class Comment(db.Model):
+    __tablename__ = 'comments'
+    id = db.Column(db.Integer, primary_key=True)
+    text = db.Column(db.String(500), nullable=False)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    recipe_id = db.Column(db.Integer, db.ForeignKey('recipe.id'), nullable=False)
+    timestamp = db.Column(db.DateTime, default=db.func.current_timestamp())
+
+    user = db.relationship('User', backref='comments')
+    recipe = db.relationship('Recipe', back_populates='comments')  # Usa back_populates aquí también
+
+    def serialize(self):
+        return {
+            "id": self.id,
+            "text": self.text,
+            "user_id": self.user_id,
+            "user_name": self.user.user_name,
+            "recipe_id": self.recipe_id,
+            "timestamp": self.timestamp.strftime("%Y-%m-%d %H:%M:%S")
         }

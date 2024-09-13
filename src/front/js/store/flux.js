@@ -362,34 +362,43 @@ const getState = ({ getStore, getActions, setStore }) => {
       },
 
       traerDetalleDeReceta: async (id) => {
-        try {
-          const response = await fetch(`${process.env.BACKEND_URL}/api/recipes/${id}`, {
-            method: "GET",
-            headers: {
-              "Content-Type": "application/json",
-            },
-          });
-          if (!response.ok) {
-            throw new Error("Error fetching recipe details");
+          try {
+              const response = await fetch(`${process.env.BACKEND_URL}/api/recipes/${id}`, {
+                  method: "GET",
+                  headers: {
+                      "Content-Type": "application/json",
+                  },
+              });
+              if (!response.ok) {
+                  throw new Error("Error fetching recipe details");
+              }
+              const data = await response.json();
+              
+              // Aquí agregamos un console.log para verificar que los comentarios están siendo recibidos
+              console.log("Detalles de la receta:", data);
+
+              setStore({
+                  detallesDeReceta: {
+                      id: data.id,
+                      name: data.name,
+                      description: data.description,
+                      steps: data.steps,
+                      image_url: data.image_url,
+                      ingredients: data.ingredients, // Lista de ingredientes
+                      categories: data.categories, // Lista de categorías
+                      uploaded_by_user: data.uploaded_by_user, // Info del usuario que subió la receta
+                      is_official: data.is_official,
+                      comments: data.comments || [], // Asegúrate de almacenar los comentarios
+                  },
+              });
+
+              return data;
+          } catch (error) {
+              console.error("Error:", error);
           }
-          const data = await response.json();
-          setStore({
-            detallesDeReceta: {
-              id: data.id,
-              name: data.name,
-              description: data.description,
-              steps: data.steps,
-              image_url: data.image_url,
-              ingredients: data.ingredients, // Lista de ingredientes
-              categories: data.categories, // Lista de categorías
-              uploaded_by_user: data.uploaded_by_user, // Info del usuario que subió la receta
-              is_official: data.is_official,
-            },
-          });
-        } catch (error) {
-          console.error("Error:", error);
-        }
       },
+
+
 
       getUserRecipes: () => {
         const store = getStore();
@@ -622,11 +631,35 @@ const getState = ({ getStore, getActions, setStore }) => {
           }
       },
 
-
-
-
-
-
+      getCommentsForRecipe: async (recipeId) => {
+          try {
+              const response = await fetch(`${process.env.BACKEND_URL}/api/recipes/${recipeId}`);
+              if (!response.ok) throw new Error("Error al obtener comentarios");
+              const comments = await response.json();
+              return comments;
+          } catch (error) {
+              console.error("Error obteniendo comentarios:", error);
+          }
+      },
+      addCommentToRecipe: async (recipeId, commentText) => {
+          const token = localStorage.getItem("accessToken");
+          try {
+              const response = await fetch(`${process.env.BACKEND_URL}/api/recipes/${recipeId}`, {
+                  method: "POST",
+                  headers: {
+                      "Content-Type": "application/json",
+                      "Authorization": `Bearer ${token}`
+                  },
+                  body: JSON.stringify({ text: commentText })
+              });
+              if (!response.ok) throw new Error("Error al agregar comentario");
+              const newComment = await response.json();
+              return newComment;
+          } catch (error) {
+              console.error("Error agregando comentario:", error);
+              return null;
+          }
+      }
     },
   };
 };

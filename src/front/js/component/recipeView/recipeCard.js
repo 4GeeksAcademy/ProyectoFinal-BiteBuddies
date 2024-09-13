@@ -1,29 +1,30 @@
-import React, { useContext,useState,useEffect } from "react";
+import React, { useContext, useState, useEffect } from "react";
 import { Context } from "../../store/appContext";
 import { useParams, Link } from "react-router-dom";
 import "./styles.css";
 
 export const RecipeCard = ({ recipe }) => {
-  const { actions, store } = useContext(Context);
+  const { store, actions } = useContext(Context);
   const [isFavorite, setIsFavorite] = useState(false);
+  const [comments, setComments] = useState([]);  // Estado para los comentarios
+  const [commentText, setCommentText] = useState("");  // Estado para el nuevo comentario
   const { id } = useParams();
   const [hasFetched, setHasFetched] = useState(false);
 
 
-   useEffect(() => {
+ useEffect(() => {
     const loadRecipeDetailsAndFavorites = async () => {
-      if (!hasFetched && id) {
-        await actions.traerDetalleDeReceta(id);
-        setHasFetched(true);
-      }
-      await actions.getUserFavorites();
-      if (id) {
-        const isFav = actions.isRecipeFavorite(parseInt(id));
-        setIsFavorite(isFav);
-      }
+        const recipeDetails = await actions.traerDetalleDeReceta(id);
+        
+        if (recipeDetails && recipeDetails.comments) {
+            setComments(recipeDetails.comments);  // Asegúrate de que los comentarios se cargan
+        } else {
+            setComments([]);  // Si no hay comentarios, inicializa con un array vacío
+        }
     };
+
     loadRecipeDetailsAndFavorites();
-  }, [id, actions, hasFetched, store.isLoggedIn]);
+  }, [id, store.isLoggedIn]);
 
   const handleFavoriteClick = async () => {
     if (isFavorite) {
@@ -38,6 +39,20 @@ export const RecipeCard = ({ recipe }) => {
       }
     }
   };
+
+  const handleCommentSubmit = async () => {
+    if (commentText.trim() === "") return;
+
+    const newComment = await actions.addCommentToRecipe(id, commentText);
+    if (newComment) {
+      setComments([...comments, newComment]);
+      setCommentText("");
+    }
+  };
+
+  // Asegúrate de que `recipe` esté definido antes de acceder a sus propiedades
+  if (!recipe) return <div>Cargando receta...</div>;
+
   return (
     <div className="recipe-container">
       <div className="recipe-photo">
@@ -53,18 +68,18 @@ export const RecipeCard = ({ recipe }) => {
         <div className="recipe-instructions d-flex flex-column">
           <div>
             <h2>Descripción:</h2>
-          <p>{recipe.description || "Descripción no disponible"}</p>
-          <h2>Preparación:</h2>
-          {recipe.steps ? (
-            recipe.steps.split("\n").map((step, index) => (
-              <p key={index}>{step}</p>
-            ))
-          ) : (
-            <p>Instrucciones no disponibles</p>
-          )}
-        </div>
-        <div className= "published-by">
-          <p>
+            <p>{recipe.description || "Descripción no disponible"}</p>
+            <h2>Preparación:</h2>
+            {recipe.steps ? (
+              recipe.steps.split("\n").map((step, index) => (
+                <p key={index}>{step}</p>
+              ))
+            ) : (
+              <p>Instrucciones no disponibles</p>
+            )}
+          </div>
+          <div className="published-by">
+            <p>
               {recipe.uploaded_by_user ? (
                 <>
                   Publicada por{" "}
@@ -76,7 +91,7 @@ export const RecipeCard = ({ recipe }) => {
                 "Publicada por BiteBuddies"
               )}
             </p>
-        </div>
+          </div>
         </div>
       </div>
       <div className="recipe-sidebar">
@@ -115,10 +130,10 @@ export const RecipeCard = ({ recipe }) => {
         </div>
       <div className="comments-section">
         <h2>Comentarios</h2>
-        {recipe.comments && recipe.comments.length > 0 ? (
-          recipe.comments.map((comment, index) => (
+        {comments.length > 0 ? (
+          comments.map((comment, index) => (
             <div className="comment" key={index}>
-              <span className="username">{comment.username}</span>
+              <span className="username">{comment.user_name}</span>
               <p>{comment.text}</p>
             </div>
           ))
@@ -131,8 +146,12 @@ export const RecipeCard = ({ recipe }) => {
             type="text"
             placeholder="Comentario..."
             className="form-control"
+            value={commentText}
+            onChange={(e) => setCommentText(e.target.value)}
           />
-          <button className="btn btn-primary mt-2">Enviar</button>
+          <button className="btn btn-primary mt-2" onClick={handleCommentSubmit}>
+            Enviar
+          </button>
         </div>
         )}
       </div>
