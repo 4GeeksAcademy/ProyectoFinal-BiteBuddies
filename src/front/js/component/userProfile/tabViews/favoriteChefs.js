@@ -6,6 +6,7 @@ export const FavoriteChefs = ({ store, actions, isProfile }) => {
   useEffect(() => {
     if (!store.usuariosFavoritos || store.usuariosFavoritos.length === 0) {
       actions.getUserFavorites();
+      actions.traerUsuarios();
     }
   }, [store.usuariosFavoritos, actions]);
 
@@ -24,7 +25,12 @@ export const FavoriteChefs = ({ store, actions, isProfile }) => {
                   to={`/user/${usuario.id}`}
                   style={{ textDecoration: "none" }}
                 >
-                  <div className="recipe-card col-md-3 bg-light p-2 m-2">
+                  <div className="recipe-card col-md-3 p-2 m-2">
+                    <img
+                      src={usuario.profile_image}
+                      alt="Receta"
+                      className="img-fluid"
+                    />
                     <p className="recipe-name">
                       {usuario.first_name && usuario.last_name
                         ? `${usuario.first_name} ${usuario.last_name}`
@@ -52,7 +58,12 @@ export const FavoriteChefs = ({ store, actions, isProfile }) => {
                   to={`/user/${usuario.id}`}
                   style={{ textDecoration: "none" }}
                 >
-                  <div className="recipe-card col-md-3 bg-light p-2 m-2">
+                  <div className="recipe-card col-md-3 p-2 m-2">
+                    <img
+                      src={usuario.profile_image}
+                      alt="Receta"
+                      className="img-fluid"
+                    />
                     <p className="recipe-name">
                       {usuario.first_name && usuario.last_name
                         ? `${usuario.first_name} ${usuario.last_name}`
