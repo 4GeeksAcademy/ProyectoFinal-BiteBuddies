@@ -7,7 +7,6 @@ from api.models import db, User, Ingredients, Recipe, Categories, Comment
 from api.utils import APIException
 from flask_cors import CORS
 from flask_jwt_extended import create_access_token, get_jwt_identity, jwt_required
-from commands import insert_test_users, insert_test_categories, insert_test_ingredients, insert_test_recipes
 
 api = Blueprint('api', __name__)
 
@@ -16,17 +15,6 @@ CORS(api)
 
 def handle_invalid_usage(error):
     return jsonify(error.to_dict()), error.status_code
-
-@api.route('/insert-test-data', methods=['GET'])
-def insert_test_data_endpoint():
-    try:
-        insert_test_users()         # Insertar usuarios
-        insert_test_categories()    # Insertar categorías
-        insert_test_ingredients()   # Insertar ingredientes
-        insert_test_recipes()       # Insertar recetas
-        return "Test data inserted successfully!"
-    except Exception as e:
-        return f"An error occurred: {str(e)}"
 
 
 @api.route('/all_users', methods=['GET'])
