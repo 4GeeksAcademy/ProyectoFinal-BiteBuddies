@@ -17,7 +17,7 @@ CORS(api)
 def handle_invalid_usage(error):
     return jsonify(error.to_dict()), error.status_code
 
-@app.route('/insert-test-data', methods=['GET'])
+@api.route('/insert-test-data', methods=['GET'])
 def insert_test_data_endpoint():
     try:
         insert_test_users()         # Insertar usuarios
