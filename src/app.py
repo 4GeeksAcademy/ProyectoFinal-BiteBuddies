@@ -71,9 +71,6 @@ def serve_any_other_file(path):
     response.cache_control.max_age = 0  # avoid cache memory
     return response
 
-@app.route('/img/<filename>')
-def serve_profile_image(filename):
-    return send_from_directory(app.config['UPLOAD_FOLDER'], filename)
 
 # this only runs if `$ python src/main.py` is executed
 if __name__ == '__main__':

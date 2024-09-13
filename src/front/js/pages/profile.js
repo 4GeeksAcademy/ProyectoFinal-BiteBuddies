@@ -29,7 +29,7 @@ export const Profile = (id) => {
   }, [store.isLoadingUser, store.isLoggedIn]);
 
   const handleEditProfile = () => {
-    setShowEditProfileModal(true); // Abrir el modal de editar perfil
+    setShowEditProfileModal(true);
   };
 
   const handleOpenModal = () => {
@@ -41,7 +41,7 @@ export const Profile = (id) => {
   };
 
   const handleCloseEditProfileModal = () => {
-    setShowEditProfileModal(false); // Cerrar el modal de editar perfil
+    setShowEditProfileModal(false);
   };
 
   if (store.isLoadingUser) {
@@ -72,7 +72,7 @@ export const Profile = (id) => {
         </div>
       )}
       {showModal && <RecipeUploadModal show={showModal} handleClose={handleCloseModal} />}
-      {showEditProfileModal && <EditProfileModal show={showEditProfileModal} handleClose={handleCloseEditProfileModal} />} {/* Modal de editar perfil */}
+      {showEditProfileModal && <EditProfileModal show={showEditProfileModal} handleClose={handleCloseEditProfileModal} />}
     </div>
   );
 };

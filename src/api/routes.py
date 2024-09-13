@@ -5,7 +5,6 @@ import os
 from flask import jsonify, Blueprint, request
 from api.models import db, User, Ingredients, Recipe, Categories
 from api.utils import APIException
-from werkzeug.utils import secure_filename
 
 from flask_cors import CORS
 from flask_jwt_extended import create_access_token, get_jwt_identity, jwt_required
