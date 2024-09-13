@@ -24,7 +24,7 @@ export const Home = () => {
 
     return (
         <div className="body text-center h-100">
-            <div className="titles m-3">
+            <div className="titles-h m-3">
                 <h1 className="bite-title">BiteBuddies</h1>
                 <h4>Descubre recetas deliciosas creadas por chefs como tú</h4>
                 <p>Busca, comparte y explora miles de recetas subidas por nuestra comunidad de chefs. ¡Comparte tu pasión por la cocina con el mundo!</p>

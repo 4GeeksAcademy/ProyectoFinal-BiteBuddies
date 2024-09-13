@@ -31,7 +31,7 @@ export const ProfileHeader = ({ user, isProfile  }) => {
   }
 
   return (
-    <div className="navbar-profile d-flex justify-content-between align-items-center p-3 bg-light">
+    <div className="navbar-profile d-flex justify-content-between align-items-center p-3">
       <div className="profile-photo text-center col-3 p-1">
         <img
           src={user.profile_image ? user.profile_image : "https://via.placeholder.com/150"}
@@ -53,8 +53,8 @@ export const ProfileHeader = ({ user, isProfile  }) => {
               onClick={handleFavoriteClick}
             >
               {isFavorite 
-                ? <>Siguiendo <i className='bx bxs-cookie' style={{ color: '#d4a373' }}></i></> 
-                : <>Seguir <i className="fa-solid fa-cookie" style={{color: '#d4a373'}}></i></>
+                ? <>Siguiendo <i className='bx bxs-cookie' style={{ color: '#735c20' }}></i></> 
+                : <>Seguir <i className="fa-solid fa-cookie" style={{color: '#735c20'}}></i></>
               }
             </button> 
           )}

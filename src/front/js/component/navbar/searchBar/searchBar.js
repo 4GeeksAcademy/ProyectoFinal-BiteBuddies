@@ -15,21 +15,17 @@ export const SearchBar = ({ actions, store, handleRecetasClick, handleUsuariosCl
         <div className="search-bar-container">
             {/* Colocamos los botones y el input juntos */}
             <div className="input-group">
-                <input
+                <div >
+                    <input
                     type="text"
-                    className="form-control mx-2"
+                    className="form-control search-bar mx-2"
                     placeholder={`Buscar ${searchCategory}...`}
                     value={search}
                     onChange={handleSearchChange}
-                />
-                <SearchOptions
-                    searchCategory={searchCategory}
-                    setSearchCategory={setSearchCategory}
-                    isUserView={store.isUserView}
-                    switchToUsersView={handleUsuariosClick}
-                    switchToRecipesView={handleRecetasClick}
-                />
+                    />
+                </div>
             </div>
+                
         </div>
     );
 };

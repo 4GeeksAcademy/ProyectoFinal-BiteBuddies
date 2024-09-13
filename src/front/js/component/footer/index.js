@@ -5,32 +5,32 @@ import "./footer.css";
 export const Footer = () => {
 	return (
 		<footer className="custom-footer">
-			<div className="footer-container justify-content-center">
-				<div className="footer-section mx-5">
+			<div className="footer-container justify-content-center row ">
+				<div className="footer-section mx-5 col">
 					<h4 className="text-center">Categorías Populares</h4>
-					<div className="footer-section-container d-flex">
+					<div className="footer-section-container d-flex justify-content-center">
 						<a href="/categoria/postres" className="footer-link m-2">Postres</a>
 						<a href="/categoria/vegetariano" className="footer-link m-2">Vegetariano</a>
 						<a href="/categoria/comida-rapida" className="footer-link m-2">Comida Rápida</a>
 					</div>
 				</div>
-				<div className="footer-section mx-5">
+				<div className="footer-section mx-5 col">
 					<h4 className="text-center">Ayuda y Soporte</h4>
-					<div className="footer-section-container d-flex">
+					<div className="footer-section-container d-flex justify-content-center">
 						<Link to="/faq" className="footer-link m-2">Preguntas Frecuentes (FAQ)</Link>
 						<Link to="/privacy-policy" className="footer-link m-2">Política de Privacidad</Link>
-						<Link to="/terms-and-conditions" className="footer-link m-2">Términos y Condiciones</Link>
+						<Link to="/terms-and-conditions" className="footer-link m-2">Términos <br></br>y Condiciones</Link>
 					</div>
 				</div>
-				<div className="footer-section mx-5">
+				<div className="footer-section mx-5 col">
 					<h4 className="text-center">Contacto</h4>
-					<div className="footer-section-container d-flex">
-						<p className="m-2">Teléfono: +1 800-123-4567</p>
-						<p className="m-2">Email: contacto@bestchefs.com</p>
+					<div className="footer-section-container d-flex flex-column text-center">
+							<p className="m-2">Teléfono: +1 800-123-4567</p>
+							<p className="m-2">Email: contacto@bestchefs.com</p>
 					</div>
 				</div>
 			</div>
-			<div className="footer-bottom">
+			<div className="footer-bottom row">
 				<p>&copy; 2024 BEST CHEFS. Todos los derechos reservados.</p>
 				<p>Powered by BEST CHEFS</p>
 				<div className="d-flex justify-content-center">

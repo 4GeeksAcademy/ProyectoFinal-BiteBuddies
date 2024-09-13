@@ -20,7 +20,6 @@ export const Recipes = ({ recetas = [], selectedCategory, searchResults = [], is
 
     return (
         <div>
-            <h4 className="sub-title">Recetas</h4>
             <div className="recipe-list-h">
                 {filteredRecetas.length > 0 ? (
                     filteredRecetas.map((receta) => (

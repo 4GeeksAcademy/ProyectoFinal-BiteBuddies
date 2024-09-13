@@ -36,9 +36,8 @@ export const SignIn = () => {
               type="text"
               className="form-control input"
               id="inputUserName"
-              placeholder=" "
+              placeholder="Nombre de usuario"
             />
-            <label htmlFor="inputUserName" className="floating-label">Nombre de usuario</label>
           </div>
           <div className="mb-3 input-container">
             <input
@@ -47,9 +46,8 @@ export const SignIn = () => {
               type="text"
               className="form-control input"
               id="inputFirstName"
-              placeholder=" "
+              placeholder="Nombre"
             />
-            <label htmlFor="inputName" className="floating-label">Nombre</label>
           </div>
           <div className="mb-3 input-container">
             <input
@@ -58,9 +56,8 @@ export const SignIn = () => {
               type="text"
               className="form-control input"
               id="inputLastName"
-              placeholder=" "
+              placeholder="Apellidos"
             />
-            <label htmlFor="inputName" className="floating-label">Apellidos</label>
           </div>
           <div className="mb-3 input-container">
             <input
@@ -69,9 +66,8 @@ export const SignIn = () => {
               type="email"
               className="form-control input"
               id="inputEmail"
-              placeholder=" "
+              placeholder="Email"
             />
-            <label htmlFor="inputEmail" className="floating-label">Email</label>
           </div>
           <div className="mb-3 input-container">
             <input
@@ -80,9 +76,8 @@ export const SignIn = () => {
               type="password"
               className="form-control input"
               id="inputPassword"
-              placeholder=" "
+              placeholder="Contraseña"
             />
-            <label htmlFor="inputPassword" className="floating-label">Password</label>
           </div>
           <div className="text-center m-1">
             <button type="submit" className="btn btn-primary">
