@@ -3,7 +3,7 @@ This module takes care of starting the API Server, Loading the DB and Adding the
 """
 import os
 from flask import jsonify, Blueprint, request
-from api.models import db, User, Ingredients, Recipe, Categories
+from api.models import db, User, Ingredients, Recipe, Categories, Comment
 from api.utils import APIException
 
 from flask_cors import CORS
@@ -139,18 +139,25 @@ def get_user_by_id(user_id):
     return jsonify(user_query.serialize()), 200
 
 @api.route('/user/favorites', methods=['GET'])
-@jwt_required()
+@jwt_required()  # Asegúrate de que el token JWT sea válido
 def get_user_favorites():
-    current_user_id = get_jwt_identity()
-    user_query = User.query.get(current_user_id)
-    if not user_query:
-        raise APIException("Usuario no encontrado", status_code=404)
-    favoritos_recetas = list(map(lambda x: x.serialize(), user_query.favorite_recipes))
-    favoritos_usuarios = list(map(lambda x: x.serialize(), user_query.favorite_users.all()))
-    return jsonify({
-        "favorite_recipes": favoritos_recetas,
-        "favorite_users": favoritos_usuarios
-    }), 200
+    try:
+        current_user_id = get_jwt_identity()
+        user = User.query.get(current_user_id)
+        if not user:
+            return jsonify({"msg": "Usuario no encontrado"}), 404
+
+        # Obtén las recetas y usuarios favoritos
+        favorite_recipes = [recipe.serialize() for recipe in user.favorite_recipes]
+        favorite_users = [fav_user.serialize() for fav_user in user.favorite_users]
+
+        return jsonify({
+            "favorite_recipes": favorite_recipes,
+            "favorite_users": favorite_users
+        }), 200
+    except Exception as e:
+        print(f"Error al obtener favoritos: {e}")
+        return jsonify({"msg": "Error interno del servidor"}), 500
 
 @api.route('/favorites/recipes/<int:recipe_id>', methods=['POST'])
 @jwt_required()
@@ -327,3 +334,38 @@ def edit_user_profile():
     except Exception as e:
         db.session.rollback()
         raise APIException(f"Error al actualizar el perfil: {str(e)}", status_code=500)
+    
+    
+# Obtener comentarios de una receta
+@api.route('/recipes/<int:recipe_id>', methods=['GET'])
+def get_comments_for_recipe(recipe_id):
+    recipe = Recipe.query.get(recipe_id)
+    if not recipe:
+        raise APIException("Receta no encontrada", status_code=404)
+    
+    comments = Comment.query.filter_by(recipe_id=recipe_id).all()
+    return jsonify([comment.serialize() for comment in comments]), 200
+
+# Crear un nuevo comentario
+@api.route('/recipes/<int:recipe_id>', methods=['POST'])
+@jwt_required()
+def add_comment_to_recipe(recipe_id):
+    user_id = get_jwt_identity()
+    recipe = Recipe.query.get(recipe_id)
+    if not recipe:
+        raise APIException("Receta no encontrada", status_code=404)
+
+    data = request.get_json()
+    if 'text' not in data:
+        raise APIException("El comentario no puede estar vacío", status_code=400)
+
+    new_comment = Comment(text=data['text'], user_id=user_id, recipe_id=recipe_id)
+    
+    try:
+        db.session.add(new_comment)
+        db.session.commit()
+        return jsonify(new_comment.serialize()), 201
+    except Exception as e:
+        db.session.rollback()
+        raise APIException(f"Error al crear el comentario: {str(e)}", status_code=500)
+
