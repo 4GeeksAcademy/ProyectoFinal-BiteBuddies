@@ -15,7 +15,7 @@ export const ProfileHeader = ({ user, isProfile  }) => {
       setIsFavorite(isUserFavorite);
     };
     checkFavoriteStatus();
-  }, [user.id, store.usuariosFavoritos]);
+  }, [user.id, store.usuariosFavoritos, store.isLoggedIn]);
 
   const capitalizeWords = (str) => {
     return str.replace(/\b\w/g, char => char.toUpperCase());
@@ -47,7 +47,7 @@ export const ProfileHeader = ({ user, isProfile  }) => {
             ? `${capitalizeWords(user.first_name.toLowerCase())} ${capitalizeWords(user.last_name.toLowerCase())}`
             : "Nombre no disponible"}
           </p>
-          {!isProfile && (
+          {!isProfile && store.isLoggedIn && (
             <button 
               className="btn-follow"
               onClick={handleFavoriteClick}
