@@ -24,7 +24,7 @@ export const FavoriteRecipes = ({ store, actions, isProfile }) => {
                   to={`/recipe/${receta.id}`}
                   style={{ textDecoration: "none" }}
                 >
-                  <div className="recipe-card col-md-3 bg-light p-2 m-2">
+                  <div className="recipe-card col-md-3 p-2 m-2">
                     <img
                       src={receta.image_url}
                       alt="Receta"
@@ -55,7 +55,7 @@ export const FavoriteRecipes = ({ store, actions, isProfile }) => {
                   to={`/recipe/${receta.id}`}
                   style={{ textDecoration: "none" }}
                 >
-                  <div className="recipe-card col-md-3 bg-light p-2 m-2">
+                  <div className="recipe-card col-md-3 p-2 m-2">
                     <img
                       src={receta.image_url}
                       alt="Receta"

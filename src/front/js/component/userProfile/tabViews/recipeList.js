@@ -52,7 +52,7 @@ export const RecipeList = ({ isProfile }) => {
               store.listaDeRecetasDeOtroUsuario.map((recipe) => (
                 <Link key={recipe.id} to={`/recipe/${recipe.id}`}>
                   <div
-                    className="recipe-card col-md-3 bg-light p-2 m-2"
+                    className="recipe-card col-md-3 p-2 m-2"
                   
                   >
                     <img
