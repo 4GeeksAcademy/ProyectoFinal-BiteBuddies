@@ -13,18 +13,13 @@ export const UserDetails = () => {
   const { id } = useParams();
 
   useEffect(() => {
-    console.log("Fetching profile and recipes for user:", id);
-    actions.getOtherUserProfile(id);
-    actions.getOtherUserRecipes(id);
-    store.listaDeRecetasDeOtroUsuario
-    store.listaDeRecetasPublicadas
+    actions.traerUsuarios(id);
   }, [id]);
 
   const isProfile = store.currentUser && store.currentUser.id === id;
-  const userRecipes = Array.isArray(store.listaDeRecetasDeOtroUsuario)
-    ? store.listaDeRecetasDeOtroUsuario
-    : [];
-  if (!store.otherUserProfile) {
+  const visitedUser = store.listaDeUsuarios.find(user=> user.id === parseInt(id));
+ 
+  if (!visitedUser) {
     return (
       <div className="loading-spinner">
         Cargando chef ... <i className="fa-solid fa-spinner fa-spin"></i>
@@ -33,12 +28,12 @@ export const UserDetails = () => {
   }
   return (
     <div className="container profile-container" style={{ position: "relative" }}>
-      <ProfileHeader  user={store.otherUserProfile} isProfile={isProfile} />
+      <ProfileHeader  user={visitedUser} isProfile={isProfile} />
       <Tabs isProfile={isProfile} setActiveTab={setActiveTab} activeTab={activeTab} />
       <div className="tab-content">
-        {activeTab === "misRecetas" && (<RecipeList isProfile={isProfile} recipes={userRecipes} store={store} actions={actions} />)}
-        {activeTab === "recetasFavoritas" && <FavoriteRecipes isProfile={isProfile} store={store} actions={actions} />}
-        {activeTab === "chefsFavoritos" && <FavoriteChefs isProfile={isProfile} store={store} actions={actions} />}
+        {activeTab === "misRecetas" && (<RecipeList isProfile={isProfile} visitedUser={visitedUser} />)}
+        {activeTab === "recetasFavoritas" && <FavoriteRecipes isProfile={isProfile} visitedUser={visitedUser}/>}
+        {activeTab === "chefsFavoritos" && <FavoriteChefs isProfile={isProfile} visitedUser={visitedUser}/>}
       </div>
     </div>
   );

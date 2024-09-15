@@ -160,42 +160,11 @@ const getState = ({ getStore, getActions, setStore }) => {
           }
 
           const data = await response.json();
+          console.log("traerUsuarios:", data);          
+          setStore({ listaDeUsuarios: data });
           
-          setStore({ listaDeUsuarios: data }); // Guardar todos los usuarios en el store
         } catch (error) {
           console.error("Error al obtener usuarios:", error.message);
-        }
-      },
-
-     getOtherUserProfile: async (userId) => {
-        try {
-          const response = await fetch(`${process.env.BACKEND_URL}/api/user/${userId}`);
-          if (!response.ok) {
-            throw new Error("Error al obtener el perfil del usuario");
-          }
-          const data = await response.json();
-          setStore({ otherUserProfile: data });
-        } catch (error) {
-          console.error("Error al obtener el perfil del usuario:", error);
-        }
-      },
-
-      getOtherUserRecipes: async (userId) => {
-        try {
-          const response = await fetch(`${process.env.BACKEND_URL}/api/user/${userId}/recipes`);
-          const data = await response.json();
-          if (Array.isArray(data)) {
-            setStore({ listaDeRecetasDeOtroUsuario: data });
-          } else if (data.message) {
-            console.error("Mensaje del servidor:", data.message);
-            setStore({ listaDeRecetasDeOtroUsuario: [] });
-          } else {
-            console.error("Respuesta inesperada del servidor:", data);
-            setStore({ listaDeRecetasDeOtroUsuario: [] });
-          }
-        } catch (error) {
-          console.error("Error al obtener las recetas del otro usuario:", error);
-          setStore({ listaDeRecetasDeOtroUsuario: [] });
         }
       },
 
@@ -211,6 +180,7 @@ const getState = ({ getStore, getActions, setStore }) => {
             throw new Error("Error fetching recipes");
           }
           const data = await response.json();
+          console.log("traerRecetas:", data);
           setStore({
             listaDeRecetas: data,
           });
@@ -231,6 +201,7 @@ const getState = ({ getStore, getActions, setStore }) => {
             throw new Error("Error fetching categories");
           }
           const data = await response.json();
+          console.log("traerCategorias:", data);
           setStore({
             listaDeCategorias: data,
           });
@@ -281,7 +252,7 @@ const getState = ({ getStore, getActions, setStore }) => {
             },
           });
           const { usuario_actual: currentUser } = res.data;
-          console.log("currentUserData:", res.data);
+          console.log("getCurrentUserData:", res.data);
           
           setStore({
             currentUser,
@@ -315,8 +286,6 @@ const getState = ({ getStore, getActions, setStore }) => {
      publicarReceta: async (name, description, steps, ingredients_ids, category_ids, image_url) => {
         const store = getStore();
         const accessToken = localStorage.getItem("accessToken");
-
-        // Verificar qué se está enviando
         console.log({
           name,
           description,
@@ -374,7 +343,6 @@ const getState = ({ getStore, getActions, setStore }) => {
               }
               const data = await response.json();
               
-              // Aquí agregamos un console.log para verificar que los comentarios están siendo recibidos
               console.log("Detalles de la receta:", data);
 
               setStore({
@@ -384,11 +352,11 @@ const getState = ({ getStore, getActions, setStore }) => {
                       description: data.description,
                       steps: data.steps,
                       image_url: data.image_url,
-                      ingredients: data.ingredients, // Lista de ingredientes
-                      categories: data.categories, // Lista de categorías
-                      uploaded_by_user: data.uploaded_by_user, // Info del usuario que subió la receta
+                      ingredients: data.ingredients, 
+                      categories: data.categories, 
+                      uploaded_by_user: data.uploaded_by_user,
                       is_official: data.is_official,
-                      comments: data.comments || [], // Asegúrate de almacenar los comentarios
+                      comments: data.comments || [],
                   },
               });
 
@@ -397,9 +365,6 @@ const getState = ({ getStore, getActions, setStore }) => {
               console.error("Error:", error);
           }
       },
-
-
-
       getUserRecipes: () => {
         const store = getStore();
         const currentUser = store.currentUser;
@@ -408,6 +373,7 @@ const getState = ({ getStore, getActions, setStore }) => {
           setStore({
             listaDeRecetasPublicadas: currentUser.uploaded_recipes,
           });
+          console.log("getUserRecipes:", currentUser.uploaded_recipes);
         } else {
           console.error("No hay recetas subidas para este usuario");
         }
@@ -430,6 +396,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 
             const favorite_recipes = data.favorite_recipes || [];
             const favorite_users = data.favorite_users || [];
+            
             setStore({
               recetasFavoritas: favorite_recipes,
               usuariosFavoritos: favorite_users,
@@ -607,7 +574,6 @@ const getState = ({ getStore, getActions, setStore }) => {
               const data = await response.json();
               console.log("Perfil actualizado con éxito:", data);
 
-              // After successful update, fetch the updated profile
               const updatedUserResponse = await fetch(`${process.env.BACKEND_URL}/api/current-user`, {
                   headers: {
                       "Authorization": `Bearer ${token}`
@@ -615,14 +581,10 @@ const getState = ({ getStore, getActions, setStore }) => {
               });
 
               if (updatedUserResponse.ok) {
-                  const updatedUserData = await updatedUserResponse.json();
-                  // Update the store with the new user data
+                  const updatedUserData = await updatedUserResponse.json();ata
                   setStore({ currentUser: updatedUserData.usuario_actual });
-
-                  // Show success alert
                   alert("Perfil actualizado con éxito");
               }
-
               return true;
           } catch (error) {
               console.error("Error actualizando el perfil:", error);
@@ -630,7 +592,6 @@ const getState = ({ getStore, getActions, setStore }) => {
               return false;
           }
       },
-
       getCommentsForRecipe: async (recipeId) => {
           try {
               const response = await fetch(`${process.env.BACKEND_URL}/api/recipes/${recipeId}`);

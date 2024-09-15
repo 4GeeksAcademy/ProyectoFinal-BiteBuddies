@@ -13,9 +13,7 @@ export const Home = () => {
         actions.traerRecetas();
         actions.traerCategories();
         actions.getCurrentUser();
-        actions.traerUsuarios();
-        console.log("Current User HOME: ", store.currentUser);
-        console.log("Usuarios: ", store.listaDeUsuarios)
+        actions.traerUsuarios();    
     }, []);
 
     const handleSelectCategory = (categoryId) => {
