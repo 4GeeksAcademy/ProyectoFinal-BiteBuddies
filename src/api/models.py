@@ -62,7 +62,7 @@ class User(db.Model):
             "bio": self.bio,  # Incluimos la bio en la serialización
             "profile_image": self.profile_image,  # Incluimos la imagen de perfil en la serialización
             "favorite_recipes": list(map(lambda x: x.serialize(), self.favorite_recipes)),
-            "favorite_users": list(map(lambda x: x.serialize(), self.favorite_users.all())),
+            "favorite_users": [user.id for user in self.favorite_users.all()],
             "uploaded_recipes": [recipe.serialize() for recipe in self.uploaded_recipes]
         }
 

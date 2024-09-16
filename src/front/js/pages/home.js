@@ -12,7 +12,9 @@ export const Home = () => {
     useEffect(() => {
         actions.traerRecetas();
         actions.traerCategories();
-        actions.traerUsuarios();    
+        actions.traerUsuarios();
+        actions.getCurrentUser();
+        actions.getUserFavorites();
     }, []);
 
     const handleSelectCategory = (categoryId) => {

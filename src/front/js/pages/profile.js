@@ -25,6 +25,7 @@ export const Profile = (id) => {
         navigate("/login");
       } else {
         actions.getUserRecipes();
+        actions.getUserFavorites();
       }
     }
   }, [store.isLoadingUser, store.isLoggedIn]);

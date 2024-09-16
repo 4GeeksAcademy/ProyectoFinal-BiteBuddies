@@ -382,29 +382,36 @@ const getState = ({ getStore, getActions, setStore }) => {
       getUserFavorites: async () => {
         const store = getStore();
         const accessToken = localStorage.getItem("accessToken");
+
         try {
           const response = await fetch(`${process.env.BACKEND_URL}/api/user/favorites`, {
             method: "GET",
             headers: {
-              Authorization: `Bearer ${accessToken}`,
+              Authorization: `Bearer ${accessToken}`, // Incluir el token en la cabecera
               "Content-Type": "application/json",
             },
           });
+
+           console.log("Estado de la respuesta:", response.status);
           if (response.ok) {
             const data = await response.json();
-            const favorite_recipes = data.favorite_recipes || [];
-            const favorite_users = data.favorite_users || [];
+            console.log("Datos recibidos del servidor:", data);
+            const favorite_recipes = data.favorite_recipes;
+            const favorite_users = data.favorite_users;
             setStore({
               recetasFavoritas: favorite_recipes,
               usuariosFavoritos: favorite_users,
             });
+            console.log("Recetas favoritas guardadas:", favorite_recipes);
+            console.log("Usuarios favoritos guardados:", favorite_users);
             return true;
           } else {
-            console.error("Error al obtener los favoritos del usuario");
+            const errorResponse = await response.json();
+            console.error("Error al obtener los favoritos del usuario:", errorResponse);
             return false;
           }
         } catch (error) {
-          console.error("Error:", error);
+          console.error("Error en la solicitud:", error);
           return false;
         }
       },
@@ -412,8 +419,6 @@ const getState = ({ getStore, getActions, setStore }) => {
      addUserToFavorite: async (user_id) => {
         const accessToken = localStorage.getItem("accessToken");
         try {
-          console.log("URL de la solicitud:", `${process.env.BACKEND_URL}/api/favorites/users/${user_id}`);
-
           const response = await fetch(`${process.env.BACKEND_URL}/api/favorites/users/${user_id}`, {
             method: "POST",
             headers: {
@@ -423,10 +428,16 @@ const getState = ({ getStore, getActions, setStore }) => {
           });
           if (response.ok) {
             const userFavorites = await response.json();
+            console.error("addUserToFavorite:",userFavorites);
             if (userFavorites && userFavorites.favorite_users) {
+              const { usuariosFavoritos } = getStore();
+              console.log("Lista actual de usuarios favoritos:", usuariosFavoritos);
+              const nuevoUsuarioFavorito = [...usuariosFavoritos, ...userFavorites.favorite_users];
+              console.log("Nueva lista de usuarios favoritos (antes de guardar en store):", nuevoUsuarioFavorito);
               setStore({
-                usuariosFavoritos: userFavorites.favorite_users,
+                usuariosFavoritos: nuevoUsuarioFavorito
               });
+              console.log("Usuarios Favoritos guardados en el store:", nuevoUsuarioFavorito);
             } else {
               console.error("Formato inesperado en la respuesta al añadir usuario a favoritos");
               return false;

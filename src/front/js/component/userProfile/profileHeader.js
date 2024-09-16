@@ -9,13 +9,25 @@ export const ProfileHeader = ({ user, isProfile  }) => {
 
   useEffect(() => {
     actions.getUserRecipes();
+    const checkFavoriteStatus = () => {
+      const isUserFavorite = actions.isUserFavorite(user.id);
+      setIsFavorite(isUserFavorite);
+    };
+    checkFavoriteStatus();
   }, [user.id, store.usuariosFavoritos, store.isLoggedIn]);
 
   const capitalizeWords = (str) => {
     return str.replace(/\b\w/g, char => char.toUpperCase());
   };
 
-
+  const handleFavoriteClick = async ()=> {
+    if(isFavorite){
+      await actions.removeUserFromFavorites(user.id);
+    } else {
+      await actions.addUserToFavorite(user.id)
+    }
+    actions.getUserFavorites();
+  }
 
   return (
     <div className="navbar-profile d-flex justify-content-between align-items-center p-3">
@@ -37,7 +49,7 @@ export const ProfileHeader = ({ user, isProfile  }) => {
           {!isProfile && store.isLoggedIn && (
             <button 
               className="btn-follow"
-              onClick={handleFavorite}
+              onClick={handleFavoriteClick}
             >
               {isFavorite 
                 ? <>Siguiendo <i className='bx bxs-cookie' style={{ color: '#735c20' }}></i></> 
