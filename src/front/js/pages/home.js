@@ -12,10 +12,9 @@ export const Home = () => {
     useEffect(() => {
         actions.traerRecetas();
         actions.traerCategories();
-        actions.getCurrentUser();
         actions.traerUsuarios();
-        console.log("Current User HOME: ", store.currentUser);
-        console.log("Usuarios: ", store.listaDeUsuarios)
+        actions.getCurrentUser();
+        actions.getUserFavorites();
     }, []);
 
     const handleSelectCategory = (categoryId) => {

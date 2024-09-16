@@ -160,42 +160,11 @@ const getState = ({ getStore, getActions, setStore }) => {
           }
 
           const data = await response.json();
+          console.log("traerUsuarios:", data);          
+          setStore({ listaDeUsuarios: data });
           
-          setStore({ listaDeUsuarios: data }); // Guardar todos los usuarios en el store
         } catch (error) {
           console.error("Error al obtener usuarios:", error.message);
-        }
-      },
-
-     getOtherUserProfile: async (userId) => {
-        try {
-          const response = await fetch(`${process.env.BACKEND_URL}/api/user/${userId}`);
-          if (!response.ok) {
-            throw new Error("Error al obtener el perfil del usuario");
-          }
-          const data = await response.json();
-          setStore({ otherUserProfile: data });
-        } catch (error) {
-          console.error("Error al obtener el perfil del usuario:", error);
-        }
-      },
-
-      getOtherUserRecipes: async (userId) => {
-        try {
-          const response = await fetch(`${process.env.BACKEND_URL}/api/user/${userId}/recipes`);
-          const data = await response.json();
-          if (Array.isArray(data)) {
-            setStore({ listaDeRecetasDeOtroUsuario: data });
-          } else if (data.message) {
-            console.error("Mensaje del servidor:", data.message);
-            setStore({ listaDeRecetasDeOtroUsuario: [] });
-          } else {
-            console.error("Respuesta inesperada del servidor:", data);
-            setStore({ listaDeRecetasDeOtroUsuario: [] });
-          }
-        } catch (error) {
-          console.error("Error al obtener las recetas del otro usuario:", error);
-          setStore({ listaDeRecetasDeOtroUsuario: [] });
         }
       },
 
@@ -211,6 +180,7 @@ const getState = ({ getStore, getActions, setStore }) => {
             throw new Error("Error fetching recipes");
           }
           const data = await response.json();
+          console.log("traerRecetas:", data);
           setStore({
             listaDeRecetas: data,
           });
@@ -231,6 +201,7 @@ const getState = ({ getStore, getActions, setStore }) => {
             throw new Error("Error fetching categories");
           }
           const data = await response.json();
+          console.log("traerCategorias:", data);
           setStore({
             listaDeCategorias: data,
           });
@@ -281,7 +252,7 @@ const getState = ({ getStore, getActions, setStore }) => {
             },
           });
           const { usuario_actual: currentUser } = res.data;
-          console.log("currentUserData:", res.data);
+          console.log("getCurrentUserData:", res.data);
           
           setStore({
             currentUser,
@@ -315,8 +286,6 @@ const getState = ({ getStore, getActions, setStore }) => {
      publicarReceta: async (name, description, steps, ingredients_ids, category_ids, image_url) => {
         const store = getStore();
         const accessToken = localStorage.getItem("accessToken");
-
-        // Verificar qué se está enviando
         console.log({
           name,
           description,
@@ -374,7 +343,6 @@ const getState = ({ getStore, getActions, setStore }) => {
               }
               const data = await response.json();
               
-              // Aquí agregamos un console.log para verificar que los comentarios están siendo recibidos
               console.log("Detalles de la receta:", data);
 
               setStore({
@@ -384,11 +352,11 @@ const getState = ({ getStore, getActions, setStore }) => {
                       description: data.description,
                       steps: data.steps,
                       image_url: data.image_url,
-                      ingredients: data.ingredients, // Lista de ingredientes
-                      categories: data.categories, // Lista de categorías
-                      uploaded_by_user: data.uploaded_by_user, // Info del usuario que subió la receta
+                      ingredients: data.ingredients, 
+                      categories: data.categories, 
+                      uploaded_by_user: data.uploaded_by_user,
                       is_official: data.is_official,
-                      comments: data.comments || [], // Asegúrate de almacenar los comentarios
+                      comments: data.comments || [],
                   },
               });
 
@@ -397,9 +365,6 @@ const getState = ({ getStore, getActions, setStore }) => {
               console.error("Error:", error);
           }
       },
-
-
-
       getUserRecipes: () => {
         const store = getStore();
         const currentUser = store.currentUser;
@@ -408,6 +373,7 @@ const getState = ({ getStore, getActions, setStore }) => {
           setStore({
             listaDeRecetasPublicadas: currentUser.uploaded_recipes,
           });
+          console.log("getUserRecipes:", currentUser.uploaded_recipes);
         } else {
           console.error("No hay recetas subidas para este usuario");
         }
@@ -421,33 +387,37 @@ const getState = ({ getStore, getActions, setStore }) => {
           const response = await fetch(`${process.env.BACKEND_URL}/api/user/favorites`, {
             method: "GET",
             headers: {
-              Authorization: `Bearer ${accessToken}`,
+              Authorization: `Bearer ${accessToken}`, // Incluir el token en la cabecera
               "Content-Type": "application/json",
             },
           });
+
+           console.log("Estado de la respuesta:", response.status);
           if (response.ok) {
             const data = await response.json();
-
-            const favorite_recipes = data.favorite_recipes || [];
-            const favorite_users = data.favorite_users || [];
+            console.log("Datos recibidos del servidor:", data);
+            const favorite_recipes = data.favorite_recipes;
+            const favorite_users = data.favorite_users;
             setStore({
               recetasFavoritas: favorite_recipes,
               usuariosFavoritos: favorite_users,
             });
+            console.log("Recetas favoritas guardadas:", favorite_recipes);
+            console.log("Usuarios favoritos guardados:", favorite_users);
             return true;
           } else {
-            console.error("Error al obtener los favoritos del usuario");
+            const errorResponse = await response.json();
+            console.error("Error al obtener los favoritos del usuario:", errorResponse);
             return false;
           }
         } catch (error) {
-          console.error("Error:", error);
+          console.error("Error en la solicitud:", error);
           return false;
         }
       },
 
-      addUserToFavorite: async (user_id) => {
+     addUserToFavorite: async (user_id) => {
         const accessToken = localStorage.getItem("accessToken");
-
         try {
           const response = await fetch(`${process.env.BACKEND_URL}/api/favorites/users/${user_id}`, {
             method: "POST",
@@ -456,30 +426,33 @@ const getState = ({ getStore, getActions, setStore }) => {
               "Content-Type": "application/json",
             },
           });
-
           if (response.ok) {
             const userFavorites = await response.json();
-
+            console.error("addUserToFavorite:",userFavorites);
             if (userFavorites && userFavorites.favorite_users) {
+              const { usuariosFavoritos } = getStore();
+              console.log("Lista actual de usuarios favoritos:", usuariosFavoritos);
+              const nuevoUsuarioFavorito = [...usuariosFavoritos, ...userFavorites.favorite_users];
+              console.log("Nueva lista de usuarios favoritos (antes de guardar en store):", nuevoUsuarioFavorito);
               setStore({
-                usuariosFavoritos: userFavorites.favorite_users,
+                usuariosFavoritos: nuevoUsuarioFavorito
               });
+              console.log("Usuarios Favoritos guardados en el store:", nuevoUsuarioFavorito);
             } else {
               console.error("Formato inesperado en la respuesta al añadir usuario a favoritos");
               return false;
             }
-
             return true;
           } else {
-            console.error("Error al añadir el usuario a favoritos");
+            const errorResponse = await response.json();
+            console.error("Error del servidor al añadir el usuario a favoritos:", errorResponse);
             return false;
           }
         } catch (error) {
-          console.error("Error:", error);
+          console.error("Error en la solicitud:", error);
           return false;
         }
       },
-
       removeUserFromFavorites: async (user_id) => {
         const accessToken = localStorage.getItem("accessToken");
 
@@ -607,7 +580,6 @@ const getState = ({ getStore, getActions, setStore }) => {
               const data = await response.json();
               console.log("Perfil actualizado con éxito:", data);
 
-              // After successful update, fetch the updated profile
               const updatedUserResponse = await fetch(`${process.env.BACKEND_URL}/api/current-user`, {
                   headers: {
                       "Authorization": `Bearer ${token}`
@@ -615,14 +587,10 @@ const getState = ({ getStore, getActions, setStore }) => {
               });
 
               if (updatedUserResponse.ok) {
-                  const updatedUserData = await updatedUserResponse.json();
-                  // Update the store with the new user data
+                  const updatedUserData = await updatedUserResponse.json();ata
                   setStore({ currentUser: updatedUserData.usuario_actual });
-
-                  // Show success alert
                   alert("Perfil actualizado con éxito");
               }
-
               return true;
           } catch (error) {
               console.error("Error actualizando el perfil:", error);
@@ -630,7 +598,6 @@ const getState = ({ getStore, getActions, setStore }) => {
               return false;
           }
       },
-
       getCommentsForRecipe: async (recipeId) => {
           try {
               const response = await fetch(`${process.env.BACKEND_URL}/api/recipes/${recipeId}`);

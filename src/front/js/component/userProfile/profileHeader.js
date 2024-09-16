@@ -8,7 +8,6 @@ export const ProfileHeader = ({ user, isProfile  }) => {
   const [isFavorite, setIsFavorite] = useState(false);
 
   useEffect(() => {
-    console.log("User ID or favoritos changed");
     actions.getUserRecipes();
     const checkFavoriteStatus = () => {
       const isUserFavorite = actions.isUserFavorite(user.id);

@@ -3,8 +3,9 @@ import { Context } from "../../../store/appContext";
 import { Link } from "react-router-dom";
 import "../styles.css";
 
-export const RecipeList = ({ isProfile }) => {
+export const RecipeList = ({ isProfile, visitedUser }) => {
   const { store } = useContext(Context);
+
   return (
     <>
       {isProfile && (
@@ -38,23 +39,21 @@ export const RecipeList = ({ isProfile }) => {
           </div>
         </div>
       )}
-      {!isProfile && (
+      {!isProfile && visitedUser && Array.isArray(visitedUser.uploaded_recipes) &&(
         <div className="recipes-section mt-4">
           <h3>
             Mis recetas
           </h3>
           <div className="d-flex flex-wrap justify-content-center">
-            {store.listaDeRecetasDeOtroUsuario.length === 0 ? (
+            {visitedUser.uploaded_recipes.length === 0 ? (
               <div className="text-center">
                 <p>Este chef no ha publicado recetas</p>
               </div>
             ) : (
-              store.listaDeRecetasDeOtroUsuario.map((recipe) => (
+              visitedUser.uploaded_recipes.map((recipe) => (
                 <Link key={recipe.id} to={`/recipe/${recipe.id}`}>
                   <div
-                    className="recipe-card col-md-3 p-2 m-2"
-                  
-                  >
+                    className="recipe-card col-md-3 p-2 m-2">
                     <img
                       src={recipe.image_url}
                       alt="Receta"

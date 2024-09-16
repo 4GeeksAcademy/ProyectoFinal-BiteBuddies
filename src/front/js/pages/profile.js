@@ -25,9 +25,12 @@ export const Profile = (id) => {
         navigate("/login");
       } else {
         actions.getUserRecipes();
+        actions.getUserFavorites();
       }
     }
   }, [store.isLoadingUser, store.isLoggedIn]);
+
+  const visitedUser = store.listaDeUsuarios.find(user=> user.id === parseInt(id));
 
   const handleEditProfile = () => {
     setShowEditProfileModal(true);
@@ -61,9 +64,9 @@ export const Profile = (id) => {
       <ProfileHeader isProfile={isProfile} user={store.currentUser} />
       <Tabs isProfile={isProfile} handleEditProfile={handleEditProfile} setActiveTab={setActiveTab} activeTab={activeTab} />
       <div className="tab-content">
-        {activeTab === "misRecetas" && <RecipeList isProfile={isProfile} store={store} actions={actions} />}
-        {activeTab === "recetasFavoritas" && <FavoriteRecipes isProfile={isProfile} store={store} actions={actions} />}
-        {activeTab === "chefsFavoritos" && <FavoriteChefs store={store} actions={actions} />}
+        {activeTab === "misRecetas" && (<RecipeList isProfile={isProfile} visitedUser={visitedUser} store={store} />)}
+        {activeTab === "recetasFavoritas" && <FavoriteRecipes isProfile={isProfile} visitedUser={visitedUser} store={store}/>}
+        {activeTab === "chefsFavoritos" && <FavoriteChefs isProfile={isProfile} visitedUser={visitedUser} store={store}/>}
       </div>
       {(activeTab === "misRecetas" || activeTab === "recetasFavoritas") && !isLoggedIn && (
       <div className="row mt-3 justify-content-center">

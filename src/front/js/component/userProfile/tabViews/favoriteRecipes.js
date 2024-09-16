@@ -2,13 +2,7 @@ import React, { useEffect } from "react";
 import { Link } from "react-router-dom";
 import "../styles.css";
 
-export const FavoriteRecipes = ({ store, actions, isProfile }) => {
-  useEffect(() => {
-    if (!store.recetasFavoritas || store.recetasFavoritas.length === 0) {
-      actions.getUserFavorites();
-    }
-  }, [store.recetasFavoritas, actions]);
-
+export const FavoriteRecipes = ({ isProfile, visitedUser, store }) => {
   return (
     <>
       {isProfile && (
@@ -42,14 +36,14 @@ export const FavoriteRecipes = ({ store, actions, isProfile }) => {
           </div>
         </div>
       )}
-      {!isProfile && (
+      {!isProfile && visitedUser && Array.isArray(visitedUser.uploaded_recipes) && (
         <div className="recipes-section mt-4">
           <h3>
             Recetas Favoritas
           </h3>
           <div className="d-flex flex-wrap justify-content-center">
-            {store.recetasFavoritas && store.recetasFavoritas.length > 0 ? (
-              store.recetasFavoritas.map((receta, index) => (
+            {visitedUser.favorite_recipes && visitedUser.favorite_recipes.length > 0 ? (
+              visitedUser.favorite_recipes.map((receta) => (
                 <Link
                   key={receta.id}
                   to={`/recipe/${receta.id}`}
