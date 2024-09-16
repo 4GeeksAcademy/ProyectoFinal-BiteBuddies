@@ -66,7 +66,7 @@ export const Navbar = () => {
                         </button>
                         <ul className="dropdown-menu desplegable" aria-labelledby="dropdownMenuButton">
                             <li>
-                                <Link className="dropdown-item desplegable-item" to={`/user-profile`}>
+                                <Link className="dropdown-item desplegable-item" to={`/user-profile/`}>
                                     Perfil
                                 </Link>
                             </li>

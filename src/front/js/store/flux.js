@@ -382,7 +382,6 @@ const getState = ({ getStore, getActions, setStore }) => {
       getUserFavorites: async () => {
         const store = getStore();
         const accessToken = localStorage.getItem("accessToken");
-
         try {
           const response = await fetch(`${process.env.BACKEND_URL}/api/user/favorites`, {
             method: "GET",
@@ -393,10 +392,8 @@ const getState = ({ getStore, getActions, setStore }) => {
           });
           if (response.ok) {
             const data = await response.json();
-
             const favorite_recipes = data.favorite_recipes || [];
             const favorite_users = data.favorite_users || [];
-            
             setStore({
               recetasFavoritas: favorite_recipes,
               usuariosFavoritos: favorite_users,
@@ -412,10 +409,11 @@ const getState = ({ getStore, getActions, setStore }) => {
         }
       },
 
-      addUserToFavorite: async (user_id) => {
+     addUserToFavorite: async (user_id) => {
         const accessToken = localStorage.getItem("accessToken");
-
         try {
+          console.log("URL de la solicitud:", `${process.env.BACKEND_URL}/api/favorites/users/${user_id}`);
+
           const response = await fetch(`${process.env.BACKEND_URL}/api/favorites/users/${user_id}`, {
             method: "POST",
             headers: {
@@ -423,10 +421,8 @@ const getState = ({ getStore, getActions, setStore }) => {
               "Content-Type": "application/json",
             },
           });
-
           if (response.ok) {
             const userFavorites = await response.json();
-
             if (userFavorites && userFavorites.favorite_users) {
               setStore({
                 usuariosFavoritos: userFavorites.favorite_users,
@@ -435,18 +431,17 @@ const getState = ({ getStore, getActions, setStore }) => {
               console.error("Formato inesperado en la respuesta al añadir usuario a favoritos");
               return false;
             }
-
             return true;
           } else {
-            console.error("Error al añadir el usuario a favoritos");
+            const errorResponse = await response.json();
+            console.error("Error del servidor al añadir el usuario a favoritos:", errorResponse);
             return false;
           }
         } catch (error) {
-          console.error("Error:", error);
+          console.error("Error en la solicitud:", error);
           return false;
         }
       },
-
       removeUserFromFavorites: async (user_id) => {
         const accessToken = localStorage.getItem("accessToken");
 

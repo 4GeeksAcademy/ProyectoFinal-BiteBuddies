@@ -18,6 +18,7 @@ export const UserDetails = () => {
 
   const isProfile = store.currentUser && store.currentUser.id === id;
   const visitedUser = store.listaDeUsuarios.find(user=> user.id === parseInt(id));
+
  
   if (!visitedUser) {
     return (
@@ -31,9 +32,9 @@ export const UserDetails = () => {
       <ProfileHeader  user={visitedUser} isProfile={isProfile} />
       <Tabs isProfile={isProfile} setActiveTab={setActiveTab} activeTab={activeTab} />
       <div className="tab-content">
-        {activeTab === "misRecetas" && (<RecipeList isProfile={isProfile} visitedUser={visitedUser} />)}
-        {activeTab === "recetasFavoritas" && <FavoriteRecipes isProfile={isProfile} visitedUser={visitedUser}/>}
-        {activeTab === "chefsFavoritos" && <FavoriteChefs isProfile={isProfile} visitedUser={visitedUser}/>}
+        {activeTab === "misRecetas" && (<RecipeList isProfile={isProfile} visitedUser={visitedUser} store={store} />)}
+        {activeTab === "recetasFavoritas" && <FavoriteRecipes isProfile={isProfile} visitedUser={visitedUser} store={store}/>}
+        {activeTab === "chefsFavoritos" && <FavoriteChefs isProfile={isProfile} visitedUser={visitedUser} store={store}/>}
       </div>
     </div>
   );

@@ -2,7 +2,7 @@ import React, { useEffect } from "react";
 import { Link } from "react-router-dom";
 import "../styles.css";
 
-export const FavoriteRecipes = ({ isProfile, visitedUser }) => {
+export const FavoriteRecipes = ({ isProfile, visitedUser, store }) => {
   return (
     <>
       {isProfile && (

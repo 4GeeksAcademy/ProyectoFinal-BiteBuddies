@@ -12,7 +12,6 @@ export const Home = () => {
     useEffect(() => {
         actions.traerRecetas();
         actions.traerCategories();
-        actions.getCurrentUser();
         actions.traerUsuarios();    
     }, []);
 

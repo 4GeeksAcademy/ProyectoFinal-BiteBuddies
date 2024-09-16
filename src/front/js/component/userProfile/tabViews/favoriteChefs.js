@@ -2,7 +2,9 @@ import React, { useEffect } from "react";
 import { Link } from "react-router-dom";
 import "../styles.css";
 
-export const FavoriteChefs = ({ isProfile, visitedUser }) => {
+export const FavoriteChefs = ({ isProfile, visitedUser, store }) => {
+  console.log("favoriteChefs- isProfile:", isProfile);
+  
   return (
     <>
       {isProfile && (
@@ -12,7 +14,7 @@ export const FavoriteChefs = ({ isProfile, visitedUser }) => {
           </h3>
           <div className="d-flex flex-wrap justify-content-center">
             {store.usuariosFavoritos && store.usuariosFavoritos.length > 0 ? (
-              store.usuariosFavoritos.map((usuario, index) => (
+              store.usuariosFavoritos.map((usuario) => (
                 <Link
                   key={usuario.id}
                   to={`/user/${usuario.id}`}
