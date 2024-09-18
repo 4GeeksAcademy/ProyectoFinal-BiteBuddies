@@ -26,7 +26,7 @@ h4{
 
 .sub-title-h {
   font-weight: 600;
-  color: #93183d; /* Maize */
+  color: #93183d;
   margin-bottom: 20px;
 }
 
@@ -37,7 +37,7 @@ h4{
 
 .btn-custom-h {
   color: #ffffff;
-  background-color: #D85436; /* Cinnabar */
+  background-color: #D85436;
   padding: 12px 25px;
   border-radius: 20px; 
   font-size: 1rem;
@@ -54,9 +54,9 @@ h4{
   border:none;
 }
 .btn-custom-h.active {
-  background-color: #df755d; /* Cambia el color de fondo para el botón activo */
-  color: white; /* Color del texto para el botón activo */
-  border: 1px solid #ab694f; /* Borde del botón activo */
+  background-color: #df755d;
+  color: white; 
+  border: 1px solid #ab694f; 
 }
 
 .recipe-list-h {
@@ -112,6 +112,65 @@ a {
     transition:
         transform 0.3s ease,
         box-shadow 0.3s ease;
+}
+
+.form-group [class*='-control'] {
+  background-color: #f2f7f0 !important;
+  border-color: #85a776;
+  width: 50%;
+  margin: 30px auto;
+  outline: none;
+}
+
+.form-group [class*='-control']:focus {
+  border-color: #85a776 !important;
+  outline: none !important;
+}
+.form-group [class*='-placeholder'] {
+  color: #700b29;
+}
+
+.form-group [class*='-input'] input {
+  caret-color: transparent;
+}
+
+.form-group [class*='-control']:hover {
+  border-color: gray;
+}
+
+.form-group [class*='-menu'] {
+  background-color: #f2f7f0;
+  border: 1px solid #85a776;;
+  border-radius: 4px;
+  padding: 10px;
+  box-shadow: 0 4px 8px ;
+  width: 50%;
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.form-group [class*='-menu'] [class*='-option'] {
+  color: #700b29; 
+  padding: 8px 12px; 
+  cursor: pointer; 
+  text-align: center;
+}
+
+.form-group [class*='-menu'] [class*='-option']:hover {
+  background-color: #def0d6;
+  color: #700b29;
+}
+.form-group [class*='-menu'] [class*='-option']:focus {
+  background-color: #def0d6; 
+  color: #700b29; 
+  padding: 8px 12px; 
+  cursor: pointer; 
+  text-align: center;
+}
+.form-group [class*='-multiValue']{
+  background-color: #c4d9bb;
+  color: #700b29;
 }
 
 
