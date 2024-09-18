@@ -121,8 +121,6 @@ const getState = ({ getStore, getActions, setStore }) => {
 
       traerIngredientes: async () => {
         try {
-          console.log("haciendo fetch");
-
           const response = await fetch(`${process.env.BACKEND_URL}/api/ingredients`, {
             method: "GET",
             headers: {
