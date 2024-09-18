@@ -34,15 +34,13 @@ class User(db.Model):
     user_name = db.Column(db.String(250), unique=True, nullable=False)
     email = db.Column(db.String(250), unique=True, nullable=False)
     password = db.Column(db.String(250), nullable=False)
+    is_admin = db.Column(db.Boolean, default=False)
     is_active = db.Column(db.Boolean, nullable=False, default=True)
 
     bio = db.Column(db.String(500), nullable=True)
     profile_image = db.Column(db.String(255), nullable=True)
-
     uploaded_recipes = db.relationship('Recipe', back_populates='user')
-
     favorite_recipes = db.relationship('Recipe', secondary=favorite_recipes, backref=db.backref('favorited_by_users', lazy='dynamic'))
-
     favorite_users = db.relationship('User', secondary=favorite_users, 
                                      primaryjoin=id==favorite_users.c.follower_id, 
                                      secondaryjoin=id==favorite_users.c.followed_id, 
