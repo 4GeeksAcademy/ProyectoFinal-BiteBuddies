@@ -12,10 +12,13 @@ export const SignIn = () => {
   const { store, actions } = useContext(Context);
   const navigate = useNavigate();
 
+  // Modificar onSubmitHandler para capturar el checkbox de is_admin
   const onSubmitHandler = async (e) => {
     e.preventDefault();
 
-    const registered = await actions.registerUser(user_name, first_name, last_name, email, password);
+    const is_admin = e.target.is_admin.checked; // Capturamos si la casilla está marcada
+
+    const registered = await actions.registerUser(user_name, first_name, last_name, email, password, is_admin);
     if (registered) {
       alert("¡¡Usuario creado exitosamente!!");
       navigate("/login");
@@ -78,6 +81,10 @@ export const SignIn = () => {
               id="inputPassword"
               placeholder="Contraseña"
             />
+          </div>
+          <div>
+            <label htmlFor="is_admin">¿Registrar como administrador?</label>
+            <input type="checkbox" id="is_admin" name="is_admin"/>
           </div>
           <div className="text-center m-1">
             <button type="submit" className="btn btn-primary">

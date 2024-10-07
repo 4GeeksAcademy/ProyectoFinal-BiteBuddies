@@ -8,23 +8,16 @@ export const Login = () => {
   const [password, setPassword] = useState("");
   const { actions } = useContext(Context);
   const navigate = useNavigate();
-  const isMounted = useRef(true); // Usamos useRef para controlar si el componente está montado
-
-  useEffect(() => {
-    return () => {
-      isMounted.current = false;
-    };
-  }, []);
-
+  
   const onSubmitHandler = async (e) => {
     e.preventDefault();
     const logged = await actions.login(email, password);
-    if (isMounted.current && logged) { // Verificamos si el componente sigue montado antes de navegar
-      navigate(`/`);
-    }
-    if (isMounted.current) {
+    console.log("login", logged);
+    
+    if (logged) { // Verificamos si el componente sigue montado antes de navegar
       setEmail("");
       setPassword("");
+      navigate(`/`);
     }
   };
 

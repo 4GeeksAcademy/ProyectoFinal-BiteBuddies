@@ -43,9 +43,8 @@ export const Home = () => {
 
     const filtrarRecetasPorIngredientes = (selectedIngredients) => {
         const recetasFiltradas = store.listaDeRecetas.filter((receta) => {
-            const recetaIngredienteIds = receta.ingredients.map(ingrediente => ingrediente.id)
-            const recetaIngredienteName = receta.ingredients.map(ingrediente => ingrediente.name)         
-            return selectedIngredients.every((ingredienteId)=> recetaIngredienteIds.includes(ingredienteId));
+            const recetaIngredienteIds = receta.ingredients.map(ingrediente => ingrediente.id)       
+            return selectedIngredients.some((ingredienteId)=> recetaIngredienteIds.includes(ingredienteId));
         });
         setFilteredRecipes(recetasFiltradas);
     };
