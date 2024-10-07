@@ -18,12 +18,12 @@ export const Navbar = () => {
 
     const handleRecetasClick = () => {
         actions.switchToRecipesView();
-        navigate('/'); // Redirigir al Home
+        navigate('/');
     };
 
     const handleUsuariosClick = () => {
         actions.switchToUsersView();
-        navigate('/'); // Redirigir al Home
+        navigate('/');
     };
 
     return (
@@ -53,6 +53,16 @@ export const Navbar = () => {
             </div>
             
             <div className="ml-auto col d-flex flex-row justify-content-end">
+                {store.isLoggedIn && store.currentUser?.isAdmin && (
+                    <a
+                        className="btn custom-button m-1"
+                        href="https://scaling-engine-x5w4gvgqv9qjcvq6-3001.app.github.dev/admin/"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                    >
+                        Administración
+                    </a>
+                )}
                 {store.isLoggedIn && store.currentUser ? (
                     <div className="dropdown">
                         <button
@@ -72,7 +82,7 @@ export const Navbar = () => {
                             </li>
                             <li>
                                 <Link className="dropdown-item desplegable-item" to={`/login`} onClick={actions.logout}>
-                                    Logout
+                                    Cerrar sesión
                                 </Link>
                             </li>
                         </ul>
@@ -80,10 +90,10 @@ export const Navbar = () => {
                 ) : (
                     <>
                         <Link to="/login">
-                            <button className="btn custom-button m-1">LOGIN</button>
+                            <button className="btn custom-button m-1">Entrar</button>
                         </Link>
                         <Link to="/sign_in">
-                            <button className="btn custom-button m-1">SIGN IN</button>
+                            <button className=" custom-button-sign m-1">Registrarse</button>
                         </Link>
                     </>
                 )}

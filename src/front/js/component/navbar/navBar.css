@@ -84,6 +84,22 @@
     background-color: #FF7043;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
+.custom-button-sign{
+    background-color: #FF7043;
+    border: none;
+    color: white;
+    font-size: 1rem;
+    padding: 8px 16px;
+    border-radius: 15px;
+    transition: background-color 0.3s ease, box-shadow 0.3s ease;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+.custom-button-sign:hover{
+    background-color: #D85436;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    color:black
+
+}
 
 
 .navbar-container h1 {
@@ -153,6 +169,9 @@
 }
 .desplegable-item:hover{
     background-color: #fdf0ed;
+}
+.ml-auto.col.d-flex.flex-row.justify-content-end {
+    align-items: center; /* Alinea los elementos en el centro verticalmente */
 }
 
 

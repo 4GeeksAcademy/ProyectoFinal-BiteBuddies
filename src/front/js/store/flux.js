@@ -26,37 +26,34 @@ const getState = ({ getStore, getActions, setStore }) => {
     },
     actions: {
       switchToRecipesView: () => {
-        console.log("Switching to Recipes View");
         setStore({ isUserView: false });
-    },
-    switchToUsersView: () => {
-        console.log("Switching to Users View");
-        setStore({ isUserView: true });
-    },
-      buscar: (query, searchType) => {
-          const store = getStore();
-          let resultados = [];
-
-          const lowerCaseQuery = query.toLowerCase();
-
-          if (searchType === "recetas") {
-              resultados = store.listaDeRecetas.filter((receta) =>
-                  receta.name.toLowerCase().includes(lowerCaseQuery)
-              );
-              setStore({ searchResultRecipes: resultados });
-          }
-          if (searchType === "usuarios") {
-              resultados = store.listaDeUsuarios.filter((user) =>
-                  user.user_name.toLowerCase().includes(lowerCaseQuery)
-              );
-              setStore({ searchResultUsers: resultados });
-          }
-
-          setStore({
-              busquedaActiva: true,
-          });
       },
+      switchToUsersView: () => {
+        setStore({ isUserView: true });
+      },
+      buscar: (query, searchType) => {
+        const store = getStore();
+        let resultados = [];
 
+        const lowerCaseQuery = query.toLowerCase();
+
+        if (searchType === "recetas") {
+          resultados = store.listaDeRecetas.filter((receta) =>
+            receta.name.toLowerCase().includes(lowerCaseQuery)
+          );
+          setStore({ searchResultRecipes: resultados });
+        }
+        if (searchType === "usuarios") {
+          resultados = store.listaDeUsuarios.filter((user) =>
+            user.user_name.toLowerCase().includes(lowerCaseQuery)
+          );
+          setStore({ searchResultUsers: resultados });
+        }
+
+        setStore({
+          busquedaActiva: true,
+        });
+      },
 
       limpiarBusqueda: () => {
         setStore({
@@ -66,7 +63,7 @@ const getState = ({ getStore, getActions, setStore }) => {
         });
       },
 
-      registerUser: async (user_name, first_name, last_name, email, password) => {
+      registerUser: async (user_name, first_name, last_name, email, password, is_admin = false) => {
         try {
           if (!user_name || !first_name || !last_name || !email || !password) {
             setStore({
@@ -86,6 +83,7 @@ const getState = ({ getStore, getActions, setStore }) => {
               last_name,
               email,
               password,
+              is_admin,
             }),
           });
 
@@ -104,14 +102,12 @@ const getState = ({ getStore, getActions, setStore }) => {
             return true;
           } else {
             const errorResult = await response.json();
-            console.error("Server Error:", errorResult);
             setStore({
               error: errorResult.msg || "Error desconocido",
             });
             return false;
           }
         } catch (error) {
-          console.error("Network Error:", error);
           setStore({
             error: "Error al conectar con el servidor",
           });
@@ -128,18 +124,12 @@ const getState = ({ getStore, getActions, setStore }) => {
             },
           });
           if (!response.ok) {
-            console.log("Respuesta no ok:", response.status);
             throw new Error("Error fetching ingredients");
           }
           const data = await response.json();
-          console.log("Ingredientes:", data);
           setStore({
             listaDeIngredientes: data,
           });
-          console.log(
-            "Nuevo estado de listaDeIngredientes:",
-            getStore().listaDeIngredientes
-          );
         } catch (error) {
           console.error("Error:", error);
         }
@@ -153,14 +143,11 @@ const getState = ({ getStore, getActions, setStore }) => {
           });
 
           if (!response.ok) {
-            console.error("Error al obtener usuarios:", response.status);
             throw new Error("Error al obtener usuarios: " + response.statusText);
           }
 
           const data = await response.json();
-          console.log("traerUsuarios:", data);          
           setStore({ listaDeUsuarios: data });
-          
         } catch (error) {
           console.error("Error al obtener usuarios:", error.message);
         }
@@ -178,7 +165,6 @@ const getState = ({ getStore, getActions, setStore }) => {
             throw new Error("Error fetching recipes");
           }
           const data = await response.json();
-          console.log("traerRecetas:", data);
           setStore({
             listaDeRecetas: data,
           });
@@ -199,7 +185,6 @@ const getState = ({ getStore, getActions, setStore }) => {
             throw new Error("Error fetching categories");
           }
           const data = await response.json();
-          console.log("traerCategorias:", data);
           setStore({
             listaDeCategorias: data,
           });
@@ -209,25 +194,51 @@ const getState = ({ getStore, getActions, setStore }) => {
       },
 
       login: async (email, password) => {
-        const bodyData = {
-          email,
-          password,
-        };
-        try {
-          const res = await axios.post(`${process.env.BACKEND_URL}/api/login`, bodyData);
-          const { data } = res;
-          const accessToken = data.access_token;
-          if (accessToken) {
+    const bodyData = {
+        email,
+        password,
+    };
+
+    try {
+        console.log("Enviando solicitud de login con los datos:", bodyData); // Log para ver los datos que se están enviando
+
+        const res = await axios.post(`${process.env.BACKEND_URL}/api/login`, bodyData);
+
+        console.log("Respuesta del servidor recibida:", res); // Log para ver la respuesta completa del servidor
+
+        const { data } = res;
+        const accessToken = res.data.token;
+
+        if (res.data) {
+            console.log("Login exitoso. Guardando el token y el usuario.");
+
             localStorage.setItem("accessToken", accessToken);
+            localStorage.setItem("user", JSON.stringify(data.user));
+
+            const decodedToken = JSON.parse(atob(accessToken.split(".")[1]));
+            console.log("Token decodificado:", decodedToken); // Log para ver qué se decodifica del token
+
+            const email = decodedToken.sub.email;
+            const isAdmin = decodedToken.sub.is_admin;
+
+            setStore({
+                currentUser: {
+                    isAdmin,
+                    email,
+                },
+            });
+
             await getActions().getCurrentUser();
             return true;
-          }
-          return false;
-        } catch (error) {
-          console.log("Error loading message from backend", error);
-          return false;
+        } else {
+            console.log("Error: no se recibió data en la respuesta.");
+            return false;
         }
-      },
+    } catch (error) {
+        console.log("Error al hacer login:", error.response ? error.response.data : error.message); // Log del error detallado
+        return false;
+    }
+},
 
       logout: () => {
         localStorage.removeItem("accessToken");
@@ -241,30 +252,42 @@ const getState = ({ getStore, getActions, setStore }) => {
         try {
           const accessToken = localStorage.getItem("accessToken");
           if (!accessToken) {
+            console.log("No se encontró un token de acceso. Saliendo...");
             setStore({ isLoadingUser: false });
-            return;  
+            return;
           }
+          console.log("Token de acceso encontrado:", accessToken);
           const res = await axios.get(`${process.env.BACKEND_URL}/api/current-user`, {
             headers: {
               Authorization: `Bearer ${accessToken}`,
             },
           });
+          console.log("Respuesta recibida:", res.data);
           const { usuario_actual: currentUser } = res.data;
-          console.log("getCurrentUserData:", res.data);
-          
+          console.log("Usuario actual obtenido de la API:", currentUser);
+          const decodedToken = JSON.parse(atob(accessToken.split(".")[1]));
+          console.log("Token decodificado:", decodedToken);
+          const isAdmin = decodedToken.sub.is_admin;
+          console.log("¿El usuario es administrador?", isAdmin);
+
           setStore({
-            currentUser,
+            currentUser:{
+              ...currentUser,
+              isAdmin:isAdmin,
+            },
             isLoggedIn: true,
             isLoadingUser: false,
           });
+          console.log("Estado actualizado en el store con el usuario actual y privilegios de administrador.");
         } catch (error) {
-          console.log("Error loading message from backend", error);
-          localStorage.removeItem("accessToken");
+          console.error("Error al obtener el usuario actual o procesar el token:", error);
           setStore({
             currentUser: null,
             isLoggedIn: false,
+            isAdmin: false,
             isLoadingUser: false,
           });
+           console.log("Estado actualizado a usuario no autenticado en caso de error.");
         }
       },
 
@@ -281,17 +304,9 @@ const getState = ({ getStore, getActions, setStore }) => {
         });
       },
 
-     publicarReceta: async (name, description, steps, ingredients_ids, category_ids, image_url) => {
+      publicarReceta: async (name, description, steps, ingredients_ids, category_ids, image_url) => {
         const store = getStore();
         const accessToken = localStorage.getItem("accessToken");
-        console.log({
-          name,
-          description,
-          steps,
-          ingredients_ids,
-          category_ids,
-          image_url
-        });
 
         try {
           const response = await axios.post(
@@ -322,46 +337,43 @@ const getState = ({ getStore, getActions, setStore }) => {
           }
           return true;
         } catch (error) {
-          // Imprimir el error del backend para más detalles
           console.error("Error al publicar la receta:", error.response ? error.response.data : error);
         }
         return false;
       },
 
       traerDetalleDeReceta: async (id) => {
-          try {
-              const response = await fetch(`${process.env.BACKEND_URL}/api/recipes/${id}`, {
-                  method: "GET",
-                  headers: {
-                      "Content-Type": "application/json",
-                  },
-              });
-              if (!response.ok) {
-                  throw new Error("Error fetching recipe details");
-              }
-              const data = await response.json();
-              
-              console.log("Detalles de la receta:", data);
-
-              setStore({
-                  detallesDeReceta: {
-                      id: data.id,
-                      name: data.name,
-                      description: data.description,
-                      steps: data.steps,
-                      image_url: data.image_url,
-                      ingredients: data.ingredients, 
-                      categories: data.categories, 
-                      uploaded_by_user: data.uploaded_by_user,
-                      is_official: data.is_official,
-                      comments: data.comments || [],
-                  },
-              });
-
-              return data;
-          } catch (error) {
-              console.error("Error:", error);
+        try {
+          const response = await fetch(`${process.env.BACKEND_URL}/api/recipes/${id}`, {
+            method: "GET",
+            headers: {
+              "Content-Type": "application/json",
+            },
+          });
+          if (!response.ok) {
+            throw new Error("Error fetching recipe details");
           }
+          const data = await response.json();
+
+          setStore({
+            detallesDeReceta: {
+              id: data.id,
+              name: data.name,
+              description: data.description,
+              steps: data.steps,
+              image_url: data.image_url,
+              ingredients: data.ingredients,
+              categories: data.categories,
+              uploaded_by_user: data.uploaded_by_user,
+              is_official: data.is_official,
+              comments: data.comments || [],
+            },
+          });
+
+          return data;
+        } catch (error) {
+          console.error("Error:", error);
+        }
       },
       getUserRecipes: () => {
         const store = getStore();
@@ -371,9 +383,6 @@ const getState = ({ getStore, getActions, setStore }) => {
           setStore({
             listaDeRecetasPublicadas: currentUser.uploaded_recipes,
           });
-          console.log("getUserRecipes:", currentUser.uploaded_recipes);
-        } else {
-          console.error("No hay recetas subidas para este usuario");
         }
       },
 
@@ -385,36 +394,30 @@ const getState = ({ getStore, getActions, setStore }) => {
           const response = await fetch(`${process.env.BACKEND_URL}/api/user/favorites`, {
             method: "GET",
             headers: {
-              Authorization: `Bearer ${accessToken}`, // Incluir el token en la cabecera
+              Authorization: `Bearer ${accessToken}`,
               "Content-Type": "application/json",
             },
           });
 
-           console.log("Estado de la respuesta:", response.status);
           if (response.ok) {
             const data = await response.json();
-            console.log("Datos recibidos del servidor:", data);
             const favorite_recipes = data.favorite_recipes;
             const favorite_users = data.favorite_users;
             setStore({
               recetasFavoritas: favorite_recipes,
               usuariosFavoritos: favorite_users,
             });
-            console.log("Recetas favoritas guardadas:", favorite_recipes);
-            console.log("Usuarios favoritos guardados:", favorite_users);
             return true;
           } else {
             const errorResponse = await response.json();
-            console.error("Error al obtener los favoritos del usuario:", errorResponse);
             return false;
           }
         } catch (error) {
-          console.error("Error en la solicitud:", error);
           return false;
         }
       },
 
-     addUserToFavorite: async (user_id) => {
+      addUserToFavorite: async (user_id) => {
         const accessToken = localStorage.getItem("accessToken");
         try {
           const response = await fetch(`${process.env.BACKEND_URL}/api/favorites/users/${user_id}`, {
@@ -426,28 +429,21 @@ const getState = ({ getStore, getActions, setStore }) => {
           });
           if (response.ok) {
             const userFavorites = await response.json();
-            console.error("addUserToFavorite:",userFavorites);
             if (userFavorites && userFavorites.favorite_users) {
               const { usuariosFavoritos } = getStore();
-              console.log("Lista actual de usuarios favoritos:", usuariosFavoritos);
               const nuevoUsuarioFavorito = [...usuariosFavoritos, ...userFavorites.favorite_users];
-              console.log("Nueva lista de usuarios favoritos (antes de guardar en store):", nuevoUsuarioFavorito);
               setStore({
-                usuariosFavoritos: nuevoUsuarioFavorito
+                usuariosFavoritos: nuevoUsuarioFavorito,
               });
-              console.log("Usuarios Favoritos guardados en el store:", nuevoUsuarioFavorito);
             } else {
-              console.error("Formato inesperado en la respuesta al añadir usuario a favoritos");
               return false;
             }
             return true;
           } else {
             const errorResponse = await response.json();
-            console.error("Error del servidor al añadir el usuario a favoritos:", errorResponse);
             return false;
           }
         } catch (error) {
-          console.error("Error en la solicitud:", error);
           return false;
         }
       },
@@ -470,17 +466,14 @@ const getState = ({ getStore, getActions, setStore }) => {
                 usuariosFavoritos: userFavorites.favorite_users,
               });
             } else {
-              console.error("Formato inesperado en la respuesta al eliminar usuario de favoritos");
               return false;
             }
 
             return true;
           } else {
-            console.error("Error al eliminar el usuario de favoritos");
             return false;
           }
         } catch (error) {
-          console.error("Error:", error);
           return false;
         }
       },
@@ -496,23 +489,20 @@ const getState = ({ getStore, getActions, setStore }) => {
             },
           });
           if (response.ok) {
-            const userFavorites = await response.json();          
+            const userFavorites = await response.json();
             if (userFavorites && userFavorites.favorite_recipes && userFavorites.favorite_users) {
               setStore({
                 recetasFavoritas: userFavorites.favorite_recipes,
                 usuariosFavoritos: userFavorites.favorite_users,
               });
             } else {
-              console.error("Formato inesperado en la respuesta al añadir receta a favoritos");
               return false;
             }
             return true;
           } else {
-            console.error("Error al añadir la receta a favoritos");
             return false;
           }
         } catch (error) {
-          console.error("Error:", error);
           return false;
         }
       },
@@ -536,16 +526,13 @@ const getState = ({ getStore, getActions, setStore }) => {
                 recetasFavoritas: userFavorites.favorite_recipes,
               });
             } else {
-              console.error("Formato inesperado en la respuesta al eliminar receta de favoritos");
               return false;
             }
             return true;
           } else {
-            console.error("Error al eliminar la receta de favoritos");
             return false;
           }
         } catch (error) {
-          console.error("Error:", error);
           return false;
         }
       },
@@ -559,75 +546,70 @@ const getState = ({ getStore, getActions, setStore }) => {
         const store = getStore();
         return store.usuariosFavoritos && store.usuariosFavoritos.some((user) => user.id === user_id);
       },
-        updateUserProfile: async (profileData, userId) => {
-          const token = localStorage.getItem("accessToken");
-          try {
-              const response = await fetch(`${process.env.BACKEND_URL}/api/current-user`, {
-                  method: "PUT",
-                  headers: {
-                      "Content-Type": "application/json",
-                      "Authorization": `Bearer ${token}`
-                  },
-                  body: JSON.stringify(profileData)
-              });
+      updateUserProfile: async (profileData, userId) => {
+        const token = localStorage.getItem("accessToken");
+        try {
+          const response = await fetch(`${process.env.BACKEND_URL}/api/current-user`, {
+            method: "PUT",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`,
+            },
+            body: JSON.stringify(profileData),
+          });
 
-              if (!response.ok) {
-                  throw new Error("Error en la solicitud de actualización del perfil");
-              }
-
-              const data = await response.json();
-              console.log("Perfil actualizado con éxito:", data);
-
-              const updatedUserResponse = await fetch(`${process.env.BACKEND_URL}/api/current-user`, {
-                  headers: {
-                      "Authorization": `Bearer ${token}`
-                  }
-              });
-
-              if (updatedUserResponse.ok) {
-                  const updatedUserData = await updatedUserResponse.json();ata
-                  setStore({ currentUser: updatedUserData.usuario_actual });
-                  alert("Perfil actualizado con éxito");
-              }
-              return true;
-          } catch (error) {
-              console.error("Error actualizando el perfil:", error);
-              alert("Error actualizando el perfil");
-              return false;
+          if (!response.ok) {
+            throw new Error("Error en la solicitud de actualización del perfil");
           }
+
+          const data = await response.json();
+
+          const updatedUserResponse = await fetch(`${process.env.BACKEND_URL}/api/current-user`, {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          });
+
+          if (updatedUserResponse.ok) {
+            const updatedUserData = await updatedUserResponse.json();
+            setStore({ currentUser: updatedUserData.usuario_actual });
+            alert("Perfil actualizado con éxito");
+          }
+          return true;
+        } catch (error) {
+          return false;
+        }
       },
       getCommentsForRecipe: async (recipeId) => {
-          try {
-              const response = await fetch(`${process.env.BACKEND_URL}/api/recipes/${recipeId}`);
-              if (!response.ok) throw new Error("Error al obtener comentarios");
-              const comments = await response.json();
-              return comments;
-          } catch (error) {
-              console.error("Error obteniendo comentarios:", error);
-          }
+        try {
+          const response = await fetch(`${process.env.BACKEND_URL}/api/recipes/${recipeId}`);
+          if (!response.ok) throw new Error("Error al obtener comentarios");
+          const comments = await response.json();
+          return comments;
+        } catch (error) {
+          console.error("Error obteniendo comentarios:", error);
+        }
       },
       addCommentToRecipe: async (recipeId, commentText) => {
-          const token = localStorage.getItem("accessToken");
-          try {
-              const response = await fetch(`${process.env.BACKEND_URL}/api/recipes/${recipeId}`, {
-                  method: "POST",
-                  headers: {
-                      "Content-Type": "application/json",
-                      "Authorization": `Bearer ${token}`
-                  },
-                  body: JSON.stringify({ text: commentText })
-              });
-              if (!response.ok) throw new Error("Error al agregar comentario");
-              const newComment = await response.json();
-              return newComment;
-          } catch (error) {
-              console.error("Error agregando comentario:", error);
-              return null;
-          }
-      }
+        const token = localStorage.getItem("accessToken");
+        try {
+          const response = await fetch(`${process.env.BACKEND_URL}/api/recipes/${recipeId}`, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`,
+            },
+            body: JSON.stringify({ text: commentText }),
+          });
+          if (!response.ok) throw new Error("Error al agregar comentario");
+          const newComment = await response.json();
+          return newComment;
+        } catch (error) {
+          return null;
+        }
+      },
     },
   };
 };
 
 export default getState;
-

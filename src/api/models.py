@@ -56,6 +56,7 @@ class User(db.Model):
             "last_name": self.last_name,
             "user_name": self.user_name,
             "email": self.email,
+            "is_admin": self.is_admin,
             "is_active": self.is_active,
             "bio": self.bio,  # Incluimos la bio en la serialización
             "profile_image": self.profile_image,  # Incluimos la imagen de perfil en la serialización
