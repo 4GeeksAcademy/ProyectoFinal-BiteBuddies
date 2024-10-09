@@ -56,7 +56,7 @@ export const Navbar = () => {
                 {store.isLoggedIn && store.currentUser?.isAdmin && (
                     <a
                         className="btn custom-button m-1"
-                        href="https://scaling-engine-x5w4gvgqv9qjcvq6-3001.app.github.dev/admin/"
+                        href={`${process.env.BACKEND_URL}`}
                         target="_blank"
                         rel="noopener noreferrer"
                     >
