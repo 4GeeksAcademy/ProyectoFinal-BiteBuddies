@@ -56,7 +56,7 @@ export const Navbar = () => {
                 {store.isLoggedIn && store.currentUser?.isAdmin && (
                     <a
                         className="btn custom-button m-1"
-                        href={`${process.env.DATABASE_URL}`}
+                        href={`${process.env.BACKEND_URL}/admin`}
                         target="_blank"
                         rel="noopener noreferrer"
                     >
