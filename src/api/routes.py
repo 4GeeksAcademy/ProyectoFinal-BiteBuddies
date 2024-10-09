@@ -18,6 +18,51 @@ CORS(api,resources={r"/*": {"origins": "*"}}, supports_credentials=True, expose_
 def handle_invalid_usage(error):
     return jsonify(error.to_dict()), error.status_code
 
+@api.route('/insert-test-users', methods=['POST'])
+def insert_test_users_route():
+    try:
+        insert_test_users()
+        return jsonify({"message": "Usuarios de prueba insertados correctamente"}), 200
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+@api.route('/insert-test-categories', methods=['POST'])
+def insert_test_categories_route():
+    try:
+        insert_test_categories()
+        return jsonify({"message": "Categorías de prueba insertadas correctamente"}), 200
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+@api.route('/insert-test-ingredients', methods=['POST'])
+def insert_test_ingredients_route():
+    try:
+        insert_test_ingredients()
+        return jsonify({"message": "Ingredientes de prueba insertados correctamente"}), 200
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+@api.route('/insert-test-recipes', methods=['POST'])
+def insert_test_recipes_route():
+    try:
+        insert_test_recipes()
+        return jsonify({"message": "Recetas de prueba insertadas correctamente"}), 200
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+@api.route('/insert-test-data', methods=['POST'])
+def insert_all_test_data_route():
+    try:
+        insert_test_users()
+        insert_test_categories()
+        insert_test_ingredients()
+        insert_test_recipes()
+        return jsonify({"message": "Todos los datos de prueba han sido insertados correctamente"}), 200
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+
+
 
 
 @api.route('/all_users', methods=['GET'])
