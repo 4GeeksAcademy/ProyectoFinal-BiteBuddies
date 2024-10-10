@@ -65,7 +65,7 @@ export const RecipeCard = ({ recipe }) => {
       <div className="recipe-details">
         <h1>{recipe.name || "Nombre de la Receta"}</h1>
 
-        <div className="recipe-instructions d-flex flex-column">
+        <div className="recipe-instructions">
           <div>
             <h2>Descripción:</h2>
             <p>{recipe.description || "Descripción no disponible"}</p>

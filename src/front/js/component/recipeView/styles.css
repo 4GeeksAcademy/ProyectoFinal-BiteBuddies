@@ -21,7 +21,6 @@ body {
     padding: 10px;
     margin-top: 0px;
     padding-top: 0px;
-    
 }
 
 .recipe-photo img {
@@ -49,7 +48,11 @@ body {
     text-shadow: 0 4px 5px rgba(43, 60, 27, 0.2);
     
 }
-
+.recipe-instructions {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between; /* Esto permite que los elementos internos se distribuyan mejor */
+}
 .recipe-instructions h2 {
     font-size: 1.5rem;
     color: #7a082a;
@@ -57,13 +60,14 @@ body {
     display:flex;
     flex-direction: column;
 }
-.published-by{
-    margin-top:80px;
-    align-self: end;
+.published-by {
+    margin-top: auto !important; /* Esto asegura que el contenedor se posicione en la parte baja */
+    align-self: flex-end !important; /* Alinea el contenedor a la derecha */
+    text-align: right !important; /* Alinea el texto dentro del contenedor a la derecha */
 }
 .published-by a {
     color: #93183d;
-    text-decoration: none !important;   
+    text-decoration: none !important;
 }
 
 .published-by a:hover {
