@@ -215,15 +215,14 @@ def get_user_by_id(user_id):
     return jsonify(user_query.serialize()), 200
 
 @api.route('/user/favorites', methods=['GET'])
-@jwt_required()  # Asegúrate de que el token JWT sea válido
+@jwt_required()
 def get_user_favorites():
     try:
-        current_user_id = get_jwt_identity()
+        current_user_identity = get_jwt_identity()
+        current_user_id = current_user_identity.get('id')
         user = User.query.get(current_user_id)
         if not user:
             return jsonify({"msg": "Usuario no encontrado"}), 404
-
-        # Obtén las recetas y usuarios favoritos
         favorite_recipes = [recipe.serialize() for recipe in user.favorite_recipes]
         favorite_users = [fav_user.serialize() for fav_user in user.favorite_users]
 
@@ -238,7 +237,8 @@ def get_user_favorites():
 @api.route('/favorites/recipes/<int:recipe_id>', methods=['POST'])
 @jwt_required()
 def add_favorite_recipe(recipe_id):
-    current_user_id = get_jwt_identity()
+    current_user_identity = get_jwt_identity()
+    current_user_id = current_user_identity.get('id')
     recipe_query = Recipe.query.get(recipe_id)
 
     user_query = User.query.get(current_user_id)
@@ -257,7 +257,8 @@ def add_favorite_recipe(recipe_id):
 @api.route('/favorites/recipes/<int:recipe_id>', methods=['DELETE'])
 @jwt_required()
 def delete_favorite_recipe(recipe_id):
-    current_user_id = get_jwt_identity()
+    current_user_identity = get_jwt_identity()
+    current_user_id = current_user_identity.get('id')
     recipe_query = Recipe.query.get(recipe_id)
     user_query = User.query.get(current_user_id)
     if not recipe_query:
@@ -272,7 +273,8 @@ def delete_favorite_recipe(recipe_id):
 @api.route('/favorites/users/<int:user_id>', methods=['POST'])
 @jwt_required()
 def add_user_to_favorite(user_id):
-    current_user_id = get_jwt_identity() 
+    current_user_identity = get_jwt_identity()
+    current_user_id = current_user_identity.get('id') 
     user_to_follow = User.query.get(user_id) 
     current_user = User.query.get(current_user_id)
     if not user_to_follow:
@@ -286,7 +288,8 @@ def add_user_to_favorite(user_id):
 @api.route('/favorites/users/<int:user_id>', methods=['DELETE'])
 @jwt_required()
 def delete_user_from_favorite(user_id):
-    current_user_id = get_jwt_identity()
+    current_user_identity = get_jwt_identity()
+    current_user_id = current_user_identity.get('id')
     user_to_unfollow = User.query.get(user_id)
     current_user = User.query.get(current_user_id)
     if not user_to_unfollow:
@@ -314,7 +317,8 @@ def get_user_recipes():
 @api.route('/create_recipes', methods=['POST'])
 @jwt_required()
 def create_recipe():
-    current_user_id = get_jwt_identity()
+    current_user_identity = get_jwt_identity()
+    current_user_id = current_user_identity.get('id')
     user = User.query.get(current_user_id)
     if not user:
         raise APIException("Usuario no encontrado", status_code=404)
@@ -363,7 +367,8 @@ def create_recipe():
 @api.route('/recipes/<int:recipe_id>', methods=['DELETE'])
 @jwt_required()
 def delete_recipe(recipe_id):
-    current_user_id = get_jwt_identity()
+    current_user_identity = get_jwt_identity()
+    current_user_id = current_user_identity.get('id')
     user = User.query.get(current_user_id)
     
     if not user:
@@ -388,7 +393,8 @@ def delete_recipe(recipe_id):
 @api.route('/current-user', methods=['PUT'])
 @jwt_required()
 def edit_user_profile():
-    current_user_id = get_jwt_identity()
+    current_user_identity = get_jwt_identity()
+    current_user_id = current_user_identity.get('id')
     user = User.query.get(current_user_id)
     if not user:
         raise APIException("Usuario no encontrado", status_code=404)
