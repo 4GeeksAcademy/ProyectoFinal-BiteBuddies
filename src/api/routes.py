@@ -432,7 +432,8 @@ def get_comments_for_recipe(recipe_id):
 @api.route('/recipes/<int:recipe_id>', methods=['POST'])
 @jwt_required()
 def add_comment_to_recipe(recipe_id):
-    user_id = get_jwt_identity()
+    current_user_identity = get_jwt_identity()
+    user_id = current_user_identity.get('id') 
     recipe = Recipe.query.get(recipe_id)
     if not recipe:
         raise APIException("Receta no encontrada", status_code=404)
